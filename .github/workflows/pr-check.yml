@@ -1,0 +1,27 @@
+name: Pull Request Checks
+
+on: [pull_request]
+
+jobs:
+    execute-pr-checks:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout repo
+              uses: actions/checkout@v4
+
+            - name: setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                node-version: '20'
+
+            - name: install Angular CLI
+              run: npm install -g @angular/cli@17
+
+            - name: install dependencies
+              run: npm ci
+
+            - name: run linting
+              run: npm run lint
+
+
+    
