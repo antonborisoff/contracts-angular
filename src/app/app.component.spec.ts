@@ -1,6 +1,13 @@
-import { ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing'
-import { AppComponent } from './app.component'
-import { TranslateTestingModule } from 'ngx-translate-testing'
+import {
+  ComponentFixtureAutoDetect,
+  TestBed
+} from '@angular/core/testing'
+import {
+  AppComponent
+} from './app.component'
+import {
+  TranslateTestingModule
+} from 'ngx-translate-testing'
 import en from '../assets/i18n/en.json'
 
 describe('AppComponent', () => {
@@ -10,9 +17,12 @@ describe('AppComponent', () => {
         AppComponent,
         TranslateTestingModule
           .withTranslations('en', en)
-          .withDefaultLanguage('en'),
+          .withDefaultLanguage('en')
       ],
-      providers: [{ provide: ComponentFixtureAutoDetect, useValue: true }],
+      providers: [{
+        provide: ComponentFixtureAutoDetect,
+        useValue: true
+      }]
     }).compileComponents()
   })
 
