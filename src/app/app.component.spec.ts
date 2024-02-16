@@ -1,10 +1,18 @@
-import { TestBed } from '@angular/core/testing'
+import { ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing'
 import { AppComponent } from './app.component'
+import { TranslateTestingModule } from 'ngx-translate-testing'
+import en from '../assets/i18n/en.json'
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent],
+      imports: [
+        AppComponent,
+        TranslateTestingModule
+          .withTranslations('en', en)
+          .withDefaultLanguage('en'),
+      ],
+      providers: [{ provide: ComponentFixtureAutoDetect, useValue: true }],
     }).compileComponents()
   })
 
@@ -22,7 +30,6 @@ describe('AppComponent', () => {
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent)
-    fixture.detectChanges()
     const compiled = fixture.nativeElement as HTMLElement
     expect(compiled.querySelector('h1')?.textContent).toContain('Hello, contracts-angular')
   })

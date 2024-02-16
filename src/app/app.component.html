@@ -1,6 +1,7 @@
 <div>
-  <h1>Hello, {{ title }}</h1>
+  <h1>{{ 'HELLO' | translate:{value: title} }}</h1>
   <p>Congratulations! Your app is running. 🎉</p>
+
+  <router-outlet />
 </div>
 
-<router-outlet />
