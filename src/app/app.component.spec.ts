@@ -6,18 +6,16 @@ import {
   AppComponent
 } from './app.component'
 import {
-  TranslateTestingModule
-} from 'ngx-translate-testing'
-import en from '../assets/i18n/en.json'
+  getTranslocoTestingModule
+} from '../transloco/transloco-testing'
+import en from './i18n/en.json'
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
         AppComponent,
-        TranslateTestingModule
-          .withTranslations('en', en)
-          .withDefaultLanguage('en')
+        getTranslocoTestingModule(AppComponent, en)
       ],
       providers: [{
         provide: ComponentFixtureAutoDetect,
@@ -38,9 +36,9 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('contracts-angular')
   })
 
-  it('should render title', () => {
+  it('should render translated title', () => {
     const fixture = TestBed.createComponent(AppComponent)
     const compiled = fixture.nativeElement as HTMLElement
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, contracts-angular')
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, contracts-angular component en')
   })
 })
