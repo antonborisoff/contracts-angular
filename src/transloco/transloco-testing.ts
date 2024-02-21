@@ -5,8 +5,11 @@ import {
 import {
   TranslocoLocalScope
 } from './transloco-interfaces'
+import {
+  ModuleWithProviders
+} from '@angular/core'
 
-export function getTranslocoTestingModule(componentClass: TranslocoLocalScope, translations: Translation) {
+export function getTranslocoTestingModule(componentClass: TranslocoLocalScope, translations: Translation): ModuleWithProviders<TranslocoTestingModule> {
   const testingLang = 'en'
   const scope = componentClass.getTranslocoScope()
   return TranslocoTestingModule.forRoot({

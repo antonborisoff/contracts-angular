@@ -5,6 +5,7 @@ import {
   RouterOutlet
 } from '@angular/router'
 import {
+  Translation,
   TranslocoPipe,
   provideTranslocoScope
 } from '@ngneat/transloco'
@@ -24,13 +25,13 @@ const COMPONENT_TRANSLOCO_SCOPE = 'app'
   styleUrl: './app.component.css',
   providers: [provideTranslocoScope({
     scope: COMPONENT_TRANSLOCO_SCOPE,
-    loader: getTranslocoInlineLoader((lang: string) => () => import(`./i18n/${lang}.json`))
+    loader: getTranslocoInlineLoader((lang: string) => (): Promise<Translation> => import(`./i18n/${lang}.json`))
   })]
 })
 export class AppComponent {
-  title = 'contracts-angular'
+  public title = 'contracts-angular'
 
-  static getTranslocoScope() {
+  public static getTranslocoScope(): string {
     return COMPONENT_TRANSLOCO_SCOPE
   }
 }

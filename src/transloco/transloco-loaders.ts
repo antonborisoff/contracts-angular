@@ -12,19 +12,22 @@ import {
 import {
   SUPPORTED_LANGUAGES
 } from './transloco-languages'
+import {
+  Observable
+} from 'rxjs'
 
 @Injectable({
   providedIn: 'root'
 })
 export class TranslocoHttpLoader implements TranslocoLoader {
-  constructor(private http: HttpClient) {}
+  public constructor(private http: HttpClient) {}
 
-  getTranslation(lang: string) {
+  public getTranslation(lang: string): Observable<Translation> {
     return this.http.get<Translation>(`/assets/i18n/${lang}.json`)
   }
 }
 
-export function getTranslocoInlineLoader(getLanguageLoader: (lang: string) => (() => Promise<Translation>)) {
+export function getTranslocoInlineLoader(getLanguageLoader: (lang: string) => (() => Promise<Translation>)): InlineLoader {
   return SUPPORTED_LANGUAGES.reduce<InlineLoader>((acc: InlineLoader, lang: string) => {
     acc[lang] = getLanguageLoader(lang)
     return acc
