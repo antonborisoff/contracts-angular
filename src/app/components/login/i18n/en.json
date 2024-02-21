@@ -1,0 +1,8 @@
+{
+    "LOGIN_PLACEHOLDER": "Login",
+    "PASSWORD_PLACEHOLDER": "Password",
+    "LOGIN_BUTTON_LABEL": "Log in",
+    "VALIDATION_ERRORS": {
+        "EMPTY_VALUE": "Please, provide non-empty value"
+    }
+}

@@ -1,3 +1,7 @@
 .componentBorder {
     border: 1px solid black
 }
+
+input.ng-invalid.ng-dirty {
+    border: 3px solid darkred
+}
