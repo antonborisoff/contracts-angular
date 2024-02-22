@@ -1,19 +1,23 @@
 import {
+  HttpClient
+} from '@angular/common/http'
+import {
   Injectable
 } from '@angular/core'
 import {
-  Observable,
-  of
+  Observable
 } from 'rxjs'
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  public constructor() { }
+  public constructor(private http: HttpClient) { }
 
   public login(login: string, password: string): Observable<void> {
-    console.log(login + ' ' + password)
-    return of()
+    return this.http.post<void>('/auth/login', {
+      login: login,
+      password: password
+    })
   }
 }
