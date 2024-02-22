@@ -28,7 +28,7 @@ describe('AuthService', () => {
     }
 
     service.login(creds.login, creds.password).subscribe()
-    const testRequest = httpTestingController.expectOne('/auth/login')
+    const testRequest = httpTestingController.expectOne('/api/auth/login')
 
     expect(testRequest.request.method).toBe('POST')
     expect(testRequest.request.body).toEqual(jasmine.objectContaining({
