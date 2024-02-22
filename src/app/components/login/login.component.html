@@ -1,5 +1,5 @@
 <div class="componentBorder">
-    <form [formGroup]="loginForm">
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
         <div>
             <input data-id="loginInput"
                 placeholder="{{'login.LOGIN_PLACEHOLDER' | transloco}}" 
@@ -21,7 +21,11 @@
                 }
             }
         </div>
+        @if(incorrectLoginOrPassword) {
+            <div data-id="incorrectCreds">{{'login.INVALID_CREDS' | transloco}}</div>
+        }
         <button data-id="loginButton"
-            [disabled]="loginForm.invalid">{{'login.LOGIN_BUTTON_LABEL' | transloco}}</button>
+            [disabled]="loginForm.invalid"
+            type="submit">{{'login.LOGIN_BUTTON_LABEL' | transloco}}</button>
     </form>
 </div>
