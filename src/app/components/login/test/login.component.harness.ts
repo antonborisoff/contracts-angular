@@ -10,8 +10,8 @@ export class LoginHarness extends ComponentHarness {
     return await this.locatorFor(`input[data-id="${id}"]`)()
   }
 
-  private async getButton(id: string): Promise<TestElement> {
-    return await this.locatorFor(`button[data-id="${id}"]`)()
+  private async getButton(id: string, ignoreDisabled: boolean = true): Promise<TestElement> {
+    return await this.locatorFor(`button[data-id="${id}"]${ignoreDisabled ? '' : ':not([disabled])'}`)()
   }
 
   private async getDiv(id: string, optional: boolean = false): Promise<TestElement | null> {
@@ -30,6 +30,11 @@ export class LoginHarness extends ComponentHarness {
     if (blur) {
       await input.blur()
     }
+  }
+
+  public async clickButton(id: string): Promise<void> {
+    const button = await this.getButton(id, false)
+    await button.click()
   }
 
   public async buttonEnabled(id: string): Promise<boolean> {

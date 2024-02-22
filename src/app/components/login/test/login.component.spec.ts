@@ -15,16 +15,42 @@ import {
 import {
   LoginHarness
 } from './login.component.harness'
+import {
+  AuthService
+} from '../../../services/auth.service'
+import {
+  of,
+  throwError
+} from 'rxjs'
+import {
+  HttpErrorResponse
+} from '@angular/common/http'
 
 describe('LoginComponent', () => {
   let loginHarness: LoginHarness
+  const INVALID_LOGIN = 'invalid_login'
 
   beforeEach(async () => {
+    const authServiceMock = jasmine.createSpyObj<AuthService>('authService', ['login'])
+    authServiceMock.login.and.callFake((login: string) => {
+      if (login === INVALID_LOGIN) {
+        return throwError(() => new HttpErrorResponse({
+          status: 403
+        }))
+      }
+      else {
+        return of()
+      }
+    })
     await TestBed.configureTestingModule({
       imports: [
         LoginComponent,
         getTranslocoTestingModule(LoginComponent, en)
-      ]
+      ],
+      providers: [{
+        provide: AuthService,
+        useValue: authServiceMock
+      }]
     }).compileComponents()
 
     const fixture = TestBed.createComponent(LoginComponent)
@@ -93,5 +119,14 @@ describe('LoginComponent', () => {
     // whitespaces are not ignored
     await loginHarness.enterInputValue('passwordInput', ' ')
     expect(await loginHarness.controlPresent('passwordErrorEmpty')).toBe(false)
+  })
+
+  it('should display error message in case of invalid credentials', async () => {
+    expect(await loginHarness.controlPresent('incorrectCreds')).toBe(false)
+
+    await loginHarness.enterInputValue('loginInput', INVALID_LOGIN)
+    await loginHarness.enterInputValue('passwordInput', 'my_password')
+    await loginHarness.clickButton('loginButton')
+    expect(await loginHarness.controlPresent('incorrectCreds')).toBe(true)
   })
 })

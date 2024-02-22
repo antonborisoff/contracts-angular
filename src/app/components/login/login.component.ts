@@ -17,6 +17,12 @@ import {
 import {
   requiredAfterTrimValidator
 } from '../../validators'
+import {
+  AuthService
+} from '../../services/auth.service'
+import {
+  HttpErrorResponse
+} from '@angular/common/http'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'login'
 @Component({
@@ -39,8 +45,12 @@ export class LoginComponent {
   }
 
   public loginForm
-  public constructor(private fb: FormBuilder) {
-    this.loginForm = this.fb.group({
+  public incorrectLoginOrPassword = false
+  public constructor(
+    private fb: FormBuilder,
+    private auth$: AuthService
+  ) {
+    this.loginForm = this.fb.nonNullable.group({
       login: [
         '',
         [requiredAfterTrimValidator()]
@@ -51,6 +61,23 @@ export class LoginComponent {
       ]
     }, {
       updateOn: 'blur'
+    })
+  }
+
+  public onLogin(): void {
+    this.incorrectLoginOrPassword = false
+    this.auth$.login(this.loginForm.controls.login.value, this.loginForm.controls.password.value).subscribe({
+      next: () => {
+        // redirect to home
+      },
+      error: (error: HttpErrorResponse) => {
+        if (error.status === 403) {
+          this.incorrectLoginOrPassword = true
+        }
+        else {
+          // notify about the error
+        }
+      }
     })
   }
 }
