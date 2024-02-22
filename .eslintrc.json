@@ -13,11 +13,16 @@
         "plugin:@typescript-eslint/recommended",
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
-        "plugin:@stylistic/recommended-extends"
+        "plugin:@stylistic/recommended-extends",
+        "plugin:jasmine/recommended"
       ],
       "plugins": [
-        "import-newlines"
+        "import-newlines",
+        "jasmine"
       ],
+      "env": {
+        "jasmine": true
+      },
       "rules": {
         "@angular-eslint/directive-selector": [
           "error",
@@ -58,6 +63,9 @@
         ],
         "@typescript-eslint/explicit-function-return-type": [
           "error"
+        ],
+        "jasmine/new-line-before-expect": [
+          "off"
         ]
       }
     },
