@@ -25,27 +25,38 @@ import {
 import {
   HttpErrorResponse
 } from '@angular/common/http'
+import {
+  RouterTestingModule
+} from '@angular/router/testing'
+import {
+  Router
+} from '@angular/router'
 
 describe('LoginComponent', () => {
   let loginHarness: LoginHarness
-  const INVALID_LOGIN = 'invalid_login'
+  let router: Router
+  const VALID_CREDS = {
+    login: 'my_login',
+    password: 'my_password'
+  }
 
   beforeEach(async () => {
     const authServiceMock = jasmine.createSpyObj<AuthService>('authService', ['login'])
-    authServiceMock.login.and.callFake((login: string) => {
-      if (login === INVALID_LOGIN) {
+    authServiceMock.login.and.callFake((login: string, password: string) => {
+      if (login === VALID_CREDS.login && password === VALID_CREDS.password) {
+        return of(undefined)
+      }
+      else {
         return throwError(() => new HttpErrorResponse({
           status: 403
         }))
-      }
-      else {
-        return of()
       }
     })
     await TestBed.configureTestingModule({
       imports: [
         LoginComponent,
-        getTranslocoTestingModule(LoginComponent, en)
+        getTranslocoTestingModule(LoginComponent, en),
+        RouterTestingModule.withRoutes([])
       ],
       providers: [{
         provide: AuthService,
@@ -55,6 +66,7 @@ describe('LoginComponent', () => {
 
     const fixture = TestBed.createComponent(LoginComponent)
     loginHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, LoginHarness)
+    router = TestBed.inject(Router)
   })
 
   it('should enable/disable login button based on form validity', async () => {
@@ -124,9 +136,18 @@ describe('LoginComponent', () => {
   it('should display error message in case of invalid credentials', async () => {
     expect(await loginHarness.controlPresent('incorrectCreds')).toBe(false)
 
-    await loginHarness.enterInputValue('loginInput', INVALID_LOGIN)
-    await loginHarness.enterInputValue('passwordInput', 'my_password')
+    await loginHarness.enterInputValue('loginInput', `${VALID_CREDS.login}_invalid`)
+    await loginHarness.enterInputValue('passwordInput', VALID_CREDS.password)
     await loginHarness.clickButton('loginButton')
     expect(await loginHarness.controlPresent('incorrectCreds')).toBe(true)
+  })
+
+  it('should navigate to home on successful login', async () => {
+    const navigateSpy = spyOn(router, 'navigate')
+
+    await loginHarness.enterInputValue('loginInput', VALID_CREDS.login)
+    await loginHarness.enterInputValue('passwordInput', VALID_CREDS.password)
+    await loginHarness.clickButton('loginButton')
+    expect(navigateSpy).toHaveBeenCalledWith(['/home'])
   })
 })

@@ -23,6 +23,9 @@ import {
 import {
   HttpErrorResponse
 } from '@angular/common/http'
+import {
+  Router
+} from '@angular/router'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'login'
 @Component({
@@ -48,7 +51,8 @@ export class LoginComponent {
   public incorrectLoginOrPassword = false
   public constructor(
     private fb: FormBuilder,
-    private auth$: AuthService
+    private auth$: AuthService,
+    private router: Router
   ) {
     this.loginForm = this.fb.nonNullable.group({
       login: [
@@ -68,7 +72,7 @@ export class LoginComponent {
     this.incorrectLoginOrPassword = false
     this.auth$.login(this.loginForm.controls.login.value, this.loginForm.controls.password.value).subscribe({
       next: () => {
-        // redirect to home
+        this.router.navigate(['/home'])
       },
       error: (error: HttpErrorResponse) => {
         if (error.status === 403) {
