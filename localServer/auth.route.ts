@@ -7,7 +7,7 @@ import {
 } from './users'
 
 export const authRoutes = {
-  login: function login(req: Request, res: Response): void {
+  login: function (req: Request, res: Response): void {
     const validUser = USERS.some((user) => {
       return user.login === req.body.login && user.password === req.body.password
     })
@@ -17,6 +17,10 @@ export const authRoutes = {
     else {
       res.status(403)
     }
+    res.end()
+  },
+  logout: function (req: Request, res: Response): void {
+    res.status(200)
     res.end()
   }
 }

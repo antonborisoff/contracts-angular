@@ -39,4 +39,15 @@ describe('AuthService', () => {
     testRequest.flush(null)
     httpTestingController.verify()
   })
+
+  it('should properly execute request for logout', () => {
+    service.logout().subscribe()
+    const testRequest = httpTestingController.expectOne('/api/auth/logout')
+
+    expect(testRequest.request.method).toBe('POST')
+    expect(testRequest.request.body).toEqual({})
+
+    testRequest.flush(null)
+    httpTestingController.verify()
+  })
 })
