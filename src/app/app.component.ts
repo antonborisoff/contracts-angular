@@ -2,6 +2,7 @@ import {
   Component
 } from '@angular/core'
 import {
+  Router,
   RouterOutlet
 } from '@angular/router'
 import {
@@ -12,6 +13,9 @@ import {
 import {
   getTranslocoInlineLoader
 } from '../transloco/transloco-loaders'
+import {
+  AuthService
+} from './services/auth/auth.service'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'app'
 @Component({
@@ -29,9 +33,25 @@ const COMPONENT_TRANSLOCO_SCOPE = 'app'
   })]
 })
 export class AppComponent {
-  public title = 'contracts-angular'
-
   public static getTranslocoScope(): string {
     return COMPONENT_TRANSLOCO_SCOPE
+  }
+
+  public title = 'contracts-angular'
+
+  public constructor(
+    private auth$: AuthService,
+    private router: Router
+  ) {}
+
+  public onLogout(): void {
+    this.auth$.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/login'])
+      },
+      error: () => {
+        // notify about the error
+      }
+    })
   }
 }

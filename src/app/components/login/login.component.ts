@@ -19,7 +19,7 @@ import {
 } from '../../validators'
 import {
   AuthService
-} from '../../services/auth.service'
+} from '../../services/auth/auth.service'
 import {
   HttpErrorResponse
 } from '@angular/common/http'

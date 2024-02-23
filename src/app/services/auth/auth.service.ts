@@ -5,7 +5,8 @@ import {
   Injectable
 } from '@angular/core'
 import {
-  Observable
+  Observable,
+  of
 } from 'rxjs'
 
 @Injectable({
@@ -19,5 +20,9 @@ export class AuthService {
       login: login,
       password: password
     })
+  }
+
+  public logout(): Observable<void> {
+    return of(undefined)
   }
 }
