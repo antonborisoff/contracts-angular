@@ -15,24 +15,40 @@ import {
 import {
   NotFoundHarness
 } from './not-found.component.harness'
+import {
+  RouterTestingModule
+} from '@angular/router/testing'
+import {
+  Router
+} from '@angular/router'
 
 describe('NotFoundComponent', () => {
   let notFoundHarness: NotFoundHarness
+  let router: Router
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
         NotFoundComponent,
-        getTranslocoTestingModule(NotFoundComponent, en)
+        getTranslocoTestingModule(NotFoundComponent, en),
+        RouterTestingModule.withRoutes([])
       ],
       providers: []
     }).compileComponents()
 
     const fixture = TestBed.createComponent(NotFoundComponent)
     notFoundHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, NotFoundHarness)
+    router = TestBed.inject(Router)
   })
 
   it('should display "not found" message', async () => {
     expect(await notFoundHarness.controlPresent('notFoundMessage')).toBe(true)
+  })
+
+  it('should navigate to home page on link click', async () => {
+    const navigateByUrlSpy = spyOn<Router, 'navigateByUrl'>(router, 'navigateByUrl')
+
+    await notFoundHarness.clickLink('navToHomeLink')
+    expect(navigateByUrlSpy).toHaveBeenCalledWith(router.createUrlTree(['/home']), jasmine.anything())
   })
 })

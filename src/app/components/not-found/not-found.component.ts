@@ -9,12 +9,18 @@ import {
 import {
   getTranslocoInlineLoader
 } from '../../../transloco/transloco-loaders'
+import {
+  RouterLink
+} from '@angular/router'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'notFound'
 @Component({
   selector: 'app-not-found',
   standalone: true,
-  imports: [TranslocoPipe],
+  imports: [
+    TranslocoPipe,
+    RouterLink
+  ],
   templateUrl: './not-found.component.html',
   styleUrl: './not-found.component.css',
   providers: [provideTranslocoScope({
