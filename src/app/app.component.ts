@@ -16,6 +16,12 @@ import {
 import {
   AuthService
 } from './services/auth/auth.service'
+import {
+  AsyncPipe
+} from '@angular/common'
+import {
+  Observable
+} from 'rxjs'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'app'
 @Component({
@@ -23,7 +29,8 @@ const COMPONENT_TRANSLOCO_SCOPE = 'app'
   standalone: true,
   imports: [
     RouterOutlet,
-    TranslocoPipe
+    TranslocoPipe,
+    AsyncPipe
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -38,11 +45,14 @@ export class AppComponent {
   }
 
   public title = 'contracts-angular'
+  public isAuth: Observable<boolean>
 
   public constructor(
     private auth$: AuthService,
     private router: Router
-  ) {}
+  ) {
+    this.isAuth = this.auth$.isAuth()
+  }
 
   public onLogout(): void {
     this.auth$.logout().subscribe({

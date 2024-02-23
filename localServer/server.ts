@@ -16,6 +16,7 @@ app.use(cors({
 app.use(bodyParser.json())
 
 app.route('/api/auth/login').post(authRoutes.login)
+app.route('/api/auth/logout').post(authRoutes.logout)
 
 const port = 9000
 app.listen(port, () => {
