@@ -17,7 +17,7 @@ import {
 } from './login.component.harness'
 import {
   AuthService
-} from '../../../services/auth.service'
+} from '../../../services/auth/auth.service'
 import {
   of,
   throwError

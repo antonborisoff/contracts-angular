@@ -1,5 +1,6 @@
 <div class="componentBorder">
-  <h1>{{ 'app.HELLO' | transloco:{value: title} }}</h1>
+  <h1 data-id="welcomeMessage">{{ 'app.HELLO' | transloco:{value: title} }}</h1>
+  <button data-id="logoutButton" (click)="onLogout()">{{'app.LOGOUT_BUTTON' | transloco}}</button>
   <p>Congratulations! Your app is running. 🎉</p>
 
   <router-outlet />
