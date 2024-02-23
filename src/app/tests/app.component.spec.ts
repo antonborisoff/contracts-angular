@@ -15,6 +15,7 @@ import {
   Router
 } from '@angular/router'
 import {
+  BehaviorSubject,
   of
 } from 'rxjs'
 import {
@@ -28,14 +29,18 @@ import {
 } from '@angular/cdk/testing/testbed'
 
 describe('AppComponent', () => {
+  let isAuthMock: BehaviorSubject<boolean>
   let appHarness: AppHarness
   let router: Router
 
   beforeEach(async () => {
-    const authServiceMock = jasmine.createSpyObj<AuthService>('authService', ['logout'])
-    authServiceMock.logout.and.callFake(() => {
-      return of(undefined)
-    })
+    isAuthMock = new BehaviorSubject(true)
+    const authServiceMock = jasmine.createSpyObj<AuthService>('authService', [
+      'logout',
+      'isAuth'
+    ])
+    authServiceMock.isAuth.and.returnValue(isAuthMock)
+    authServiceMock.logout.and.returnValue(of(undefined))
     await TestBed.configureTestingModule({
       imports: [
         AppComponent,
@@ -62,5 +67,18 @@ describe('AppComponent', () => {
 
     await appHarness.clickButton('logoutButton')
     expect(navigateSpy).toHaveBeenCalledWith(['/login'])
+  })
+
+  it('should display welcome message and logout button only to authenticated user', async () => {
+    expect(await appHarness.controlPresent('welcomeMessage')).toBe(true)
+    expect(await appHarness.controlPresent('logoutButton')).toBe(true)
+
+    isAuthMock.next(false)
+    expect(await appHarness.controlPresent('welcomeMessage')).toBe(false)
+    expect(await appHarness.controlPresent('logoutButton')).toBe(false)
+
+    isAuthMock.next(true)
+    expect(await appHarness.controlPresent('welcomeMessage')).toBe(true)
+    expect(await appHarness.controlPresent('logoutButton')).toBe(true)
   })
 })
