@@ -143,7 +143,7 @@ describe('LoginComponent', () => {
   })
 
   it('should navigate to home on successful login', async () => {
-    const navigateSpy = spyOn(router, 'navigate')
+    const navigateSpy = spyOn<Router, 'navigate'>(router, 'navigate')
 
     await loginHarness.enterInputValue('loginInput', VALID_CREDS.login)
     await loginHarness.enterInputValue('passwordInput', VALID_CREDS.password)
