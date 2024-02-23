@@ -5,8 +5,7 @@ import {
   Injectable
 } from '@angular/core'
 import {
-  Observable,
-  of
+  Observable
 } from 'rxjs'
 
 @Injectable({
@@ -23,6 +22,6 @@ export class AuthService {
   }
 
   public logout(): Observable<void> {
-    return of(undefined)
+    return this.http.post<void>('/api/auth/logout', {})
   }
 }
