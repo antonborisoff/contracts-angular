@@ -10,6 +10,9 @@ import {
 import {
   NotFoundComponent
 } from './components/not-found/not-found.component'
+import {
+  authCanActivateGuard
+} from './guards/auth.can-activate.guard'
 
 export const routes: Routes = [
   {
@@ -19,14 +22,17 @@ export const routes: Routes = [
   },
   {
     path: 'home',
+    canActivate: [authCanActivateGuard],
     component: HomeComponent
   },
   {
     path: 'login',
+    canActivate: [authCanActivateGuard],
     component: LoginComponent
   },
   {
     path: '**',
+    canActivate: [authCanActivateGuard],
     component: NotFoundComponent
   }
 ]
