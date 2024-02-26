@@ -16,7 +16,8 @@ import {
 } from '@angular/router'
 import {
   BehaviorSubject,
-  of
+  of,
+  throwError
 } from 'rxjs'
 import {
   RouterTestingModule
@@ -27,20 +28,27 @@ import {
 import {
   TestbedHarnessEnvironment
 } from '@angular/cdk/testing/testbed'
+import {
+  MessageBoxService
+} from '../services/message-box/message-box.service'
 
 describe('AppComponent', () => {
   let isAuthMock: BehaviorSubject<boolean>
+  let authServiceMock: jasmine.SpyObj<AuthService>
+  let messageBoxServiceMock: jasmine.SpyObj<MessageBoxService>
   let appHarness: AppHarness
   let router: Router
 
   beforeEach(async () => {
     isAuthMock = new BehaviorSubject(true)
-    const authServiceMock = jasmine.createSpyObj<AuthService>('authService', [
+    authServiceMock = jasmine.createSpyObj<AuthService>('authService', [
       'logout',
       'isAuth'
     ])
     authServiceMock.isAuth.and.returnValue(isAuthMock)
     authServiceMock.logout.and.returnValue(of(undefined))
+
+    messageBoxServiceMock = jasmine.createSpyObj<MessageBoxService>('messageBoxService', ['error'])
 
     await TestBed.configureTestingModule({
       imports: [
@@ -48,10 +56,16 @@ describe('AppComponent', () => {
         getTranslocoTestingModule(AppComponent, en),
         RouterTestingModule.withRoutes([])
       ],
-      providers: [{
-        provide: AuthService,
-        useValue: authServiceMock
-      }]
+      providers: [
+        {
+          provide: AuthService,
+          useValue: authServiceMock
+        },
+        {
+          provide: MessageBoxService,
+          useValue: messageBoxServiceMock
+        }
+      ]
     }).compileComponents()
 
     const fixture = TestBed.createComponent(AppComponent)
@@ -68,6 +82,15 @@ describe('AppComponent', () => {
 
     await appHarness.clickButton('logoutButton')
     expect(navigateSpy).toHaveBeenCalledWith(['/login'])
+  })
+
+  it('display translated error message on failed logout', async () => {
+    authServiceMock.logout.and.returnValue(throwError(() => {
+      return new Error('some error')
+    }))
+
+    await appHarness.clickButton('logoutButton')
+    expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Failed to logout.')
   })
 
   it('display welcome message and logout button only to authenticated user', async () => {
