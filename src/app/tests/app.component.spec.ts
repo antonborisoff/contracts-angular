@@ -41,6 +41,7 @@ describe('AppComponent', () => {
     ])
     authServiceMock.isAuth.and.returnValue(isAuthMock)
     authServiceMock.logout.and.returnValue(of(undefined))
+
     await TestBed.configureTestingModule({
       imports: [
         AppComponent,
