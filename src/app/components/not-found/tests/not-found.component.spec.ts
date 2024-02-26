@@ -41,11 +41,11 @@ describe('NotFoundComponent', () => {
     router = TestBed.inject(Router)
   })
 
-  it('should display "not found" message', async () => {
+  it('display "not found" message', async () => {
     expect(await notFoundHarness.controlPresent('notFoundMessage')).toBe(true)
   })
 
-  it('should navigate to home page on link click', async () => {
+  it('navigate to home page on link click', async () => {
     const navigateByUrlSpy = spyOn<Router, 'navigateByUrl'>(router, 'navigateByUrl')
 
     await notFoundHarness.clickLink('navToHomeLink')
