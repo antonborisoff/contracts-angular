@@ -32,7 +32,7 @@ describe('HomeComponent', () => {
     homeHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, HomeHarness)
   })
 
-  it('should display welcome message', async () => {
+  it('display welcome message', async () => {
     expect(await homeHarness.controlPresent('welcomeMessage')).toBe(true)
   })
 })

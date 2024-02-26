@@ -69,7 +69,7 @@ describe('LoginComponent', () => {
     router = TestBed.inject(Router)
   })
 
-  it('should enable/disable login button based on form validity', async () => {
+  it('enable/disable login button based on form validity', async () => {
     // initial state
     // invalid form: login missing, password missing
     expect(await loginHarness.buttonEnabled('loginButton')).toBe(false)
@@ -95,7 +95,7 @@ describe('LoginComponent', () => {
     expect(await loginHarness.buttonEnabled('loginButton')).toBe(false)
   })
 
-  it('should display/hide error message based on login validity', async () => {
+  it('display/hide error message based on login validity', async () => {
     // initial state: no validation done
     expect(await loginHarness.controlPresent('loginErrorEmpty')).toBe(false)
 
@@ -114,7 +114,7 @@ describe('LoginComponent', () => {
     expect(await loginHarness.controlPresent('loginErrorEmpty')).toBe(true)
   })
 
-  it('should display/hide error message based on password validity', async () => {
+  it('display/hide error message based on password validity', async () => {
     // initial state: no validation done
     expect(await loginHarness.controlPresent('passwordErrorEmpty')).toBe(false)
 
@@ -133,7 +133,7 @@ describe('LoginComponent', () => {
     expect(await loginHarness.controlPresent('passwordErrorEmpty')).toBe(false)
   })
 
-  it('should display error message in case of invalid credentials', async () => {
+  it('display error message in case of invalid credentials', async () => {
     expect(await loginHarness.controlPresent('incorrectCreds')).toBe(false)
 
     await loginHarness.enterInputValue('loginInput', `${VALID_CREDS.login}_invalid`)
@@ -142,7 +142,7 @@ describe('LoginComponent', () => {
     expect(await loginHarness.controlPresent('incorrectCreds')).toBe(true)
   })
 
-  it('should navigate to home on successful login', async () => {
+  it('navigate to home on successful login', async () => {
     const navigateSpy = spyOn<Router, 'navigate'>(router, 'navigate')
 
     await loginHarness.enterInputValue('loginInput', VALID_CREDS.login)

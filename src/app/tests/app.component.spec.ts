@@ -59,18 +59,18 @@ describe('AppComponent', () => {
     router = TestBed.inject(Router)
   })
 
-  it('should display translated welcome message', async () => {
+  it('display translated welcome message', async () => {
     expect(await appHarness.controlText('welcomeMessage')).toBe('Hello, contracts-angular component en')
   })
 
-  it('should navigate to login on successful logout', async () => {
+  it('navigate to login on successful logout', async () => {
     const navigateSpy = spyOn<Router, 'navigate'>(router, 'navigate')
 
     await appHarness.clickButton('logoutButton')
     expect(navigateSpy).toHaveBeenCalledWith(['/login'])
   })
 
-  it('should display welcome message and logout button only to authenticated user', async () => {
+  it('display welcome message and logout button only to authenticated user', async () => {
     expect(await appHarness.controlPresent('welcomeMessage')).toBe(true)
     expect(await appHarness.controlPresent('logoutButton')).toBe(true)
 
