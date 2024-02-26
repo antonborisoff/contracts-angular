@@ -5,5 +5,6 @@
     "VALIDATION_ERRORS": {
         "EMPTY_VALUE": "Пожалуйста, укажите непустое значение"
     },
-    "INVALID_CREDS": "Неверный логин или пароль"
+    "INVALID_CREDS": "Неверный логин или пароль",
+    "GENERAL_ERROR_MESSAGE": "Что-то пошло не так."
 }

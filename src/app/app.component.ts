@@ -8,6 +8,7 @@ import {
 import {
   Translation,
   TranslocoPipe,
+  TranslocoService,
   provideTranslocoScope
 } from '@ngneat/transloco'
 import {
@@ -22,6 +23,9 @@ import {
 import {
   Observable
 } from 'rxjs'
+import {
+  MessageBoxService
+} from './services/message-box/message-box.service'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'app'
 @Component({
@@ -49,6 +53,8 @@ export class AppComponent {
 
   public constructor(
     private auth$: AuthService,
+    private messageBox: MessageBoxService,
+    private translocoService: TranslocoService,
     private router: Router
   ) {
     this.isAuth = this.auth$.isAuth()
@@ -60,7 +66,7 @@ export class AppComponent {
         this.router.navigate(['/login'])
       },
       error: () => {
-        // notify about the error
+        this.messageBox.error(this.translocoService.translate(`${COMPONENT_TRANSLOCO_SCOPE}.LOGOUT_ERROR_MESSAGE`))
       }
     })
   }

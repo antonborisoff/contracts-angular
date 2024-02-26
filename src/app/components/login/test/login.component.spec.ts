@@ -31,8 +31,13 @@ import {
 import {
   Router
 } from '@angular/router'
+import {
+  MessageBoxService
+} from '../../../services/message-box/message-box.service'
 
 describe('LoginComponent', () => {
+  let authServiceMock: jasmine.SpyObj<AuthService>
+  let messageBoxServiceMock: jasmine.SpyObj<MessageBoxService>
   let loginHarness: LoginHarness
   let router: Router
   const VALID_CREDS = {
@@ -41,7 +46,7 @@ describe('LoginComponent', () => {
   }
 
   beforeEach(async () => {
-    const authServiceMock = jasmine.createSpyObj<AuthService>('authService', ['login'])
+    authServiceMock = jasmine.createSpyObj<AuthService>('authService', ['login'])
     authServiceMock.login.and.callFake((login: string, password: string) => {
       if (login === VALID_CREDS.login && password === VALID_CREDS.password) {
         return of(undefined)
@@ -52,16 +57,25 @@ describe('LoginComponent', () => {
         }))
       }
     })
+
+    messageBoxServiceMock = jasmine.createSpyObj<MessageBoxService>('messageBoxService', ['error'])
+
     await TestBed.configureTestingModule({
       imports: [
         LoginComponent,
         getTranslocoTestingModule(LoginComponent, en),
         RouterTestingModule.withRoutes([])
       ],
-      providers: [{
-        provide: AuthService,
-        useValue: authServiceMock
-      }]
+      providers: [
+        {
+          provide: AuthService,
+          useValue: authServiceMock
+        },
+        {
+          provide: MessageBoxService,
+          useValue: messageBoxServiceMock
+        }
+      ]
     }).compileComponents()
 
     const fixture = TestBed.createComponent(LoginComponent)
@@ -149,5 +163,18 @@ describe('LoginComponent', () => {
     await loginHarness.enterInputValue('passwordInput', VALID_CREDS.password)
     await loginHarness.clickButton('loginButton')
     expect(navigateSpy).toHaveBeenCalledWith(['/home'])
+  })
+
+  it('display translated general error if something goes wrong during login', async () => {
+    authServiceMock.login.and.callFake(() => {
+      return throwError(() => new HttpErrorResponse({
+        status: 500
+      }))
+    })
+
+    await loginHarness.enterInputValue('loginInput', VALID_CREDS.login)
+    await loginHarness.enterInputValue('passwordInput', VALID_CREDS.password)
+    await loginHarness.clickButton('loginButton')
+    expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
   })
 })
