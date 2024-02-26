@@ -33,6 +33,6 @@ describe('HomeComponent', () => {
   })
 
   it('display welcome message', async () => {
-    expect(await homeHarness.controlPresent('welcomeMessage')).toBe(true)
+    expect(await homeHarness.elementVisible('welcomeMessage')).toBe(true)
   })
 })

@@ -16,8 +16,4 @@ export class AppHarness extends BaseHarness {
     const text = await this.getH1(id)
     return await text?.text() || ''
   }
-
-  public async controlPresent(id: string): Promise<boolean> {
-    return !!(await this.locatorForOptional(`h1[data-id="${id}"],button[data-id="${id}"]`)())
-  }
 }

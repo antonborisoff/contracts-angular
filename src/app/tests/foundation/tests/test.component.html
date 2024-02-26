@@ -4,4 +4,45 @@
     <button data-id="disabled-button" (click)="clickElement('disabled-button')" disabled>Disabled Button</button>
 
     <a data-id="link" (click)="clickElement('link')">Link</a>
+
+    <h1 data-id="h1-element-visible">h1 visible</h1>
+    @if(false){
+        <h1 data-id="h1-element-invisible-if">h1 hidden via ngIf</h1>
+    }
+    <h1 data-id="h1-element-hidden" hidden>h1 hidden via 'hidden' attribute</h1>
+    <h1 data-id="h1-element-style-display-none" style="display: none;">h1 hidden via inline display: none</h1>
+    <h1 data-id="h1-element-style-visibility-hidden" style="visibility: hidden;">h1 hidden via inline visibility: hidden</h1>
+    <h1 data-id="h1-element-class-display-none" class="displayNone">h1 hidden via class display: none</h1>
+    <h1 data-id="h1-element-class-visibility-hidden" class="visibilityHidden">h1 hidden via class visibility: hidden</h1>
+
+    <p data-id="p-element-visible">p visible</p>
+    @if(false){
+        <p data-id="p-element-invisible-if">p hidden via ngIf</p>
+    }
+    <p data-id="p-element-hidden" hidden>p hidden via 'hidden' attribute</p>
+    <p data-id="p-element-style-display-none" style="display: none;">p hidden via inline display: none</p>
+    <p data-id="p-element-style-visibility-hidden" style="visibility: hidden;">p hidden via inline visibility: hidden</p>
+    <p data-id="p-element-class-display-none" class="displayNone">p hidden via class display: none</p>
+    <p data-id="p-element-class-visibility-hidden" class="visibilityHidden">p hidden via class visibility: hidden</p>
+
+    <div data-id="div-element-visible">div visible</div>
+    @if(false){
+        <div data-id="div-element-invisible-if">div hidden via ngIf</div>
+    }
+    <div data-id="div-element-hidden" hidden>div hidden via 'hidden' attribute</div>
+    <div data-id="div-element-style-display-none" style="display: none;">div hidden via inline display: none</div>
+    <div data-id="div-element-style-visibility-hidden" style="visibility: hidden;">div hidden via inline visibility: hidden</div>
+    <div data-id="div-element-class-display-none" class="displayNone">div hidden via class display: none</div>
+    <div data-id="div-element-class-visibility-hidden" class="visibilityHidden">div hidden via class visibility: hidden</div>
+
+    <button data-id="button-element-visible">button visible</button>
+    @if(false){
+        <button data-id="button-element-invisible-if">button hidden via ngIf</button>
+    }
+    <button data-id="button-element-hidden" hidden>button hidden via 'hidden' attribute</button>
+    <button data-id="button-element-style-display-none" style="display: none;">button hidden via inline display: none</button>
+    <button data-id="button-element-style-visibility-hidden" style="visibility: hidden;">button hidden via inline visibility: hidden</button>
+    <button data-id="button-element-class-display-none" class="displayNone">button hidden via class display: none</button>
+    <button data-id="button-element-class-visibility-hidden" class="visibilityHidden">button hidden via class visibility: hidden</button>
+    
 </div>

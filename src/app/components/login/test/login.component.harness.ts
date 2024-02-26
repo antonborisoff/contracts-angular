@@ -12,10 +12,6 @@ export class LoginHarness extends BaseHarness {
     return await this.locatorFor(`input[data-id="${id}"]`)()
   }
 
-  private async getDiv(id: string, optional: boolean = false): Promise<TestElement | null> {
-    return await this[optional ? 'locatorForOptional' : 'locatorFor'](`div[data-id="${id}"]`)()
-  }
-
   public async enterInputValue(id: string, value: string, blur: boolean = true): Promise<void> {
     const input = await this.getInput(id)
     if (value.length) {
@@ -28,9 +24,5 @@ export class LoginHarness extends BaseHarness {
     if (blur) {
       await input.blur()
     }
-  }
-
-  public async controlPresent(id: string): Promise<boolean> {
-    return !!(await this.getDiv(id, true))
   }
 }

@@ -6,7 +6,8 @@ import {
   selector: 'app-test-component',
   standalone: true,
   imports: [],
-  templateUrl: './test.component.html'
+  templateUrl: './test.component.html',
+  styleUrl: './test.component.css'
 })
 export class TestComponent {
   private clickedElements: Record<string, boolean> = {}
