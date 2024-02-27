@@ -13,6 +13,13 @@ import {
 describe('AuthService', () => {
   let service: AuthService
   let httpTestingController: HttpTestingController
+  const CREDS = {
+    login: 'my_login',
+    password: 'my_password'
+  }
+  const TOKEN_RES = {
+    token: 'token'
+  }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -27,18 +34,13 @@ describe('AuthService', () => {
   })
 
   it('login dispatches request properly', () => {
-    const creds = {
-      login: 'my_login',
-      password: 'my_password'
-    }
-
-    service.login(creds.login, creds.password).subscribe()
+    service.login(CREDS.login, CREDS.password).subscribe()
     const testRequest = httpTestingController.expectOne('/api/auth/login')
 
     expect(testRequest.request.method).toBe('POST')
     expect(testRequest.request.body).toEqual(jasmine.objectContaining({
-      login: creds.login,
-      password: creds.password
+      login: CREDS.login,
+      password: CREDS.password
     }))
   })
 
@@ -52,10 +54,6 @@ describe('AuthService', () => {
 
   it('isAuth emits proper values on login/logout', () => {
     let testRequest: TestRequest
-    const creds = {
-      login: 'my_login',
-      password: 'my_password'
-    }
     const isAuthValues: boolean[] = []
     const isAuth$ = service.isAuth()
     isAuth$.subscribe((value: boolean) => {
@@ -65,9 +63,9 @@ describe('AuthService', () => {
     // initial value
     expect(isAuthValues.pop()).toBe(false)
 
-    service.login(creds.login, creds.password).subscribe()
+    service.login(CREDS.login, CREDS.password).subscribe()
     testRequest = httpTestingController.expectOne('/api/auth/login')
-    testRequest.flush(null)
+    testRequest.flush(TOKEN_RES)
     expect(isAuthValues.pop()).toBe(true)
 
     service.logout().subscribe()
@@ -76,5 +74,21 @@ describe('AuthService', () => {
     expect(isAuthValues.pop()).toBe(false)
 
     expect(isAuthValues.length).toBe(0)
+  })
+
+  it('getAuthToken', () => {
+    let testRequest: TestRequest
+
+    expect(service.getAuthToken()).toBeNull()
+
+    service.login(CREDS.login, CREDS.password).subscribe()
+    testRequest = httpTestingController.expectOne('/api/auth/login')
+    testRequest.flush(TOKEN_RES)
+    expect(service.getAuthToken()).toBe(TOKEN_RES.token)
+
+    service.logout().subscribe()
+    testRequest = httpTestingController.expectOne('/api/auth/logout')
+    testRequest.flush(null)
+    expect(service.getAuthToken()).toBeNull()
   })
 })
