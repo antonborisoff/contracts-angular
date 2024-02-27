@@ -89,23 +89,23 @@ describe('LoginComponent', () => {
     expect(await loginHarness.buttonEnabled('loginButton')).toBe(false)
 
     // invalid form: login present, password missing
-    await loginHarness.enterInputValue('loginInput', 'my_login')
+    await loginHarness.enterValue('loginInput', 'my_login')
     expect(await loginHarness.buttonEnabled('loginButton')).toBe(false)
 
     // valid form: login present, password present
-    await loginHarness.enterInputValue('passwordInput', 'my_password')
+    await loginHarness.enterValue('passwordInput', 'my_password')
     expect(await loginHarness.buttonEnabled('loginButton')).toBe(true)
 
     // valid form: login present, password present (whitespaces are not ignored for password)
-    await loginHarness.enterInputValue('passwordInput', ' ')
+    await loginHarness.enterValue('passwordInput', ' ')
     expect(await loginHarness.buttonEnabled('loginButton')).toBe(true)
 
     // invalid form: login missing, password present
-    await loginHarness.enterInputValue('loginInput', '')
+    await loginHarness.enterValue('loginInput', '')
     expect(await loginHarness.buttonEnabled('loginButton')).toBe(false)
 
     // invalid form: login missing, password present (whitespaces are ignored for login)
-    await loginHarness.enterInputValue('loginInput', ' ')
+    await loginHarness.enterValue('loginInput', ' ')
     expect(await loginHarness.buttonEnabled('loginButton')).toBe(false)
   })
 
@@ -114,17 +114,17 @@ describe('LoginComponent', () => {
     expect(await loginHarness.elementVisible('loginErrorEmpty')).toBe(false)
 
     // validation is not triggered until blur
-    await loginHarness.enterInputValue('loginInput', '', false)
+    await loginHarness.enterValue('loginInput', '', false)
     expect(await loginHarness.elementVisible('loginErrorEmpty')).toBe(false)
 
-    await loginHarness.enterInputValue('loginInput', '')
+    await loginHarness.enterValue('loginInput', '')
     expect(await loginHarness.elementVisible('loginErrorEmpty')).toBe(true)
 
-    await loginHarness.enterInputValue('loginInput', 'my_login')
+    await loginHarness.enterValue('loginInput', 'my_login')
     expect(await loginHarness.elementVisible('loginErrorEmpty')).toBe(false)
 
     // whitespaces are ignored
-    await loginHarness.enterInputValue('loginInput', ' ')
+    await loginHarness.enterValue('loginInput', ' ')
     expect(await loginHarness.elementVisible('loginErrorEmpty')).toBe(true)
   })
 
@@ -133,25 +133,25 @@ describe('LoginComponent', () => {
     expect(await loginHarness.elementVisible('passwordErrorEmpty')).toBe(false)
 
     // validation is not triggered until blur
-    await loginHarness.enterInputValue('passwordInput', '', false)
+    await loginHarness.enterValue('passwordInput', '', false)
     expect(await loginHarness.elementVisible('passwordErrorEmpty')).toBe(false)
 
-    await loginHarness.enterInputValue('passwordInput', '')
+    await loginHarness.enterValue('passwordInput', '')
     expect(await loginHarness.elementVisible('passwordErrorEmpty')).toBe(true)
 
-    await loginHarness.enterInputValue('passwordInput', 'my_password')
+    await loginHarness.enterValue('passwordInput', 'my_password')
     expect(await loginHarness.elementVisible('passwordErrorEmpty')).toBe(false)
 
     // whitespaces are not ignored
-    await loginHarness.enterInputValue('passwordInput', ' ')
+    await loginHarness.enterValue('passwordInput', ' ')
     expect(await loginHarness.elementVisible('passwordErrorEmpty')).toBe(false)
   })
 
   it('display error message in case of invalid credentials', async () => {
     expect(await loginHarness.elementVisible('incorrectCreds')).toBe(false)
 
-    await loginHarness.enterInputValue('loginInput', `${VALID_CREDS.login}_invalid`)
-    await loginHarness.enterInputValue('passwordInput', VALID_CREDS.password)
+    await loginHarness.enterValue('loginInput', `${VALID_CREDS.login}_invalid`)
+    await loginHarness.enterValue('passwordInput', VALID_CREDS.password)
     await loginHarness.clickButton('loginButton')
     expect(await loginHarness.elementVisible('incorrectCreds')).toBe(true)
   })
@@ -159,8 +159,8 @@ describe('LoginComponent', () => {
   it('navigate to home on successful login', async () => {
     const navigateSpy = spyOn<Router, 'navigate'>(router, 'navigate')
 
-    await loginHarness.enterInputValue('loginInput', VALID_CREDS.login)
-    await loginHarness.enterInputValue('passwordInput', VALID_CREDS.password)
+    await loginHarness.enterValue('loginInput', VALID_CREDS.login)
+    await loginHarness.enterValue('passwordInput', VALID_CREDS.password)
     await loginHarness.clickButton('loginButton')
     expect(navigateSpy).toHaveBeenCalledWith(['/home'])
   })
@@ -172,8 +172,8 @@ describe('LoginComponent', () => {
       }))
     })
 
-    await loginHarness.enterInputValue('loginInput', VALID_CREDS.login)
-    await loginHarness.enterInputValue('passwordInput', VALID_CREDS.password)
+    await loginHarness.enterValue('loginInput', VALID_CREDS.login)
+    await loginHarness.enterValue('passwordInput', VALID_CREDS.password)
     await loginHarness.clickButton('loginButton')
     expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
   })
