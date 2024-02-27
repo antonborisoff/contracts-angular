@@ -36,16 +36,54 @@ describe('Base harness', () => {
     await expectAsync(baseHarness.clickButton('non-existent-button')).toBeRejected()
   })
 
+  it('clickLink', async () => {
+    await expectAsync(baseHarness.clickLink('link')).toBeResolved()
+    expect(testComponent.isElementClicked('link')).toBe(true)
+
+    await expectAsync(baseHarness.clickLink('non-existent-link')).toBeRejected()
+  })
+
   it('buttonEnabled', async () => {
     await expectAsync(baseHarness.buttonEnabled('enabled-button')).toBeResolvedTo(true)
     await expectAsync(baseHarness.buttonEnabled('disabled-button')).toBeResolvedTo(false)
     await expectAsync(baseHarness.buttonEnabled('non-existent-button')).toBeRejected()
   })
 
-  it('clickLink', async () => {
-    await expectAsync(baseHarness.clickLink('link')).toBeResolved()
-    expect(testComponent.isElementClicked('link')).toBe(true)
+  it('elementVisible', async () => {
+    await expectAsync(baseHarness.elementVisible('h1-element-visible')).toBeResolvedTo(true)
+    await expectAsync(baseHarness.elementVisible('h1-element-invisible-if')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('h1-element-hidden')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('h1-element-style-display-none')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('h1-element-style-visibility-hidden')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('h1-element-class-display-none')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('h1-element-class-visibility-hidden')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('h1-element-non-existent')).toBeResolvedTo(false)
 
-    await expectAsync(baseHarness.clickLink('non-existent-link')).toBeRejected()
+    await expectAsync(baseHarness.elementVisible('p-element-visible')).toBeResolvedTo(true)
+    await expectAsync(baseHarness.elementVisible('p-element-invisible-if')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('p-element-hidden')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('p-element-style-display-none')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('p-element-style-visibility-hidden')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('p-element-class-display-none')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('p-element-class-visibility-hidden')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('p-element-non-existent')).toBeResolvedTo(false)
+
+    await expectAsync(baseHarness.elementVisible('div-element-visible')).toBeResolvedTo(true)
+    await expectAsync(baseHarness.elementVisible('div-element-invisible-if')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('div-element-hidden')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('div-element-style-display-none')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('div-element-style-visibility-hidden')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('div-element-class-display-none')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('div-element-class-visibility-hidden')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('div-element-non-existent')).toBeResolvedTo(false)
+
+    await expectAsync(baseHarness.elementVisible('button-element-visible')).toBeResolvedTo(true)
+    await expectAsync(baseHarness.elementVisible('button-element-invisible-if')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('button-element-hidden')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('button-element-style-display-none')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('button-element-style-visibility-hidden')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('button-element-class-display-none')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('button-element-class-visibility-hidden')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.elementVisible('button-element-non-existent')).toBeResolvedTo(false)
   })
 })

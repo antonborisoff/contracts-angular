@@ -42,7 +42,7 @@ describe('NotFoundComponent', () => {
   })
 
   it('display "not found" message', async () => {
-    expect(await notFoundHarness.controlPresent('notFoundMessage')).toBe(true)
+    expect(await notFoundHarness.elementVisible('notFoundMessage')).toBe(true)
   })
 
   it('navigate to home page on link click', async () => {

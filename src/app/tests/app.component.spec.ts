@@ -94,15 +94,15 @@ describe('AppComponent', () => {
   })
 
   it('display welcome message and logout button only to authenticated user', async () => {
-    expect(await appHarness.controlPresent('welcomeMessage')).toBe(true)
-    expect(await appHarness.controlPresent('logoutButton')).toBe(true)
+    expect(await appHarness.elementVisible('welcomeMessage')).toBe(true)
+    expect(await appHarness.elementVisible('logoutButton')).toBe(true)
 
     isAuthMock.next(false)
-    expect(await appHarness.controlPresent('welcomeMessage')).toBe(false)
-    expect(await appHarness.controlPresent('logoutButton')).toBe(false)
+    expect(await appHarness.elementVisible('welcomeMessage')).toBe(false)
+    expect(await appHarness.elementVisible('logoutButton')).toBe(false)
 
     isAuthMock.next(true)
-    expect(await appHarness.controlPresent('welcomeMessage')).toBe(true)
-    expect(await appHarness.controlPresent('logoutButton')).toBe(true)
+    expect(await appHarness.elementVisible('welcomeMessage')).toBe(true)
+    expect(await appHarness.elementVisible('logoutButton')).toBe(true)
   })
 })

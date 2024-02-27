@@ -24,6 +24,29 @@ export class BaseHarness extends ComponentHarness {
    * ASSERTIONS
    *******************************/
 
+  public async elementVisible(id: string): Promise<boolean> {
+    const cssSelector = [
+      'h1',
+      'p',
+      'div',
+      'button'
+    ].reduce((selector: string, tag: string) => {
+      if (selector) {
+        selector = `${selector},`
+      }
+      return `${selector}${tag}${this.getIdSelector(id)}`
+    }, '')
+    const element = await this.locatorForOptional(cssSelector)()
+    if (element) {
+      const display = await element.getCssValue('display')
+      const visibility = await element.getCssValue('visibility')
+      return display !== 'none' && visibility !== 'hidden'
+    }
+    else {
+      return false
+    }
+  }
+
   public async buttonEnabled(id: string): Promise<boolean> {
     const button = await this.locatorFor(`button${this.getIdSelector(id)}`)()
     return !(await button.getProperty('disabled'))
