@@ -10,7 +10,8 @@ import {
   routes
 } from './app.routes'
 import {
-  provideHttpClient
+  provideHttpClient,
+  withInterceptors
 } from '@angular/common/http'
 import {
   TranslocoHttpLoader
@@ -22,11 +23,14 @@ import {
   DEFAULT_LANGUAGE,
   SUPPORTED_LANGUAGES
 } from '../transloco/transloco-languages'
+import {
+  authInterceptor
+} from './interceptors'
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
     provideTransloco({
       config: {
         availableLangs: SUPPORTED_LANGUAGES,
