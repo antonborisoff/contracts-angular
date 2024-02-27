@@ -6,6 +6,15 @@ export class BaseHarness extends ComponentHarness {
   protected getIdSelector(id: string): string {
     return `[data-id="${id}"]`
   }
+
+  protected getCssSelector(id: string, tags: string[]): string {
+    return tags.reduce((selector: string, tag: string) => {
+      if (selector) {
+        selector = `${selector},`
+      }
+      return `${selector}${tag}${this.getIdSelector(id)}`
+    }, '')
+  }
   /********************************
    * ACTIONS
    *******************************/
@@ -25,17 +34,12 @@ export class BaseHarness extends ComponentHarness {
    *******************************/
 
   public async elementVisible(id: string): Promise<boolean> {
-    const cssSelector = [
+    const cssSelector = this.getCssSelector(id, [
       'h1',
       'p',
       'div',
       'button'
-    ].reduce((selector: string, tag: string) => {
-      if (selector) {
-        selector = `${selector},`
-      }
-      return `${selector}${tag}${this.getIdSelector(id)}`
-    }, '')
+    ])
     const element = await this.locatorForOptional(cssSelector)()
     if (element) {
       const display = await element.getCssValue('display')
@@ -45,6 +49,16 @@ export class BaseHarness extends ComponentHarness {
     else {
       return false
     }
+  }
+
+  public async elementText(id: string): Promise<string> {
+    const cssSelector = this.getCssSelector(id, [
+      'h1',
+      'p',
+      'div'
+    ])
+    const element = await this.locatorFor(cssSelector)()
+    return await element.text()
   }
 
   public async buttonEnabled(id: string): Promise<boolean> {

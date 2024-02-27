@@ -86,4 +86,14 @@ describe('Base harness', () => {
     await expectAsync(baseHarness.elementVisible('button-element-class-visibility-hidden')).toBeResolvedTo(false)
     await expectAsync(baseHarness.elementVisible('button-element-non-existent')).toBeResolvedTo(false)
   })
+
+  it('elementText', async () => {
+    await expectAsync(baseHarness.elementText('h1-element-text')).toBeResolvedTo('h1 text')
+    await expectAsync(baseHarness.elementText('p-element-text')).toBeResolvedTo('p text')
+    await expectAsync(baseHarness.elementText('div-element-text')).toBeResolvedTo('div text')
+
+    await expectAsync(baseHarness.elementText('h1-element-text-non-existent')).toBeRejected()
+    await expectAsync(baseHarness.elementText('p-element-text-non-existent')).toBeRejected()
+    await expectAsync(baseHarness.elementText('div-element-text-non-existent')).toBeRejected()
+  })
 })
