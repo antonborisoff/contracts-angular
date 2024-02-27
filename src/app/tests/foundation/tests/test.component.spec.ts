@@ -96,4 +96,50 @@ describe('Base harness', () => {
     await expectAsync(baseHarness.elementText('p-element-text-non-existent')).toBeRejected()
     await expectAsync(baseHarness.elementText('div-element-text-non-existent')).toBeRejected()
   })
+
+  it('enterValue - updateOn: change', async () => {
+    let formValuesOnChange: string[] = []
+    testComponent.formControlUpdateOnChange.valueChanges.subscribe((value: string) => {
+      formValuesOnChange.push(value)
+    })
+
+    formValuesOnChange = []
+    await expectAsync(baseHarness.enterValue('input-element-update-on-change', 'some value')).toBeResolved()
+    expect(formValuesOnChange.pop()).toBe('some value')
+
+    formValuesOnChange = []
+    await expectAsync(baseHarness.enterValue('input-element-update-on-change', '')).toBeResolved()
+    expect(formValuesOnChange.pop()).toBe('')
+
+    formValuesOnChange = []
+    await expectAsync(baseHarness.enterValue('input-element-update-on-change-non-existent', '')).toBeRejected()
+    expect(formValuesOnChange.pop()).toBeUndefined()
+  })
+
+  it('enterValue - updateOn: blur', async () => {
+    let formValuesOnBlur: string[] = []
+    testComponent.formControlUpdateOnBlur.valueChanges.subscribe((value: string) => {
+      formValuesOnBlur.push(value)
+    })
+
+    formValuesOnBlur = []
+    await expectAsync(baseHarness.enterValue('input-element-update-on-blur', 'some value', false)).toBeResolved()
+    expect(formValuesOnBlur.pop()).toBeUndefined()
+
+    formValuesOnBlur = []
+    await expectAsync(baseHarness.enterValue('input-element-update-on-blur', 'some value')).toBeResolved()
+    expect(formValuesOnBlur.pop()).toBe('some value')
+
+    formValuesOnBlur = []
+    await expectAsync(baseHarness.enterValue('input-element-update-on-blur', '', false)).toBeResolved()
+    expect(formValuesOnBlur.pop()).toBeUndefined()
+
+    formValuesOnBlur = []
+    await expectAsync(baseHarness.enterValue('input-element-update-on-blur', '')).toBeResolved()
+    expect(formValuesOnBlur.pop()).toBe('')
+
+    formValuesOnBlur = []
+    await expectAsync(baseHarness.enterValue('input-element-update-on-blur-non-existent', '')).toBeRejected()
+    expect(formValuesOnBlur.pop()).toBeUndefined()
+  })
 })

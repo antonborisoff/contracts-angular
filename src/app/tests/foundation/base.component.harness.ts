@@ -29,6 +29,20 @@ export class BaseHarness extends ComponentHarness {
     await link.click()
   }
 
+  public async enterValue(id: string, value: string, blur: boolean = true): Promise<void> {
+    const input = await this.locatorFor(`input${this.getIdSelector(id)}`)()
+    if (value.length) {
+      await input.setInputValue(value)
+    }
+    else {
+      await input.clear()
+    }
+    await input.dispatchEvent('input')
+    if (blur) {
+      await input.blur()
+    }
+  }
+
   /********************************
    * ASSERTIONS
    *******************************/
