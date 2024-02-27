@@ -74,7 +74,7 @@ describe('AppComponent', () => {
   })
 
   it('display translated welcome message', async () => {
-    expect(await appHarness.controlText('welcomeMessage')).toBe('Hello, contracts-angular component en')
+    expect(await appHarness.elementText('welcomeMessage')).toBe('Hello, contracts-angular component en')
   })
 
   it('navigate to login on successful logout', async () => {
