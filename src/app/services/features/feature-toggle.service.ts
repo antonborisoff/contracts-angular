@@ -6,20 +6,32 @@ import {
   providedIn: 'root'
 })
 export class FeatureToggleService {
-  private activeFeatures: string[] = []
-  private initCompleted: boolean = false
+  private ACTIVE_FEATURES_LOCAL_STORAGE_KEY = 'activeFeaturesContractsManagement'
+  private initCompleted: boolean = !!this.getActiveFeatures().length
 
-  public init(activeFeatures: string[]): void {
-    if (!this.initCompleted) {
-      this.activeFeatures = activeFeatures
-      this.initCompleted = true
+  private getActiveFeatures(): string[] {
+    const activeFeatures: string | null = localStorage.getItem(this.ACTIVE_FEATURES_LOCAL_STORAGE_KEY)
+    if (activeFeatures) {
+      return JSON.parse(activeFeatures)
     }
     else {
-      throw new Error('Feature toggle service initialization already completed.')
+      return []
     }
   }
 
+  public init(activeFeatures: string[]): void {
+    if (!this.initCompleted) {
+      localStorage.setItem(this.ACTIVE_FEATURES_LOCAL_STORAGE_KEY, JSON.stringify(activeFeatures))
+      this.initCompleted = true
+    }
+  }
+
+  public cleanup(): void {
+    localStorage.removeItem(this.ACTIVE_FEATURES_LOCAL_STORAGE_KEY)
+    this.initCompleted = false
+  }
+
   public isActive(feature: string): boolean {
-    return this.activeFeatures.includes(feature)
+    return this.getActiveFeatures().includes(feature)
   }
 }

@@ -43,7 +43,7 @@ describe('Interceptors', () => {
     httpTestingController.verify()
   })
 
-  it('auth headers are added', () => {
+  it('auth interceptor adds auth headers', () => {
     const url = '/mockendpoint'
 
     httpClient.get(url).subscribe()

@@ -50,6 +50,7 @@ export class AuthService {
     return this.http.post<void>('/api/auth/logout', {}).pipe(
       tap(() => {
         localStorage.removeItem(this.AUTH_TOKEN_LOCAL_STORAGE_KEY)
+        this.ft.cleanup()
         this.isAuthSubject.next(!!this.getAuthToken())
       })
     )
