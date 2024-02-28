@@ -58,6 +58,8 @@ describe('App navigation', () => {
   })
 
   it('authenticated user - could access non-login page', async () => {
+    isAuthMock.next(true)
+
     await routerHarness.navigateByUrl('/home')
     expect(router.url).toBe('/home')
   })

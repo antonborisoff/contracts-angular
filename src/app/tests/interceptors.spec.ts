@@ -47,7 +47,8 @@ describe('Interceptors', () => {
     const url = '/mockendpoint'
 
     httpClient.get(url).subscribe()
-    const req = httpTestingController.expectOne(url)
-    expect(req.request.headers.get('Auth-token')).toBe(AUTH_TOKEN)
+    const testRequest = httpTestingController.expectOne(url)
+
+    expect(testRequest.request.headers.get('Auth-token')).toBe(AUTH_TOKEN)
   })
 })

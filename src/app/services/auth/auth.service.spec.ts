@@ -27,6 +27,7 @@ describe('AuthService', () => {
   }
 
   beforeEach(() => {
+    localStorage.clear()
     featureToggleServiceMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['init'])
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -41,6 +42,7 @@ describe('AuthService', () => {
 
   afterEach(() => {
     httpTestingController.verify()
+    localStorage.clear()
   })
 
   it('login dispatches request properly', () => {
@@ -57,6 +59,7 @@ describe('AuthService', () => {
   it('login initializes feature toggle service', () => {
     service.login(CREDS.login, CREDS.password).subscribe()
     const testRequest = httpTestingController.expectOne('/api/auth/login')
+
     testRequest.flush(LOGIN_RETURN)
     expect(featureToggleServiceMock.init).toHaveBeenCalledWith(LOGIN_RETURN.activeFeatures)
   })
@@ -72,8 +75,7 @@ describe('AuthService', () => {
   it('isAuth emits proper values on login/logout', () => {
     let testRequest: TestRequest
     const isAuthValues: boolean[] = []
-    const isAuth$ = service.isAuth()
-    isAuth$.subscribe((value: boolean) => {
+    service.isAuth().subscribe((value: boolean) => {
       isAuthValues.push(value)
     })
 
@@ -82,11 +84,13 @@ describe('AuthService', () => {
 
     service.login(CREDS.login, CREDS.password).subscribe()
     testRequest = httpTestingController.expectOne('/api/auth/login')
+
     testRequest.flush(LOGIN_RETURN)
     expect(isAuthValues.pop()).toBe(true)
 
     service.logout().subscribe()
     testRequest = httpTestingController.expectOne('/api/auth/logout')
+
     testRequest.flush(null)
     expect(isAuthValues.pop()).toBe(false)
 
@@ -100,11 +104,13 @@ describe('AuthService', () => {
 
     service.login(CREDS.login, CREDS.password).subscribe()
     testRequest = httpTestingController.expectOne('/api/auth/login')
+
     testRequest.flush(LOGIN_RETURN)
     expect(service.getAuthToken()).toBe(LOGIN_RETURN.token)
 
     service.logout().subscribe()
     testRequest = httpTestingController.expectOne('/api/auth/logout')
+
     testRequest.flush(null)
     expect(service.getAuthToken()).toBeNull()
   })
@@ -129,8 +135,7 @@ describe('AuthService - creation', () => {
     })
     const service = TestBed.inject(AuthService)
     const isAuthValues: boolean[] = []
-    const isAuth$ = service.isAuth()
-    isAuth$.subscribe((value: boolean) => {
+    service.isAuth().subscribe((value: boolean) => {
       isAuthValues.push(value)
     })
 
@@ -144,8 +149,7 @@ describe('AuthService - creation', () => {
     })
     const service = TestBed.inject(AuthService)
     const isAuthValues: boolean[] = []
-    const isAuth$ = service.isAuth()
-    isAuth$.subscribe((value: boolean) => {
+    service.isAuth().subscribe((value: boolean) => {
       isAuthValues.push(value)
     })
 
