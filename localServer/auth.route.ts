@@ -5,6 +5,9 @@ import {
 import {
   USERS
 } from './users'
+import {
+  ACTIVE_FEATURES
+} from './activeFeatures'
 
 export const authRoutes = {
   login: function (req: Request, res: Response): void {
@@ -13,7 +16,8 @@ export const authRoutes = {
     })
     if (user) {
       res.status(200).json({
-        token: user.token
+        token: user.token,
+        activeFeatures: ACTIVE_FEATURES
       })
     }
     else {

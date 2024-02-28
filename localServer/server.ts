@@ -7,7 +7,9 @@ import {
 import {
   authRoutes
 } from './auth.route'
-import { checkAuth } from './auth.middleware'
+import {
+  checkAuth
+} from './auth.middleware'
 
 const app: Application = express()
 

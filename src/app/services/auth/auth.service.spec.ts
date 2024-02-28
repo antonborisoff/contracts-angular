@@ -9,21 +9,31 @@ import {
 import {
   AuthService
 } from './auth.service'
+import {
+  FeatureToggleService
+} from '../features/feature-toggle.service'
 
 describe('AuthService', () => {
   let service: AuthService
+  let featureToggleServiceMock: jasmine.SpyObj<FeatureToggleService>
   let httpTestingController: HttpTestingController
   const CREDS = {
     login: 'my_login',
     password: 'my_password'
   }
-  const TOKEN_RES = {
-    token: 'token'
+  const LOGIN_RETURN = {
+    token: 'token',
+    activeFeatures: ['FT_Active_Feature']
   }
 
   beforeEach(() => {
+    featureToggleServiceMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['init'])
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      imports: [HttpClientTestingModule],
+      providers: [{
+        provide: FeatureToggleService,
+        useValue: featureToggleServiceMock
+      }]
     })
     httpTestingController = TestBed.inject(HttpTestingController)
     service = TestBed.inject(AuthService)
@@ -42,6 +52,13 @@ describe('AuthService', () => {
       login: CREDS.login,
       password: CREDS.password
     }))
+  })
+
+  it('login initializes feature toggle service', () => {
+    service.login(CREDS.login, CREDS.password).subscribe()
+    const testRequest = httpTestingController.expectOne('/api/auth/login')
+    testRequest.flush(LOGIN_RETURN)
+    expect(featureToggleServiceMock.init).toHaveBeenCalledWith(LOGIN_RETURN.activeFeatures)
   })
 
   it('logout dispatches request properly', () => {
@@ -65,7 +82,7 @@ describe('AuthService', () => {
 
     service.login(CREDS.login, CREDS.password).subscribe()
     testRequest = httpTestingController.expectOne('/api/auth/login')
-    testRequest.flush(TOKEN_RES)
+    testRequest.flush(LOGIN_RETURN)
     expect(isAuthValues.pop()).toBe(true)
 
     service.logout().subscribe()
@@ -83,8 +100,8 @@ describe('AuthService', () => {
 
     service.login(CREDS.login, CREDS.password).subscribe()
     testRequest = httpTestingController.expectOne('/api/auth/login')
-    testRequest.flush(TOKEN_RES)
-    expect(service.getAuthToken()).toBe(TOKEN_RES.token)
+    testRequest.flush(LOGIN_RETURN)
+    expect(service.getAuthToken()).toBe(LOGIN_RETURN.token)
 
     service.logout().subscribe()
     testRequest = httpTestingController.expectOne('/api/auth/logout')
