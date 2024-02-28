@@ -23,9 +23,9 @@ interface LoginReturnValue {
   providedIn: 'root'
 })
 export class AuthService {
-  private isAuthSubject: BehaviorSubject<boolean> = new BehaviorSubject(false)
+  private AUTH_TOKEN_LOCAL_STORAGE_KEY = 'AuthTokenContractManagement'
+  private isAuthSubject: BehaviorSubject<boolean> = new BehaviorSubject(!!this.getAuthToken())
   private isAuthObservable: Observable<boolean> = this.isAuthSubject.asObservable()
-  private authToken: string | null = null
 
   public constructor(
     private http: HttpClient,
@@ -38,9 +38,9 @@ export class AuthService {
       password: password
     }).pipe(
       tap((res) => {
-        this.authToken = res.token
+        localStorage.setItem(this.AUTH_TOKEN_LOCAL_STORAGE_KEY, res.token)
         this.ft.init(res.activeFeatures)
-        this.isAuthSubject.next(true)
+        this.isAuthSubject.next(!!this.getAuthToken())
       }),
       map(() => void 0)
     )
@@ -49,8 +49,8 @@ export class AuthService {
   public logout(): Observable<void> {
     return this.http.post<void>('/api/auth/logout', {}).pipe(
       tap(() => {
-        this.authToken = null
-        this.isAuthSubject.next(false)
+        localStorage.removeItem(this.AUTH_TOKEN_LOCAL_STORAGE_KEY)
+        this.isAuthSubject.next(!!this.getAuthToken())
       })
     )
   }
@@ -60,6 +60,6 @@ export class AuthService {
   }
 
   public getAuthToken(): string | null {
-    return this.authToken
+    return localStorage.getItem(this.AUTH_TOKEN_LOCAL_STORAGE_KEY) || null
   }
 }

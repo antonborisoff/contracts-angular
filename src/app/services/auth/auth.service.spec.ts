@@ -109,3 +109,47 @@ describe('AuthService', () => {
     expect(service.getAuthToken()).toBeNull()
   })
 })
+
+describe('AuthService - creation', () => {
+  const AUTH_TOKEN_LOCAL_STORAGE_KEY = 'AuthTokenContractManagement'
+
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
+  afterEach(() => {
+    localStorage.clear()
+  })
+
+  it('isAuth initializes to true if local storage has auth token', () => {
+    localStorage.setItem(AUTH_TOKEN_LOCAL_STORAGE_KEY, 'token')
+
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule]
+    })
+    const service = TestBed.inject(AuthService)
+    const isAuthValues: boolean[] = []
+    const isAuth$ = service.isAuth()
+    isAuth$.subscribe((value: boolean) => {
+      isAuthValues.push(value)
+    })
+
+    // initial value
+    expect(isAuthValues.pop()).toBe(true)
+  })
+
+  it('isAuth initializes to false if local storage does not have auth token', () => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule]
+    })
+    const service = TestBed.inject(AuthService)
+    const isAuthValues: boolean[] = []
+    const isAuth$ = service.isAuth()
+    isAuth$.subscribe((value: boolean) => {
+      isAuthValues.push(value)
+    })
+
+    // initial value
+    expect(isAuthValues.pop()).toBe(false)
+  })
+})
