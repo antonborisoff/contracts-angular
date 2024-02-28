@@ -10,22 +10,18 @@ describe('FeatureToggleService', () => {
   let service: FeatureToggleService
 
   beforeEach(() => {
+    localStorage.clear()
     TestBed.configureTestingModule({
       imports: []
     })
     service = TestBed.inject(FeatureToggleService)
   })
 
-  it('init service - can do only once', () => {
-    expect(() => {
-      service.init(['FT_A'])
-    }).not.toThrow()
-    expect(() => {
-      service.init(['FT_B'])
-    }).toThrowError('Feature toggle service initialization already completed.')
+  afterEach(() => {
+    localStorage.clear()
   })
 
-  it('isActive - uses features the service was initialized with', () => {
+  it('init + isActive', () => {
     const activeFeature = 'FT_Test_Feature'
 
     expect(service.isActive(activeFeature)).toBe(false)
@@ -34,15 +30,72 @@ describe('FeatureToggleService', () => {
     expect(service.isActive(activeFeature)).toBe(true)
   })
 
-  it('init service - active features do not change after init', () => {
+  it('init - could not init after init, active features stay the same', () => {
     service.init(['FT_A'])
     expect(service.isActive('FT_A')).toBe(true)
     expect(service.isActive('FT_B')).toBe(false)
 
-    expect(() => {
-      service.init(['FT_B'])
-    }).toThrow()
+    service.init(['FT_B'])
     expect(service.isActive('FT_A')).toBe(true)
     expect(service.isActive('FT_B')).toBe(false)
+  })
+
+  it('cleanup + isActive', () => {
+    service.init(['FT_A'])
+    expect(service.isActive('FT_A')).toBe(true)
+
+    service.cleanup()
+    expect(service.isActive('FT_A')).toBe(false)
+  })
+
+  it('cleanup - could init after cleanup', () => {
+    service.init(['FT_A'])
+    expect(service.isActive('FT_A')).toBe(true)
+    expect(service.isActive('FT_B')).toBe(false)
+
+    service.cleanup()
+    service.init(['FT_B'])
+    expect(service.isActive('FT_A')).toBe(false)
+    expect(service.isActive('FT_B')).toBe(true)
+  })
+})
+
+describe('FeatureToggleService - creation', () => {
+  const ACTIVE_FEATURES_LOCAL_STORAGE_KEY = 'activeFeaturesContractsManagement'
+
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
+  afterEach(() => {
+    localStorage.clear()
+  })
+
+  it('service is initialized if local storage has active features', () => {
+    localStorage.setItem(ACTIVE_FEATURES_LOCAL_STORAGE_KEY, JSON.stringify(['FT_Active_A']))
+
+    TestBed.configureTestingModule({
+      imports: []
+    })
+    const service = TestBed.inject(FeatureToggleService)
+
+    expect(service.isActive('FT_Active_A')).toBe(true)
+
+    service.init(['FT_Active_B'])
+    expect(service.isActive('FT_Active_A')).toBe(true)
+    expect(service.isActive('FT_Active_B')).toBe(false)
+  })
+
+  it('service is not initialized if local storage does not have active features', () => {
+    TestBed.configureTestingModule({
+      imports: []
+    })
+    const service = TestBed.inject(FeatureToggleService)
+
+    expect(service.isActive('FT_Active_A')).toBe(false)
+
+    service.init(['FT_Active_B'])
+    expect(service.isActive('FT_Active_A')).toBe(false)
+    expect(service.isActive('FT_Active_B')).toBe(true)
   })
 })

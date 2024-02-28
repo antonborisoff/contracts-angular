@@ -28,7 +28,10 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     localStorage.clear()
-    featureToggleServiceMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['init'])
+    featureToggleServiceMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', [
+      'init',
+      'cleanup'
+    ])
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [{
@@ -70,6 +73,14 @@ describe('AuthService', () => {
 
     expect(testRequest.request.method).toBe('POST')
     expect(testRequest.request.body).toEqual({})
+  })
+
+  it('logout cleans up feature toggle service', () => {
+    service.logout().subscribe()
+    const testRequest = httpTestingController.expectOne('/api/auth/logout')
+
+    testRequest.flush(null)
+    expect(featureToggleServiceMock.cleanup).toHaveBeenCalledWith()
   })
 
   it('isAuth emits proper values on login/logout', () => {
@@ -127,7 +138,7 @@ describe('AuthService - creation', () => {
     localStorage.clear()
   })
 
-  it('isAuth initializes to true if local storage has auth token', () => {
+  it('service is initialized properly if local storage has auth token', () => {
     localStorage.setItem(AUTH_TOKEN_LOCAL_STORAGE_KEY, 'token')
 
     TestBed.configureTestingModule({
@@ -141,9 +152,10 @@ describe('AuthService - creation', () => {
 
     // initial value
     expect(isAuthValues.pop()).toBe(true)
+    expect(service.getAuthToken()).toBe('token')
   })
 
-  it('isAuth initializes to false if local storage does not have auth token', () => {
+  it('service is not initialized if local storage does not have auth token', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule]
     })
@@ -155,5 +167,6 @@ describe('AuthService - creation', () => {
 
     // initial value
     expect(isAuthValues.pop()).toBe(false)
+    expect(service.getAuthToken()).toBeNull()
   })
 })
