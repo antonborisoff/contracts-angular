@@ -10,6 +10,14 @@ import {
   map,
   tap
 } from 'rxjs'
+import {
+  FeatureToggleService
+} from '../features/feature-toggle.service'
+
+interface LoginReturnValue {
+  token: string
+  activeFeatures: string[]
+}
 
 @Injectable({
   providedIn: 'root'
@@ -19,15 +27,19 @@ export class AuthService {
   private isAuthObservable: Observable<boolean> = this.isAuthSubject.asObservable()
   private authToken: string | null = null
 
-  public constructor(private http: HttpClient) { }
+  public constructor(
+    private http: HttpClient,
+    private ft: FeatureToggleService
+  ) { }
 
   public login(login: string, password: string): Observable<void> {
-    return this.http.post<{ token: string }>('/api/auth/login', {
+    return this.http.post<LoginReturnValue>('/api/auth/login', {
       login: login,
       password: password
     }).pipe(
       tap((res) => {
         this.authToken = res.token
+        this.ft.init(res.activeFeatures)
         this.isAuthSubject.next(true)
       }),
       map(() => void 0)
