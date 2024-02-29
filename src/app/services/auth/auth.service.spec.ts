@@ -108,6 +108,10 @@ describe('AuthService', () => {
     expect(isAuthValues.length).toBe(0)
   })
 
+  it('isAuth returns singleton (important for proper template binding)', () => {
+    expect(service.isAuth()).toEqual(service.isAuth())
+  })
+
   it('getAuthToken', () => {
     let testRequest: TestRequest
 

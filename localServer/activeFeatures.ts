@@ -1,1 +1,1 @@
-export const ACTIVE_FEATURES = ['FT_Contracts']
+export const ACTIVE_FEATURES = []
