@@ -89,12 +89,22 @@ describe('Base harness', () => {
 
   it('elementText', async () => {
     await expectAsync(baseHarness.elementText('h1-element-text')).toBeResolvedTo('h1 text')
+    await expectAsync(baseHarness.elementText('h4-element-text')).toBeResolvedTo('h4 text')
     await expectAsync(baseHarness.elementText('p-element-text')).toBeResolvedTo('p text')
     await expectAsync(baseHarness.elementText('div-element-text')).toBeResolvedTo('div text')
 
     await expectAsync(baseHarness.elementText('h1-element-text-non-existent')).toBeRejected()
+    await expectAsync(baseHarness.elementText('h4-element-text-non-existent')).toBeRejected()
     await expectAsync(baseHarness.elementText('p-element-text-non-existent')).toBeRejected()
     await expectAsync(baseHarness.elementText('div-element-text-non-existent')).toBeRejected()
+  })
+
+  it('elementChildCount', async () => {
+    await expectAsync(baseHarness.elementChildCount('div-child-count-no-grandchild-present')).toBeResolvedTo(2)
+    await expectAsync(baseHarness.elementChildCount('div-child-count-grandchild-present')).toBeResolvedTo(2)
+
+    await expectAsync(baseHarness.elementChildCount('div-child-count-no-grandchild-present-non-existent')).toBeRejected()
+    await expectAsync(baseHarness.elementChildCount('div-child-count-grandchild-present-non-existent')).toBeRejected()
   })
 
   it('enterValue - updateOn: change', async () => {

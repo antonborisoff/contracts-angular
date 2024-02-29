@@ -46,6 +46,7 @@
     <button data-id="button-element-class-visibility-hidden" class="visibilityHidden">button hidden via class visibility: hidden</button>
     
     <h1 data-id="h1-element-text">h1 text</h1>
+    <h1 data-id="h4-element-text">h4 text</h1>
     <p data-id="p-element-text">p text</p>
     <div data-id="div-element-text">div text</div>
 
@@ -57,5 +58,17 @@
     <div>
         <div>Form control with update on blur:</div>
         <input data-id="input-element-update-on-blur" [formControl]="formControlUpdateOnBlur"/>
+    </div>
+
+    <div data-id="div-child-count-no-grandchild-present">
+        <div>child 1</div>
+        <div>child 2</div>
+    </div>
+    <div data-id="div-child-count-grandchild-present">
+        <div>
+            <div>grandchild 1</div>
+            <div>grandchild 2</div>
+        </div>
+        <div>child 2</div>
     </div>
 </div>

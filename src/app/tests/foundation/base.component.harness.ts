@@ -68,11 +68,19 @@ export class BaseHarness extends ComponentHarness {
   public async elementText(id: string): Promise<string> {
     const cssSelector = this.getCssSelector(id, [
       'h1',
+      'h4',
       'p',
       'div'
     ])
     const element = await this.locatorFor(cssSelector)()
     return await element.text()
+  }
+
+  public async elementChildCount(id: string): Promise<number> {
+    // we need to retrieve the parent first to make sure it exists
+    await this.locatorFor(`div${this.getIdSelector(id)}`)()
+    const children = await this.locatorForAll(`div${this.getIdSelector(id)} > *`)()
+    return children.length
   }
 
   public async buttonEnabled(id: string): Promise<boolean> {
