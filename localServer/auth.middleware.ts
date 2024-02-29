@@ -3,10 +3,17 @@ import {
   Request,
   Response
 } from 'express'
+import {
+  USERS
+} from './users'
 
 export function checkAuth(req: Request, res: Response, next: NextFunction): void {
   if (req.originalUrl !== '/api/auth/login') {
-    if (req.get('Auth-token')) {
+    const token = req.get('Auth-token')
+    const valid = USERS.some((user) => {
+      return user.token === token
+    })
+    if (valid) {
       next()
     }
     else {
