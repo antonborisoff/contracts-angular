@@ -10,6 +10,7 @@ import {
 import {
   checkAuth
 } from './auth.middleware'
+import { contractRoutes } from './contracts.route'
 
 const app: Application = express()
 
@@ -22,6 +23,8 @@ app.use(checkAuth)
 
 app.route('/api/auth/login').post(authRoutes.login)
 app.route('/api/auth/logout').post(authRoutes.logout)
+
+app.route('/api/contracts').get(contractRoutes.getContracts)
 
 const port = 9000
 app.listen(port, () => {
