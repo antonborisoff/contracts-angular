@@ -44,59 +44,64 @@ describe('Base harness', () => {
   })
 
   it('buttonEnabled', async () => {
+    await expectAsync(baseHarness.elementPresent('enabled-button', 'button')).toBeResolvedTo(true)
     await expectAsync(baseHarness.buttonEnabled('enabled-button')).toBeResolvedTo(true)
+
+    await expectAsync(baseHarness.elementPresent('disabled-button', 'button')).toBeResolvedTo(true)
     await expectAsync(baseHarness.buttonEnabled('disabled-button')).toBeResolvedTo(false)
+
+    await expectAsync(baseHarness.elementPresent('non-existent-button', 'button')).toBeResolvedTo(false)
     await expectAsync(baseHarness.buttonEnabled('non-existent-button')).toBeRejected()
   })
 
   it('elementVisible', async () => {
-    await expectAsync(baseHarness.elementVisible('h1-element-visible')).toBeResolvedTo(true)
-    await expectAsync(baseHarness.elementVisible('h1-element-invisible-if')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('h1-element-hidden')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('h1-element-style-display-none')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('h1-element-style-visibility-hidden')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('h1-element-class-display-none')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('h1-element-class-visibility-hidden')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('h1-element-non-existent')).toBeResolvedTo(false)
+    const tags = [
+      'h1',
+      'p',
+      'div',
+      'button'
+    ]
+    for (const tag of tags) {
+      await expectAsync(baseHarness.elementPresent(`${tag}-element-visible`, tag)).toBeResolvedTo(true)
+      await expectAsync(baseHarness.elementVisible(`${tag}-element-visible`)).toBeResolvedTo(true)
 
-    await expectAsync(baseHarness.elementVisible('p-element-visible')).toBeResolvedTo(true)
-    await expectAsync(baseHarness.elementVisible('p-element-invisible-if')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('p-element-hidden')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('p-element-style-display-none')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('p-element-style-visibility-hidden')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('p-element-class-display-none')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('p-element-class-visibility-hidden')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('p-element-non-existent')).toBeResolvedTo(false)
+      await expectAsync(baseHarness.elementPresent(`${tag}-element-invisible-if`, tag)).toBeResolvedTo(false)
+      await expectAsync(baseHarness.elementVisible(`${tag}-element-invisible-if`)).toBeResolvedTo(false)
 
-    await expectAsync(baseHarness.elementVisible('div-element-visible')).toBeResolvedTo(true)
-    await expectAsync(baseHarness.elementVisible('div-element-invisible-if')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('div-element-hidden')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('div-element-style-display-none')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('div-element-style-visibility-hidden')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('div-element-class-display-none')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('div-element-class-visibility-hidden')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('div-element-non-existent')).toBeResolvedTo(false)
+      await expectAsync(baseHarness.elementPresent(`${tag}-element-hidden`, tag)).toBeResolvedTo(true)
+      await expectAsync(baseHarness.elementVisible(`${tag}-element-hidden`)).toBeResolvedTo(false)
 
-    await expectAsync(baseHarness.elementVisible('button-element-visible')).toBeResolvedTo(true)
-    await expectAsync(baseHarness.elementVisible('button-element-invisible-if')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('button-element-hidden')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('button-element-style-display-none')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('button-element-style-visibility-hidden')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('button-element-class-display-none')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('button-element-class-visibility-hidden')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.elementVisible('button-element-non-existent')).toBeResolvedTo(false)
+      await expectAsync(baseHarness.elementPresent(`${tag}-element-style-display-none`, tag)).toBeResolvedTo(true)
+      await expectAsync(baseHarness.elementVisible(`${tag}-element-style-display-none`)).toBeResolvedTo(false)
+
+      await expectAsync(baseHarness.elementPresent(`${tag}-element-style-visibility-hidden`, tag)).toBeResolvedTo(true)
+      await expectAsync(baseHarness.elementVisible(`${tag}-element-style-visibility-hidden`)).toBeResolvedTo(false)
+
+      await expectAsync(baseHarness.elementPresent(`${tag}-element-class-display-none`, tag)).toBeResolvedTo(true)
+      await expectAsync(baseHarness.elementVisible(`${tag}-element-class-display-none`)).toBeResolvedTo(false)
+
+      await expectAsync(baseHarness.elementPresent(`${tag}-element-class-visibility-hidden`, tag)).toBeResolvedTo(true)
+      await expectAsync(baseHarness.elementVisible(`${tag}-element-class-visibility-hidden`)).toBeResolvedTo(false)
+
+      await expectAsync(baseHarness.elementPresent(`${tag}-element-non-existent`, tag)).toBeResolvedTo(false)
+      await expectAsync(baseHarness.elementVisible(`${tag}-element-non-existent`)).toBeResolvedTo(false)
+    }
   })
 
   it('elementText', async () => {
-    await expectAsync(baseHarness.elementText('h1-element-text')).toBeResolvedTo('h1 text')
-    await expectAsync(baseHarness.elementText('h4-element-text')).toBeResolvedTo('h4 text')
-    await expectAsync(baseHarness.elementText('p-element-text')).toBeResolvedTo('p text')
-    await expectAsync(baseHarness.elementText('div-element-text')).toBeResolvedTo('div text')
+    const tags = [
+      'h1',
+      'h4',
+      'p',
+      'div'
+    ]
+    for (const tag of tags) {
+      await expectAsync(baseHarness.elementPresent(`${tag}-element-text`, tag)).toBeResolvedTo(true)
+      await expectAsync(baseHarness.elementText(`${tag}-element-text`)).toBeResolvedTo(`${tag} text`)
 
-    await expectAsync(baseHarness.elementText('h1-element-text-non-existent')).toBeRejected()
-    await expectAsync(baseHarness.elementText('h4-element-text-non-existent')).toBeRejected()
-    await expectAsync(baseHarness.elementText('p-element-text-non-existent')).toBeRejected()
-    await expectAsync(baseHarness.elementText('div-element-text-non-existent')).toBeRejected()
+      await expectAsync(baseHarness.elementPresent(`${tag}-element-text-non-existent`, tag)).toBeResolvedTo(false)
+      await expectAsync(baseHarness.elementText(`${tag}-element-text-non-existent`)).toBeRejected()
+    }
   })
 
   it('elementChildCount', async () => {
