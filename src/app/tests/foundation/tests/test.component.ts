@@ -1,7 +1,4 @@
 import {
-  CommonModule
-} from '@angular/common'
-import {
   Component
 } from '@angular/core'
 import {
@@ -12,10 +9,7 @@ import {
 @Component({
   selector: 'app-test-component',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    CommonModule
-  ],
+  imports: [ReactiveFormsModule],
   templateUrl: './test.component.html',
   styleUrl: './test.component.css'
 })
