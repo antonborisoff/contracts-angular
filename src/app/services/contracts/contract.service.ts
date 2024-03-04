@@ -10,13 +10,23 @@ import {
 import {
   Contract
 } from '../../interfaces/contract'
+import {
+  FeatureToggleService
+} from '../features/feature-toggle.service'
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContractService {
   private endpointPath = '/api/contracts'
-  public constructor(private http: HttpClient) { }
+  public constructor(
+    private ft: FeatureToggleService,
+    private http: HttpClient
+  ) {
+    if (!this.ft.isActive('FT_Contracts')) {
+      throw new Error('Feature is inactive')
+    }
+  }
 
   public getContracts(): Observable<Contract[]> {
     return this.http.get<Contract[]>(this.endpointPath)
