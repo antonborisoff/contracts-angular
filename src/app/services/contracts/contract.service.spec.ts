@@ -12,25 +12,51 @@ import {
 import {
   Contract
 } from '../../interfaces/contract'
+import {
+  FeatureToggleService
+} from '../features/feature-toggle.service'
 
 describe('ContractService', () => {
-  let service: ContractService
-  let httpTestingController: HttpTestingController
+  let featureToggleServiceMock: jasmine.SpyObj<FeatureToggleService>
   const endpointPath = '/api/contracts'
 
-  beforeEach(() => {
+  function initService(): {
+    service: ContractService
+    httpTestingController: HttpTestingController
+  } {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      imports: [HttpClientTestingModule],
+      providers: [{
+        provide: FeatureToggleService,
+        useValue: featureToggleServiceMock
+      }]
     })
-    service = TestBed.inject(ContractService)
-    httpTestingController = TestBed.inject(HttpTestingController)
+    const service = TestBed.inject(ContractService)
+    const httpTestingController = TestBed.inject(HttpTestingController)
+    return {
+      service,
+      httpTestingController
+    }
+  }
+
+  beforeEach(() => {
+    featureToggleServiceMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['isActive'])
+    featureToggleServiceMock.isActive.withArgs('FT_Contracts').and.returnValue(true)
   })
 
-  afterEach(() => {
-    httpTestingController.verify()
+  it('service cannot be used when feature is inactive', () => {
+    featureToggleServiceMock.isActive.withArgs('FT_Contracts').and.returnValue(false)
+
+    expect(() => {
+      initService()
+    }).toThrowError('Feature is inactive')
   })
 
   it('getContracts dispatches request properly and returns expected data', () => {
+    const {
+      service, httpTestingController
+    } = initService()
+
     const expectedContracts: Contract[] = [
       {
         id: 'test_a',
@@ -56,13 +82,18 @@ describe('ContractService', () => {
     expectedContracts.forEach((expectedContract) => {
       expect(actualContracts).toContain(jasmine.objectContaining(expectedContract))
     })
+    httpTestingController.verify()
   })
 
   it('deleteContract dispatches request properly', () => {
+    const {
+      service, httpTestingController
+    } = initService()
     const contractId = 'some_contract_id'
 
     service.deleteContract(contractId).subscribe()
     const testRequest = httpTestingController.expectOne(`${endpointPath}/${contractId}`)
     expect(testRequest.request.method).toBe('DELETE')
+    httpTestingController.verify()
   })
 })
