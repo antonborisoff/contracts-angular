@@ -67,7 +67,8 @@ describe('Base harness', () => {
       'h1',
       'p',
       'div',
-      'button'
+      'button',
+      'a'
     ]
     for (const tag of tags) {
       await expectAsync(baseHarness.elementPresent(`${tag}-element-visible`, tag)).toBeResolvedTo(true)

@@ -67,7 +67,8 @@ export class BaseHarness extends ComponentHarness {
       'h1',
       'p',
       'div',
-      'button'
+      'button',
+      'a'
     ])
     const element = await this.locatorForOptional(cssSelector)()
     if (element) {
