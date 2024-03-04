@@ -96,11 +96,20 @@ describe('Base harness', () => {
       'div'
     ]
     for (const tag of tags) {
-      await expectAsync(baseHarness.elementPresent(`${tag}-element-text`, tag)).toBeResolvedTo(true)
-      await expectAsync(baseHarness.elementText(`${tag}-element-text`)).toBeResolvedTo(`${tag} text`)
+      const elementId = `${tag}-element-text`
+      await expectAsync(baseHarness.elementPresent(elementId, tag)).toBeResolvedTo(true)
+      await expectAsync(baseHarness.elementText(elementId)).toBeResolvedTo(`${tag} text`)
 
-      await expectAsync(baseHarness.elementPresent(`${tag}-element-text-non-existent`, tag)).toBeResolvedTo(false)
-      await expectAsync(baseHarness.elementText(`${tag}-element-text-non-existent`)).toBeRejected()
+      await expectAsync(baseHarness.elementPresent(`${elementId}-non-existent`, tag)).toBeResolvedTo(false)
+      await expectAsync(baseHarness.elementText(`${elementId}-non-existent`)).toBeRejected()
+
+      // elements in wrapper found, not global ones
+      await expectAsync(baseHarness.inElement('text-element-wrapper').elementPresent(elementId, tag)).toBeResolvedTo(true)
+      await expectAsync(baseHarness.inElement('text-element-wrapper').elementText(elementId)).toBeResolvedTo(`${tag} text in wrapper`)
+
+      // elements in wrapper are looked up and not found, global elements are ignored
+      await expectAsync(baseHarness.inElement('text-element-wrapper-non-existent-elements').elementPresent(elementId, tag)).toBeResolvedTo(false)
+      await expectAsync(baseHarness.inElement('text-element-wrapper-non-existent-elements').elementText(elementId)).toBeRejected()
     }
   })
 

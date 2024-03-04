@@ -3,17 +3,32 @@ import {
 } from '@angular/cdk/testing'
 
 export class BaseHarness extends ComponentHarness {
+  // TODO: convert to private once ancestorSelector is managed centrally via getCssSelector (not passed to it)
+  protected ancestorSelector: string = ''
+
   protected getIdSelector(id: string): string {
     return `[data-id="${id}"]`
   }
 
-  protected getCssSelector(id: string, tags: string[]): string {
+  protected getCssSelector(id: string, tags: string[], ancestorSelector: string = ''): string {
     return tags.reduce((selector: string, tag: string) => {
       if (selector) {
         selector = `${selector},`
       }
-      return `${selector}${tag}${this.getIdSelector(id)}`
+      return `${selector}${ancestorSelector}${tag}${this.getIdSelector(id)}`
     }, '')
+  }
+
+  /********************************
+   * WRAPPERS
+   *******************************/
+  public inElement(id: string): this {
+    const copy = Object.create(
+      Object.getPrototypeOf(this),
+      Object.getOwnPropertyDescriptors(this)
+    )
+    copy.ancestorSelector = `div${this.getIdSelector(id)} `
+    return copy
   }
   /********************************
    * ACTIONS
@@ -71,7 +86,7 @@ export class BaseHarness extends ComponentHarness {
       'h4',
       'p',
       'div'
-    ])
+    ], this.ancestorSelector)
     const element = await this.locatorFor(cssSelector)()
     return await element.text()
   }
