@@ -35,7 +35,7 @@ export class BaseHarness extends ComponentHarness {
    *******************************/
 
   public async clickButton(id: string): Promise<void> {
-    const button = await this.locatorFor(`button${this.getIdSelector(id)}:not([disabled])`)()
+    const button = await this.locatorFor(`${this.ancestorSelector}button${this.getIdSelector(id)}:not([disabled])`)()
     await button.click()
   }
 
