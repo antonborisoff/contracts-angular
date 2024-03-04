@@ -3,6 +3,8 @@ import {
 } from '@angular/core'
 import {
   Router,
+  RouterLink,
+  RouterLinkActive,
   RouterOutlet
 } from '@angular/router'
 import {
@@ -31,6 +33,8 @@ const COMPONENT_TRANSLOCO_SCOPE = 'app'
   selector: 'app-root',
   standalone: true,
   imports: [
+    RouterLink,
+    RouterLinkActive,
     RouterOutlet,
     TranslocoPipe,
     AsyncPipe

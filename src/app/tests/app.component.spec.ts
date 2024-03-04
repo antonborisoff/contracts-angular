@@ -31,6 +31,9 @@ import {
 import {
   BackendErrorHandlerService
 } from '../services/backend-error-handler/backend-error-handler.service'
+import {
+  TestComponent
+} from './utils'
 
 describe('AppComponent', () => {
   let isAuthMock: BehaviorSubject<boolean>
@@ -45,7 +48,20 @@ describe('AppComponent', () => {
       imports: [
         AppComponent,
         getTranslocoTestingModule(AppComponent, en),
-        RouterTestingModule.withRoutes([])
+        RouterTestingModule.withRoutes([
+          {
+            path: 'home',
+            component: TestComponent
+          },
+          {
+            path: 'non-home',
+            component: TestComponent
+          },
+          {
+            path: 'home/subhome',
+            component: TestComponent
+          }
+        ])
       ],
       providers: [
         {
@@ -111,20 +127,42 @@ describe('AppComponent', () => {
     expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
   })
 
-  it('display welcome message and logout button only to authenticated user', async () => {
+  it('display header only to authenticated user', async () => {
     const {
       appHarness
     } = await initComponent()
 
-    expect(await appHarness.elementVisible('welcomeMessage')).toBe(true)
-    expect(await appHarness.elementVisible('logoutButton')).toBe(true)
+    expect(await appHarness.elementVisible('appHeader')).toBe(true)
 
     isAuthMock.next(false)
-    expect(await appHarness.elementVisible('welcomeMessage')).toBe(false)
-    expect(await appHarness.elementVisible('logoutButton')).toBe(false)
+    expect(await appHarness.elementVisible('appHeader')).toBe(false)
 
     isAuthMock.next(true)
-    expect(await appHarness.elementVisible('welcomeMessage')).toBe(true)
-    expect(await appHarness.elementVisible('logoutButton')).toBe(true)
+    expect(await appHarness.elementVisible('appHeader')).toBe(true)
+  })
+
+  it('display go home link on non-home page only', async () => {
+    const {
+      appHarness, router
+    } = await initComponent()
+
+    await router.navigate(['non-home'])
+    expect(await appHarness.elementVisible('navToHomeLink')).toBe(true)
+
+    await router.navigate(['/home'])
+    expect(await appHarness.elementVisible('navToHomeLink')).toBe(false)
+
+    await router.navigate(['/home/subhome'])
+    expect(await appHarness.elementVisible('navToHomeLink')).toBe(true)
+  })
+
+  it('navigate to home page on link click', async () => {
+    const {
+      appHarness, router
+    } = await initComponent()
+    const navigateByUrlSpy = spyOn<Router, 'navigateByUrl'>(router, 'navigateByUrl')
+
+    await appHarness.clickLink('navToHomeLink')
+    expect(navigateByUrlSpy).toHaveBeenCalledWith(router.createUrlTree(['/home']), jasmine.anything())
   })
 })
