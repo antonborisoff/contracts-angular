@@ -32,9 +32,10 @@ import {
 describe('ContractsComponent', () => {
   let contractServiceMock: jasmine.SpyObj<ContractService>
   let messageBoxServiceMock: jasmine.SpyObj<MessageBoxService>
-  let contractsHarness: ContractsHarness
 
-  async function initComponent(contracts?: Contract[]): Promise<ContractsHarness> {
+  async function initComponent(contracts?: Contract[]): Promise<{
+    contractsHarness: ContractsHarness
+  }> {
     if (contracts) {
       contractServiceMock.getContracts.and.returnValue(of(contracts))
     }
@@ -62,8 +63,10 @@ describe('ContractsComponent', () => {
     }).compileComponents()
 
     const fixture = TestBed.createComponent(ContractsComponent)
-    contractsHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, ContractsHarness)
-    return contractsHarness
+    const contractsHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, ContractsHarness)
+    return {
+      contractsHarness
+    }
   }
 
   beforeEach(async () => {
@@ -84,7 +87,9 @@ describe('ContractsComponent', () => {
         conditions: 'test contract b'
       }
     ]
-    await initComponent(CONTRACTS)
+    const {
+      contractsHarness
+    } = await initComponent(CONTRACTS)
 
     expect(await contractsHarness.elementChildCount('contractList')).toBe(CONTRACTS.length)
     expect(await contractsHarness.elementVisible('noContractsMessage')).toBe(false)
@@ -95,7 +100,9 @@ describe('ContractsComponent', () => {
   })
 
   it('display no contract message if there are no contracts', async () => {
-    await initComponent([])
+    const {
+      contractsHarness: contractsHarness
+    } = await initComponent([])
 
     expect(await contractsHarness.elementChildCount('contractList')).toBe(0)
     expect(await contractsHarness.elementVisible('noContractsMessage')).toBe(true)

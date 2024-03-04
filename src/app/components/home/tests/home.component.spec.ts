@@ -17,9 +17,9 @@ import {
 } from '@angular/cdk/testing/testbed'
 
 describe('HomeComponent', () => {
-  let homeHarness: HomeHarness
-
-  beforeEach(async () => {
+  async function initComponent(): Promise<{
+    homeHarness: HomeHarness
+  }> {
     await TestBed.configureTestingModule({
       imports: [
         HomeComponent,
@@ -29,10 +29,17 @@ describe('HomeComponent', () => {
     }).compileComponents()
 
     const fixture = TestBed.createComponent(HomeComponent)
-    homeHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, HomeHarness)
-  })
+    const homeHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, HomeHarness)
+    return {
+      homeHarness
+    }
+  }
 
   it('display welcome message', async () => {
+    const {
+      homeHarness
+    } = await initComponent()
+
     expect(await homeHarness.elementVisible('welcomeMessage')).toBe(true)
   })
 })
