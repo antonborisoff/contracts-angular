@@ -7,7 +7,12 @@ import {
 })
 export class FeatureToggleService {
   private ACTIVE_FEATURES_LOCAL_STORAGE_KEY = 'activeFeaturesContractsManagement'
-  private initCompleted: boolean = !!this.getActiveFeatures().length
+  private activeFeatures: string[] = this.getActiveFeatures()
+  private initCompleted: boolean = this.isLocalStorageDataPresent()
+
+  private isLocalStorageDataPresent(): boolean {
+    return localStorage.getItem(this.ACTIVE_FEATURES_LOCAL_STORAGE_KEY) !== null
+  }
 
   private getActiveFeatures(): string[] {
     const activeFeatures: string | null = localStorage.getItem(this.ACTIVE_FEATURES_LOCAL_STORAGE_KEY)
@@ -23,15 +28,17 @@ export class FeatureToggleService {
     if (!this.initCompleted) {
       localStorage.setItem(this.ACTIVE_FEATURES_LOCAL_STORAGE_KEY, JSON.stringify(activeFeatures))
       this.initCompleted = true
+      this.activeFeatures = activeFeatures
     }
   }
 
   public cleanup(): void {
     localStorage.removeItem(this.ACTIVE_FEATURES_LOCAL_STORAGE_KEY)
     this.initCompleted = false
+    this.activeFeatures = []
   }
 
   public isActive(feature: string): boolean {
-    return this.getActiveFeatures().includes(feature)
+    return this.activeFeatures.includes(feature)
   }
 }
