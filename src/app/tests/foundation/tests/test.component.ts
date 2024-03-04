@@ -28,8 +28,9 @@ export class TestComponent {
 
   public constructor(private fb: FormBuilder) {}
 
-  public clickElement(buttonId: string): void {
-    this.clickedElements[buttonId] = true
+  public clickElement(target: EventTarget | null): void {
+    const elementId = (target as HTMLElement).dataset['id'] as string
+    this.clickedElements[elementId] = true
   }
 
   public isElementClicked(buttonId: string): boolean {

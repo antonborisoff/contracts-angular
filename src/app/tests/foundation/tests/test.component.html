@@ -1,10 +1,10 @@
 <!-- eslint-disable @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
 <ng-template #testTemplate>
     <div>
-        <button data-id="enabled-button" (click)="clickElement('enabled-button')">Enabled Button</button>
-        <button data-id="disabled-button" (click)="clickElement('disabled-button')" disabled>Disabled Button</button>
+        <button data-id="enabled-button" (click)="clickElement($event.target)">Enabled Button</button>
+        <button data-id="disabled-button" (click)="clickElement($event.target)" disabled>Disabled Button</button>
     
-        <a data-id="link" (click)="clickElement('link')">Link</a>
+        <a data-id="link" (click)="clickElement($event.target)">Link</a>
     
         <h1 data-id="h1-element-visible">h1 visible</h1>
         @if(false){
