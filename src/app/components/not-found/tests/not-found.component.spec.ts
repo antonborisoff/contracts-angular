@@ -23,10 +23,10 @@ import {
 } from '@angular/router'
 
 describe('NotFoundComponent', () => {
-  let notFoundHarness: NotFoundHarness
-  let router: Router
-
-  beforeEach(async () => {
+  async function initComponent(): Promise<{
+    notFoundHarness: NotFoundHarness
+    router: Router
+  }> {
     await TestBed.configureTestingModule({
       imports: [
         NotFoundComponent,
@@ -36,16 +36,28 @@ describe('NotFoundComponent', () => {
       providers: []
     }).compileComponents()
 
+    const router = TestBed.inject(Router)
+
     const fixture = TestBed.createComponent(NotFoundComponent)
-    notFoundHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, NotFoundHarness)
-    router = TestBed.inject(Router)
-  })
+    const notFoundHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, NotFoundHarness)
+    return {
+      notFoundHarness,
+      router
+    }
+  }
 
   it('display "not found" message', async () => {
+    const {
+      notFoundHarness
+    } = await initComponent()
+
     expect(await notFoundHarness.elementVisible('notFoundMessage')).toBe(true)
   })
 
   it('navigate to home page on link click', async () => {
+    const {
+      notFoundHarness, router
+    } = await initComponent()
     const navigateByUrlSpy = spyOn<Router, 'navigateByUrl'>(router, 'navigateByUrl')
 
     await notFoundHarness.clickLink('navToHomeLink')

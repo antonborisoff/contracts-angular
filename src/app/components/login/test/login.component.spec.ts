@@ -38,28 +38,15 @@ import {
 describe('LoginComponent', () => {
   let authServiceMock: jasmine.SpyObj<AuthService>
   let messageBoxServiceMock: jasmine.SpyObj<MessageBoxService>
-  let loginHarness: LoginHarness
-  let router: Router
   const VALID_CREDS = {
     login: 'my_login',
     password: 'my_password'
   }
 
-  beforeEach(async () => {
-    authServiceMock = jasmine.createSpyObj<AuthService>('authService', ['login'])
-    authServiceMock.login.and.callFake((login: string, password: string) => {
-      if (login === VALID_CREDS.login && password === VALID_CREDS.password) {
-        return of(undefined)
-      }
-      else {
-        return throwError(() => new HttpErrorResponse({
-          status: 403
-        }))
-      }
-    })
-
-    messageBoxServiceMock = jasmine.createSpyObj<MessageBoxService>('messageBoxService', ['error'])
-
+  async function initComponent(): Promise<{
+    loginHarness: LoginHarness
+    router: Router
+  }> {
     await TestBed.configureTestingModule({
       imports: [
         LoginComponent,
@@ -78,12 +65,37 @@ describe('LoginComponent', () => {
       ]
     }).compileComponents()
 
+    const router = TestBed.inject(Router)
+
     const fixture = TestBed.createComponent(LoginComponent)
-    loginHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, LoginHarness)
-    router = TestBed.inject(Router)
+    const loginHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, LoginHarness)
+    return {
+      loginHarness,
+      router
+    }
+  }
+
+  beforeEach(async () => {
+    authServiceMock = jasmine.createSpyObj<AuthService>('authService', ['login'])
+    authServiceMock.login.and.callFake((login: string, password: string) => {
+      if (login === VALID_CREDS.login && password === VALID_CREDS.password) {
+        return of(undefined)
+      }
+      else {
+        return throwError(() => new HttpErrorResponse({
+          status: 403
+        }))
+      }
+    })
+
+    messageBoxServiceMock = jasmine.createSpyObj<MessageBoxService>('messageBoxService', ['error'])
   })
 
   it('enable/disable login button based on form validity', async () => {
+    const {
+      loginHarness
+    } = await initComponent()
+
     // initial state
     // invalid form: login missing, password missing
     expect(await loginHarness.buttonEnabled('loginButton')).toBe(false)
@@ -110,6 +122,10 @@ describe('LoginComponent', () => {
   })
 
   it('display/hide error message based on login validity', async () => {
+    const {
+      loginHarness
+    } = await initComponent()
+
     // initial state: no validation done
     expect(await loginHarness.elementVisible('loginErrorEmpty')).toBe(false)
 
@@ -129,6 +145,10 @@ describe('LoginComponent', () => {
   })
 
   it('display/hide error message based on password validity', async () => {
+    const {
+      loginHarness
+    } = await initComponent()
+
     // initial state: no validation done
     expect(await loginHarness.elementVisible('passwordErrorEmpty')).toBe(false)
 
@@ -148,6 +168,10 @@ describe('LoginComponent', () => {
   })
 
   it('display error message in case of invalid credentials', async () => {
+    const {
+      loginHarness
+    } = await initComponent()
+
     expect(await loginHarness.elementVisible('incorrectCreds')).toBe(false)
 
     await loginHarness.enterValue('loginInput', `${VALID_CREDS.login}_invalid`)
@@ -157,6 +181,9 @@ describe('LoginComponent', () => {
   })
 
   it('navigate to home on successful login', async () => {
+    const {
+      loginHarness, router
+    } = await initComponent()
     const navigateSpy = spyOn<Router, 'navigate'>(router, 'navigate')
 
     await loginHarness.enterValue('loginInput', VALID_CREDS.login)
@@ -171,6 +198,9 @@ describe('LoginComponent', () => {
         status: 500
       }))
     })
+    const {
+      loginHarness
+    } = await initComponent()
 
     await loginHarness.enterValue('loginInput', VALID_CREDS.login)
     await loginHarness.enterValue('passwordInput', VALID_CREDS.password)

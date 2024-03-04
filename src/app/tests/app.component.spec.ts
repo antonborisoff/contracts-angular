@@ -36,20 +36,11 @@ describe('AppComponent', () => {
   let isAuthMock: BehaviorSubject<boolean>
   let authServiceMock: jasmine.SpyObj<AuthService>
   let messageBoxServiceMock: jasmine.SpyObj<MessageBoxService>
-  let appHarness: AppHarness
-  let router: Router
 
-  beforeEach(async () => {
-    isAuthMock = new BehaviorSubject(true)
-    authServiceMock = jasmine.createSpyObj<AuthService>('authService', [
-      'logout',
-      'isAuth'
-    ])
-    authServiceMock.isAuth.and.returnValue(isAuthMock)
-    authServiceMock.logout.and.returnValue(of(undefined))
-
-    messageBoxServiceMock = jasmine.createSpyObj<MessageBoxService>('messageBoxService', ['error'])
-
+  async function initComponent(): Promise<{
+    appHarness: AppHarness
+    router: Router
+  }> {
     await TestBed.configureTestingModule({
       imports: [
         AppComponent,
@@ -68,16 +59,40 @@ describe('AppComponent', () => {
       ]
     }).compileComponents()
 
+    const router = TestBed.inject(Router)
+
     const fixture = TestBed.createComponent(AppComponent)
-    appHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, AppHarness)
-    router = TestBed.inject(Router)
+    const appHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, AppHarness)
+    return {
+      appHarness,
+      router
+    }
+  }
+
+  beforeEach(async () => {
+    isAuthMock = new BehaviorSubject(true)
+    authServiceMock = jasmine.createSpyObj<AuthService>('authService', [
+      'logout',
+      'isAuth'
+    ])
+    authServiceMock.isAuth.and.returnValue(isAuthMock)
+    authServiceMock.logout.and.returnValue(of(undefined))
+
+    messageBoxServiceMock = jasmine.createSpyObj<MessageBoxService>('messageBoxService', ['error'])
   })
 
   it('display translated welcome message', async () => {
+    const {
+      appHarness
+    } = await initComponent()
+
     expect(await appHarness.elementText('welcomeMessage')).toBe('Hello, contracts-angular component en')
   })
 
   it('navigate to login on successful logout', async () => {
+    const {
+      appHarness, router
+    } = await initComponent()
     const navigateSpy = spyOn<Router, 'navigate'>(router, 'navigate')
 
     await appHarness.clickButton('logoutButton')
@@ -88,12 +103,19 @@ describe('AppComponent', () => {
     authServiceMock.logout.and.returnValue(throwError(() => {
       return new Error('some error')
     }))
+    const {
+      appHarness
+    } = await initComponent()
 
     await appHarness.clickButton('logoutButton')
     expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Failed to logout.')
   })
 
   it('display welcome message and logout button only to authenticated user', async () => {
+    const {
+      appHarness
+    } = await initComponent()
+
     expect(await appHarness.elementVisible('welcomeMessage')).toBe(true)
     expect(await appHarness.elementVisible('logoutButton')).toBe(true)
 
