@@ -1,0 +1,15 @@
+<div class="componentBorder">
+    <div>{{'contracts.CONTRACT_LIST_LABEL' | transloco}}</div>
+    <div data-id="contractList">
+        @for (contract of contracts; track contract.id) {
+            <div [attr.data-id]="'contract-' + contract.id">
+                <h4 data-id="contractNumber">{{contract.number}}</h4>
+                <h5>{{'contracts.CONDITIONS_LABEL' | transloco}}</h5>
+                <div data-id="contractConditions">{{contract.conditions}}</div>
+            </div>
+        }   
+    </div>
+    @if(!contracts.length) {
+        <div data-id="noContractsMessage">{{'contracts.NO_CONTRACTS_LABEL' | transloco}}</div>
+    }
+</div>
