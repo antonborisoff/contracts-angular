@@ -17,6 +17,7 @@ describe('AuthService', () => {
   let service: AuthService
   let featureToggleServiceMock: jasmine.SpyObj<FeatureToggleService>
   let httpTestingController: HttpTestingController
+  const endpointPath = '/api/auth'
   const CREDS = {
     login: 'my_login',
     password: 'my_password'
@@ -50,7 +51,7 @@ describe('AuthService', () => {
 
   it('login dispatches request properly', () => {
     service.login(CREDS.login, CREDS.password).subscribe()
-    const testRequest = httpTestingController.expectOne('/api/auth/login')
+    const testRequest = httpTestingController.expectOne(`${endpointPath}/login`)
 
     expect(testRequest.request.method).toBe('POST')
     expect(testRequest.request.body).toEqual(jasmine.objectContaining({
@@ -61,7 +62,7 @@ describe('AuthService', () => {
 
   it('login initializes feature toggle service', () => {
     service.login(CREDS.login, CREDS.password).subscribe()
-    const testRequest = httpTestingController.expectOne('/api/auth/login')
+    const testRequest = httpTestingController.expectOne(`${endpointPath}/login`)
 
     testRequest.flush(LOGIN_RETURN)
     expect(featureToggleServiceMock.init).toHaveBeenCalledWith(LOGIN_RETURN.activeFeatures)
@@ -69,7 +70,7 @@ describe('AuthService', () => {
 
   it('logout dispatches request properly', () => {
     service.logout().subscribe()
-    const testRequest = httpTestingController.expectOne('/api/auth/logout')
+    const testRequest = httpTestingController.expectOne(`${endpointPath}/logout`)
 
     expect(testRequest.request.method).toBe('POST')
     expect(testRequest.request.body).toEqual({})
@@ -77,7 +78,7 @@ describe('AuthService', () => {
 
   it('logout cleans up feature toggle service', () => {
     service.logout().subscribe()
-    const testRequest = httpTestingController.expectOne('/api/auth/logout')
+    const testRequest = httpTestingController.expectOne(`${endpointPath}/logout`)
 
     testRequest.flush(null)
     expect(featureToggleServiceMock.cleanup).toHaveBeenCalledWith()
@@ -94,13 +95,13 @@ describe('AuthService', () => {
     expect(isAuthValues.pop()).toBe(false)
 
     service.login(CREDS.login, CREDS.password).subscribe()
-    testRequest = httpTestingController.expectOne('/api/auth/login')
+    testRequest = httpTestingController.expectOne(`${endpointPath}/login`)
 
     testRequest.flush(LOGIN_RETURN)
     expect(isAuthValues.pop()).toBe(true)
 
     service.logout().subscribe()
-    testRequest = httpTestingController.expectOne('/api/auth/logout')
+    testRequest = httpTestingController.expectOne(`${endpointPath}/logout`)
 
     testRequest.flush(null)
     expect(isAuthValues.pop()).toBe(false)
@@ -118,13 +119,13 @@ describe('AuthService', () => {
     expect(service.getAuthToken()).toBeNull()
 
     service.login(CREDS.login, CREDS.password).subscribe()
-    testRequest = httpTestingController.expectOne('/api/auth/login')
+    testRequest = httpTestingController.expectOne(`${endpointPath}/login`)
 
     testRequest.flush(LOGIN_RETURN)
     expect(service.getAuthToken()).toBe(LOGIN_RETURN.token)
 
     service.logout().subscribe()
-    testRequest = httpTestingController.expectOne('/api/auth/logout')
+    testRequest = httpTestingController.expectOne(`${endpointPath}/logout`)
 
     testRequest.flush(null)
     expect(service.getAuthToken()).toBeNull()

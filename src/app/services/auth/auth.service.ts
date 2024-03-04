@@ -23,6 +23,7 @@ interface LoginReturnValue {
   providedIn: 'root'
 })
 export class AuthService {
+  private endpointPath = '/api/auth'
   private AUTH_TOKEN_LOCAL_STORAGE_KEY = 'AuthTokenContractManagement'
   private isAuthSubject: BehaviorSubject<boolean> = new BehaviorSubject(!!this.getAuthToken())
   private isAuthObservable: Observable<boolean> = this.isAuthSubject.asObservable()
@@ -33,7 +34,7 @@ export class AuthService {
   ) { }
 
   public login(login: string, password: string): Observable<void> {
-    return this.http.post<LoginReturnValue>('/api/auth/login', {
+    return this.http.post<LoginReturnValue>(`${this.endpointPath}/login`, {
       login: login,
       password: password
     }).pipe(
@@ -47,7 +48,7 @@ export class AuthService {
   }
 
   public logout(): Observable<void> {
-    return this.http.post<void>('/api/auth/logout', {}).pipe(
+    return this.http.post<void>(`${this.endpointPath}/logout`, {}).pipe(
       tap(() => {
         localStorage.removeItem(this.AUTH_TOKEN_LOCAL_STORAGE_KEY)
         this.ft.cleanup()

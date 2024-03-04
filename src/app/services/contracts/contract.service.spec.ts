@@ -16,6 +16,7 @@ import {
 describe('ContractService', () => {
   let service: ContractService
   let httpTestingController: HttpTestingController
+  const endpointPath = '/api/contracts'
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -47,7 +48,7 @@ describe('ContractService', () => {
     service.getContracts().subscribe((contracts) => {
       actualContracts = contracts
     })
-    const testRequest = httpTestingController.expectOne('/api/contracts')
+    const testRequest = httpTestingController.expectOne(endpointPath)
     expect(testRequest.request.method).toBe('GET')
 
     testRequest.flush(expectedContracts)
@@ -55,5 +56,13 @@ describe('ContractService', () => {
     expectedContracts.forEach((expectedContract) => {
       expect(actualContracts).toContain(jasmine.objectContaining(expectedContract))
     })
+  })
+
+  it('deleteContract dispatches request properly', () => {
+    const contractId = 'some_contract_id'
+
+    service.deleteContract(contractId).subscribe()
+    const testRequest = httpTestingController.expectOne(`${endpointPath}/${contractId}`)
+    expect(testRequest.request.method).toBe('DELETE')
   })
 })
