@@ -23,3 +23,17 @@ export function getTranslocoTestingModule(componentClass: TranslocoLocalScope, t
     preloadLangs: true
   })
 }
+
+export function getTranslocoTestingModuleForService(translations: Translation): ModuleWithProviders<TranslocoTestingModule> {
+  const testingLang = 'en'
+  return TranslocoTestingModule.forRoot({
+    langs: {
+      [`${testingLang}`]: translations
+    },
+    translocoConfig: {
+      defaultLang: testingLang,
+      availableLangs: [testingLang]
+    },
+    preloadLangs: true
+  })
+}
