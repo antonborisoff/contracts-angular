@@ -122,14 +122,14 @@ describe('ContractsComponent', () => {
       contractsHarness
     } = await initComponent(CONTRACTS)
 
-    const contractToDelete = CONTRACTS[0]
+    const contractToDelete = CONTRACTS[1]
     const expectedContracts = CONTRACTS.filter((contract) => {
       return contract.id !== contractToDelete.id
     })
     contractServiceMock.deleteContract.withArgs(contractToDelete.id).and.returnValue(of(void 0))
     contractServiceMock.getContracts.and.returnValue(of(expectedContracts))
 
-    await contractsHarness.inElement(`contract-${CONTRACTS[0].id}`).clickButton('deleteContract')
+    await contractsHarness.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
     expect(await contractsHarness.elementChildCount('contractList')).toBe(expectedContracts.length)
     for (const expectedContract of expectedContracts) {
       expect(await contractsHarness.inElement(`contract-${expectedContract.id}`).elementText('contractNumber')).toBe(expectedContract.number)
@@ -142,12 +142,12 @@ describe('ContractsComponent', () => {
       contractsHarness
     } = await initComponent(CONTRACTS)
 
-    const contractToDelete = CONTRACTS[0]
+    const contractToDelete = CONTRACTS[1]
     contractServiceMock.deleteContract.withArgs(contractToDelete.id).and.returnValue(throwError(() => {
       return new Error('some error')
     }))
 
-    await contractsHarness.inElement(`contract-${CONTRACTS[0].id}`).clickButton('deleteContract')
+    await contractsHarness.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
     expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
   })
 })

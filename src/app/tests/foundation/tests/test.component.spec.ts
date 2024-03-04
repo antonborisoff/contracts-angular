@@ -28,17 +28,25 @@ describe('Base harness', () => {
 
   it('clickButton', async () => {
     await baseHarness.clickButton('enabled-button')
-    expect(testComponent.isElementClicked('enabled-button')).toBe(true)
+    expect(testComponent.getElementClicked('enabled-button')).toBe('Enabled Button')
 
     await expectAsync(baseHarness.clickButton('disabled-button')).toBeRejected()
-    expect(testComponent.isElementClicked('disabled-button')).toBe(false)
+    expect(testComponent.getElementClicked('disabled-button')).toBeUndefined()
 
     await expectAsync(baseHarness.clickButton('non-existent-button')).toBeRejected()
+    expect(testComponent.getElementClicked('non-existent-button')).toBeUndefined()
+
+    // elements in wrapper found, not global ones
+    await baseHarness.inElement('button-element-wrapper').clickButton('enabled-button')
+    expect(testComponent.getElementClicked('enabled-button')).toBe('Enabled Button in Wrapper')
+
+    // elements in wrapper are looked up and not found, global elements are ignored
+    await expectAsync(baseHarness.inElement('button-element-wrapper-non-existent').clickButton('enabled-button')).toBeRejected()
   })
 
   it('clickLink', async () => {
     await baseHarness.clickLink('link')
-    expect(testComponent.isElementClicked('link')).toBe(true)
+    expect(testComponent.getElementClicked('link')).toBe('Link')
 
     await expectAsync(baseHarness.clickLink('non-existent-link')).toBeRejected()
   })

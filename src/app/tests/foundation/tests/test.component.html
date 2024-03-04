@@ -3,7 +3,21 @@
     <div>
         <button data-id="enabled-button" (click)="clickElement($event.target)">Enabled Button</button>
         <button data-id="disabled-button" (click)="clickElement($event.target)" disabled>Disabled Button</button>
-    
+        <!--1. It is important that we use the same ids for button elements in wrapper,
+        this way the tests will fail if wrapper does not limit element lookup and picks up global elements instead;-->
+        <!--2. It is important that button elements in wrapper are not direct children
+        since we want wrappers to look up any descendants;-->
+        <!--3. It is important that button element texts are different for global elements and wrapper elements,
+        this is how we differentiate between them in tests;-->
+        <div data-id="button-element-wrapper">
+            <div>
+                <button data-id="enabled-button" (click)="clickElement($event.target)">Enabled Button in Wrapper</button>
+                <button data-id="disabled-button" (click)="clickElement($event.target)" disabled>Disabled Button in Wrapper</button>
+            </div>
+        </div>
+        <div data-id="button-element-wrapper-non-existent-elements">
+        </div>
+
         <a data-id="link" (click)="clickElement($event.target)">Link</a>
     
         <h1 data-id="h1-element-visible">h1 visible</h1>
@@ -51,7 +65,7 @@
         <p data-id="p-element-text">p text</p>
         <div data-id="div-element-text">div text</div>
         <!--1. It is important that we use the same ids for text elements in wrapper,
-        this way the tests will fail if wrapper does not focus element lookup and picks up global elements instead;-->
+        this way the tests will fail if wrapper does not limit element lookup and picks up global elements instead;-->
         <!--2. It is important that text elements in wrapper are not direct children
         since we want wrappers to look up any descendants;-->
         <!--3. It is important that text element texts are different for global elements and wrapper elements,

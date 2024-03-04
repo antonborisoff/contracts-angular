@@ -20,7 +20,7 @@ import {
   styleUrl: './test.component.css'
 })
 export class TestComponent {
-  private clickedElements: Record<string, boolean> = {}
+  private clickedElements: Record<string, string> = {}
   public formControlUpdateOnChange = this.fb.nonNullable.control<string>('')
   public formControlUpdateOnBlur = this.fb.nonNullable.control<string>('', {
     updateOn: 'blur'
@@ -30,10 +30,11 @@ export class TestComponent {
 
   public clickElement(target: EventTarget | null): void {
     const elementId = (target as HTMLElement).dataset['id'] as string
-    this.clickedElements[elementId] = true
+    const elementText = (target as HTMLElement).textContent as string
+    this.clickedElements[elementId] = elementText
   }
 
-  public isElementClicked(buttonId: string): boolean {
-    return !!this.clickedElements[buttonId]
+  public getElementClicked(buttonId: string): string | undefined {
+    return this.clickedElements[buttonId]
   }
 }
