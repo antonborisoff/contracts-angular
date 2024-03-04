@@ -6,6 +6,9 @@
                 <h4 data-id="contractNumber">{{contract.number}}</h4>
                 <h5>{{'contracts.CONDITIONS_LABEL' | transloco}}</h5>
                 <div data-id="contractConditions">{{contract.conditions}}</div>
+                <div>
+                    <button data-id="deleteContract" (click)="deleteContract(contract.id)">{{'contracts.DELETE_CONTRACT_BUTTON_LABEL' | transloco}}</button>
+                </div>
             </div>
         }   
     </div>
