@@ -1,5 +1,6 @@
 {
     "CONTRACT_LIST_LABEL": "Контракты:",
     "CONDITIONS_LABEL": "Условия:",
-    "NO_CONTRACTS_LABEL": "Нет доступных контрактов"
+    "NO_CONTRACTS_LABEL": "Нет доступных контрактов",
+    "DELETE_CONTRACT_BUTTON_LABEL": "Удалить контракт"
 }

@@ -47,10 +47,21 @@ export class ContractsComponent {
     private contracts$: ContractService,
     private backendErrorHandler: BackendErrorHandlerService
   ) {
+    this.loadContracts()
+  }
+
+  public loadContracts(): void {
     this.contracts$.getContracts().subscribe({
       next: (contracts) => {
         this.contracts = contracts
       },
+      error: () => this.backendErrorHandler.handleError()
+    })
+  }
+
+  public deleteContract(id: string): void {
+    this.contracts$.deleteContract(id).subscribe({
+      next: () => this.loadContracts(),
       error: () => this.backendErrorHandler.handleError()
     })
   }
