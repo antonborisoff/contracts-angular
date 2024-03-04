@@ -26,12 +26,12 @@ import {
   ContractsHarness
 } from './contracts.component.harness'
 import {
-  MessageBoxService
-} from '../../../services/message-box/message-box.service'
+  BackendErrorHandlerService
+} from '../../../services/backend-error-handler/backend-error-handler.service'
 
 describe('ContractsComponent', () => {
   let contractServiceMock: jasmine.SpyObj<ContractService>
-  let messageBoxServiceMock: jasmine.SpyObj<MessageBoxService>
+  let backendErrorHandlerServiceMock: jasmine.SpyObj<BackendErrorHandlerService>
 
   async function initComponent(contracts?: Contract[]): Promise<{
     contractsHarness: ContractsHarness
@@ -56,8 +56,8 @@ describe('ContractsComponent', () => {
           useValue: contractServiceMock
         },
         {
-          provide: MessageBoxService,
-          useValue: messageBoxServiceMock
+          provide: BackendErrorHandlerService,
+          useValue: backendErrorHandlerServiceMock
         }
       ]
     }).compileComponents()
@@ -71,7 +71,7 @@ describe('ContractsComponent', () => {
 
   beforeEach(async () => {
     contractServiceMock = jasmine.createSpyObj<ContractService>('contracts', ['getContracts'])
-    messageBoxServiceMock = jasmine.createSpyObj<MessageBoxService>('messageBoxService', ['error'])
+    backendErrorHandlerServiceMock = jasmine.createSpyObj<BackendErrorHandlerService>('backendErrorHandler', ['handleError'])
   })
 
   it('display list of contracts', async () => {
@@ -108,9 +108,9 @@ describe('ContractsComponent', () => {
     expect(await contractsHarness.elementVisible('noContractsMessage')).toBe(true)
   })
 
-  it('display translated general error if something goes wrong during contract fetch', async () => {
+  it('handle backend error during contracts fetch', async () => {
     await initComponent()
 
-    expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
+    expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
   })
 })

@@ -4,7 +4,6 @@ import {
 import {
   Translation,
   TranslocoPipe,
-  TranslocoService,
   provideTranslocoScope
 } from '@ngneat/transloco'
 import {
@@ -20,8 +19,8 @@ import {
   ContractService
 } from '../../services/contracts/contract.service'
 import {
-  MessageBoxService
-} from '../../services/message-box/message-box.service'
+  BackendErrorHandlerService
+} from '../../services/backend-error-handler/backend-error-handler.service'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'contracts'
 @Component({
@@ -46,16 +45,13 @@ export class ContractsComponent {
   public contracts: Contract[] = []
   public constructor(
     private contracts$: ContractService,
-    private translocoService: TranslocoService,
-    private messageBox: MessageBoxService
+    private backendErrorHandler: BackendErrorHandlerService
   ) {
     this.contracts$.getContracts().subscribe({
       next: (contracts) => {
         this.contracts = contracts
       },
-      error: () => {
-        this.messageBox.error(this.translocoService.translate(`${COMPONENT_TRANSLOCO_SCOPE}.GENERAL_ERROR_MESSAGE`))
-      }
+      error: () => this.backendErrorHandler.handleError()
     })
   }
 }
