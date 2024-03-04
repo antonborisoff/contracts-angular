@@ -1,1 +1,7 @@
 <p data-id="welcomeMessage">{{'home.WELCOME_MESSAGE' | transloco}}</p>
+
+<div>
+    @if(ft.isActive('FT_Contracts')) {
+        <a data-id="navToContractsLink" [routerLink]="['/contracts']">{{'home.GO_TO_CONTRACTS' | transloco}}</a>
+    }
+</div>
