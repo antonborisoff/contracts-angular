@@ -50,6 +50,22 @@
         <h4 data-id="h4-element-text">h4 text</h4>
         <p data-id="p-element-text">p text</p>
         <div data-id="div-element-text">div text</div>
+        <!--1. It is important that we use the same ids for text elements in wrapper,
+        this way the tests will fail if wrapper does not focus element lookup and picks up global elements instead;-->
+        <!--2. It is important that text elements in wrapper are not direct children
+        since we want wrappers to look up any descendants;-->
+        <!--3. It is important that text element texts are different for global elements and wrapper elements,
+        this is how we differentiate between them in tests;-->
+        <div data-id="text-element-wrapper">
+            <div>
+                <h1 data-id="h1-element-text">h1 text in wrapper</h1>
+                <h4 data-id="h4-element-text">h4 text in wrapper</h4>
+                <p data-id="p-element-text">p text in wrapper</p>
+                <div data-id="div-element-text">div text in wrapper</div>
+            </div>
+        </div>
+        <div data-id="text-element-wrapper-non-existent-elements">
+        </div>
     
         <div>
             <div>Form control with update on change:</div>
