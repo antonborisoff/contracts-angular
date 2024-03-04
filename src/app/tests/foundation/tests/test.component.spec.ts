@@ -121,6 +121,14 @@ describe('Base harness', () => {
     await expectAsync(baseHarness.elementChildCount('div-child-count-grandchild-present-non-existent')).toBeRejected()
   })
 
+  it('elementChildCount', async () => {
+    await expectAsync(baseHarness.elementChildCount('div-child-count-no-grandchild-present')).toBeResolvedTo(2)
+    await expectAsync(baseHarness.elementChildCount('div-child-count-grandchild-present')).toBeResolvedTo(2)
+
+    await expectAsync(baseHarness.elementChildCount('div-child-count-no-grandchild-present-non-existent')).toBeRejected()
+    await expectAsync(baseHarness.elementChildCount('div-child-count-grandchild-present-non-existent')).toBeRejected()
+  })
+
   it('enterValue - updateOn: change', async () => {
     let formValuesOnChange: string[] = []
     testComponent.formControlUpdateOnChange.valueChanges.subscribe((value: string) => {
