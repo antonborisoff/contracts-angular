@@ -4,7 +4,6 @@ import {
 import {
   Translation,
   TranslocoPipe,
-  TranslocoService,
   provideTranslocoScope
 } from '@ngneat/transloco'
 import {
@@ -28,8 +27,8 @@ import {
   Router
 } from '@angular/router'
 import {
-  MessageBoxService
-} from '../../services/message-box/message-box.service'
+  BackendErrorHandlerService
+} from '../../services/backend-error-handler/backend-error-handler.service'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'login'
 @Component({
@@ -56,8 +55,7 @@ export class LoginComponent {
   public constructor(
     private fb: FormBuilder,
     private auth$: AuthService,
-    private messageBox: MessageBoxService,
-    private translocoService: TranslocoService,
+    private backendErrorHandler: BackendErrorHandlerService,
     private router: Router
   ) {
     this.loginForm = this.fb.nonNullable.group({
@@ -85,7 +83,7 @@ export class LoginComponent {
           this.incorrectLoginOrPassword = true
         }
         else {
-          this.messageBox.error(this.translocoService.translate(`${COMPONENT_TRANSLOCO_SCOPE}.GENERAL_ERROR_MESSAGE`))
+          this.backendErrorHandler.handleError()
         }
       }
     })

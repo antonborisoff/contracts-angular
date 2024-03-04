@@ -1,5 +1,4 @@
 {
     "HELLO": "Hello, {{value}} component en",
-    "LOGOUT_BUTTON": "Logout",
-    "LOGOUT_ERROR_MESSAGE": "Failed to logout."
+    "LOGOUT_BUTTON": "Logout"
 }

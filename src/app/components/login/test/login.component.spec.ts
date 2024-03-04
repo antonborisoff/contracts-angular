@@ -32,12 +32,12 @@ import {
   Router
 } from '@angular/router'
 import {
-  MessageBoxService
-} from '../../../services/message-box/message-box.service'
+  BackendErrorHandlerService
+} from '../../../services/backend-error-handler/backend-error-handler.service'
 
 describe('LoginComponent', () => {
   let authServiceMock: jasmine.SpyObj<AuthService>
-  let messageBoxServiceMock: jasmine.SpyObj<MessageBoxService>
+  let backendErrorHandlerServiceMock: jasmine.SpyObj<BackendErrorHandlerService>
   const VALID_CREDS = {
     login: 'my_login',
     password: 'my_password'
@@ -59,8 +59,8 @@ describe('LoginComponent', () => {
           useValue: authServiceMock
         },
         {
-          provide: MessageBoxService,
-          useValue: messageBoxServiceMock
+          provide: BackendErrorHandlerService,
+          useValue: backendErrorHandlerServiceMock
         }
       ]
     }).compileComponents()
@@ -88,7 +88,7 @@ describe('LoginComponent', () => {
       }
     })
 
-    messageBoxServiceMock = jasmine.createSpyObj<MessageBoxService>('messageBoxService', ['error'])
+    backendErrorHandlerServiceMock = jasmine.createSpyObj<BackendErrorHandlerService>('backendErrorHandler', ['handleError'])
   })
 
   it('enable/disable login button based on form validity', async () => {
@@ -192,7 +192,7 @@ describe('LoginComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/home'])
   })
 
-  it('display translated general error if something goes wrong during login', async () => {
+  it('handle backend error during login', async () => {
     authServiceMock.login.and.callFake(() => {
       return throwError(() => new HttpErrorResponse({
         status: 500
@@ -205,6 +205,6 @@ describe('LoginComponent', () => {
     await loginHarness.enterValue('loginInput', VALID_CREDS.login)
     await loginHarness.enterValue('passwordInput', VALID_CREDS.password)
     await loginHarness.clickButton('loginButton')
-    expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
+    expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
   })
 })

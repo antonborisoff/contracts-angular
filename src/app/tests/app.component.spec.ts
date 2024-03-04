@@ -29,13 +29,13 @@ import {
   TestbedHarnessEnvironment
 } from '@angular/cdk/testing/testbed'
 import {
-  MessageBoxService
-} from '../services/message-box/message-box.service'
+  BackendErrorHandlerService
+} from '../services/backend-error-handler/backend-error-handler.service'
 
 describe('AppComponent', () => {
   let isAuthMock: BehaviorSubject<boolean>
   let authServiceMock: jasmine.SpyObj<AuthService>
-  let messageBoxServiceMock: jasmine.SpyObj<MessageBoxService>
+  let backendErrorHandlerServiceMock: jasmine.SpyObj<BackendErrorHandlerService>
 
   async function initComponent(): Promise<{
     appHarness: AppHarness
@@ -53,8 +53,8 @@ describe('AppComponent', () => {
           useValue: authServiceMock
         },
         {
-          provide: MessageBoxService,
-          useValue: messageBoxServiceMock
+          provide: BackendErrorHandlerService,
+          useValue: backendErrorHandlerServiceMock
         }
       ]
     }).compileComponents()
@@ -78,7 +78,7 @@ describe('AppComponent', () => {
     authServiceMock.isAuth.and.returnValue(isAuthMock)
     authServiceMock.logout.and.returnValue(of(undefined))
 
-    messageBoxServiceMock = jasmine.createSpyObj<MessageBoxService>('messageBoxService', ['error'])
+    backendErrorHandlerServiceMock = jasmine.createSpyObj<BackendErrorHandlerService>('backendErrorHandler', ['handleError'])
   })
 
   it('display translated welcome message', async () => {
@@ -99,7 +99,7 @@ describe('AppComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/login'])
   })
 
-  it('display translated error message on failed logout', async () => {
+  it('handle backend error during logout', async () => {
     authServiceMock.logout.and.returnValue(throwError(() => {
       return new Error('some error')
     }))
@@ -108,7 +108,7 @@ describe('AppComponent', () => {
     } = await initComponent()
 
     await appHarness.clickButton('logoutButton')
-    expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Failed to logout.')
+    expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
   })
 
   it('display welcome message and logout button only to authenticated user', async () => {

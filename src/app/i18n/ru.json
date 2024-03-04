@@ -1,5 +1,4 @@
 {
     "HELLO": "Hello, {{value}} component ru",
-    "LOGOUT_BUTTON": "Выйти",
-    "LOGOUT_ERROR_MESSAGE": "Не удалось выйти."
+    "LOGOUT_BUTTON": "Выйти"
 }
