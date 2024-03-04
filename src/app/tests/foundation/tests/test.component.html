@@ -60,6 +60,16 @@
         <button data-id="button-element-class-display-none" class="displayNone">button hidden via class display: none</button>
         <button data-id="button-element-class-visibility-hidden" class="visibilityHidden">button hidden via class visibility: hidden</button>
         
+        <a data-id="a-element-visible">a visible</a>
+        @if(false){
+            <a data-id="a-element-invisible-if">a hidden via ngIf</a>
+        }
+        <a data-id="a-element-hidden" hidden>a hidden via 'hidden' attribute</a>
+        <a data-id="a-element-style-display-none" style="display: none;">a hidden via inline display: none</a>
+        <a data-id="a-element-style-visibility-hidden" style="visibility: hidden;">a hidden via inline visibility: hidden</a>
+        <a data-id="a-element-class-display-none" class="displayNone">a hidden via class display: none</a>
+        <a data-id="a-element-class-visibility-hidden" class="visibilityHidden">a hidden via class visibility: hidden</a>
+
         <h1 data-id="h1-element-text">h1 text</h1>
         <h4 data-id="h4-element-text">h4 text</h4>
         <p data-id="p-element-text">p text</p>
