@@ -25,6 +25,7 @@ app.route('/api/auth/login').post(authRoutes.login)
 app.route('/api/auth/logout').post(authRoutes.logout)
 
 app.route('/api/contracts').get(contractRoutes.getContracts)
+app.route('/api/contracts/:contractId').delete(contractRoutes.deleteContract)
 
 const port = 9000
 app.listen(port, () => {
