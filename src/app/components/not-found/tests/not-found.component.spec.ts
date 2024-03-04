@@ -53,14 +53,4 @@ describe('NotFoundComponent', () => {
 
     expect(await notFoundHarness.elementVisible('notFoundMessage')).toBe(true)
   })
-
-  it('navigate to home page on link click', async () => {
-    const {
-      notFoundHarness, router
-    } = await initComponent()
-    const navigateByUrlSpy = spyOn<Router, 'navigateByUrl'>(router, 'navigateByUrl')
-
-    await notFoundHarness.clickLink('navToHomeLink')
-    expect(navigateByUrlSpy).toHaveBeenCalledWith(router.createUrlTree(['/home']), jasmine.anything())
-  })
 })

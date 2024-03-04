@@ -1,14 +1,21 @@
 <div class="componentBorder">
   @if(isAuth | async) {
-    <h1
-      data-id="welcomeMessage">
-        {{ 'app.HELLO' | transloco:{value: title} }}
-    </h1>
-    <button
-      data-id="logoutButton"
-      (click)="onLogout()">
-        {{'app.LOGOUT_BUTTON' | transloco}}
-    </button>
+    <div data-id="appHeader">
+      <a
+        data-id="navToHomeLink"
+        [routerLink]="['/home']"
+        routerLinkActive="goHomeLinkHidden"
+        [routerLinkActiveOptions]="{exact: true}">{{'app.GO_HOME' | transloco}}</a>
+      <h1
+        data-id="welcomeMessage">
+          {{ 'app.HELLO' | transloco:{value: title} }}
+      </h1>
+      <button
+        data-id="logoutButton"
+        (click)="onLogout()">
+          {{'app.LOGOUT_BUTTON' | transloco}}
+      </button>
+    </div>
   }  
   <router-outlet />
 </div>
