@@ -13,6 +13,12 @@ import {
 import {
   authCanActivateGuard
 } from './guards/auth.can-activate.guard'
+import {
+  featureCanMatchGuard
+} from './guards/feature.can-match.guard'
+import {
+  ContractsComponent
+} from './components/contracts/contracts.component'
 
 export const routes: Routes = [
   {
@@ -24,6 +30,12 @@ export const routes: Routes = [
     path: 'home',
     canActivate: [authCanActivateGuard],
     component: HomeComponent
+  },
+  {
+    path: 'contracts',
+    canActivate: [authCanActivateGuard],
+    canMatch: [featureCanMatchGuard(['FT_Contracts'])],
+    component: ContractsComponent
   },
   {
     path: 'login',
