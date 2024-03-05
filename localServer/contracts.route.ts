@@ -18,5 +18,13 @@ export const contractRoutes = {
       return contract.id !== contractId
     })
     res.status(200).end()
+  },
+  createContract: function (req: Request, res: Response): void {
+    const contract = req.body
+    contract.id = `contract_${Math.floor(Math.random() * 10000)}`
+    currentContracts.push(contract)
+    res.status(200).json({
+      id: contract.id
+    })
   }
 }

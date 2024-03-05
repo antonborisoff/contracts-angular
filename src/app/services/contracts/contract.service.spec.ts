@@ -96,4 +96,27 @@ describe('ContractService', () => {
     expect(testRequest.request.method).toBe('DELETE')
     httpTestingController.verify()
   })
+
+  it('createContract dispatches request properly', () => {
+    const {
+      service, httpTestingController
+    } = initService()
+    const contractToCreate = {
+      number: 'APX_300',
+      conditions: '3 year labour contract'
+    }
+    const contractId = 'some_contract_id'
+    let contractIdCreated: string = ''
+
+    service.createContract(contractToCreate).subscribe(id => contractIdCreated = id)
+    const testRequest = httpTestingController.expectOne(`${endpointPath}`)
+    expect(testRequest.request.method).toBe('POST')
+
+    testRequest.flush({
+      id: contractId
+    })
+    expect(contractIdCreated).toBe(contractId)
+
+    httpTestingController.verify()
+  })
 })
