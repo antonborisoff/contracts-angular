@@ -58,6 +58,20 @@ describe('FeatureToggleService', () => {
     expect(service.isActive('FT_A')).toBe(false)
     expect(service.isActive('FT_B')).toBe(true)
   })
+
+  it('isActive and throw if inactive', () => {
+    const isActiveSpy = spyOn<FeatureToggleService, 'isActive'>(service, 'isActive')
+    isActiveSpy.withArgs('FT_A').and.returnValue(false)
+    isActiveSpy.withArgs('FT_B').and.returnValue(true)
+
+    expect(() => {
+      service.throwIfInactive('FT_A')
+    }).toThrowError('feature inactive')
+
+    expect(() => {
+      service.throwIfInactive('FT_B')
+    }).not.toThrow()
+  })
 })
 
 describe('FeatureToggleService - creation', () => {
