@@ -5,7 +5,8 @@ import {
   Injectable
 } from '@angular/core'
 import {
-  Observable
+  Observable,
+  map
 } from 'rxjs'
 import {
   Contract
@@ -34,5 +35,11 @@ export class ContractService {
 
   public deleteContract(id: string): Observable<void> {
     return this.http.delete<void>(`${this.endpointPath}/${id}`)
+  }
+
+  public createContract(contract: Omit<Contract, 'id'>): Observable<string> {
+    return this.http.post<{ id: string }>(`${this.endpointPath}`, contract).pipe(
+      map(x => x.id)
+    )
   }
 }
