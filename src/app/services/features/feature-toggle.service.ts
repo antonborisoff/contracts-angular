@@ -38,7 +38,15 @@ export class FeatureToggleService {
     this.activeFeatures = []
   }
 
+  // useful for components and templates
   public isActive(feature: string): boolean {
     return this.activeFeatures.includes(feature)
+  }
+
+  // useful for services
+  public throwIfInactive(feature: string): void {
+    if (!this.isActive(feature)) {
+      throw new Error('feature inactive')
+    }
   }
 }

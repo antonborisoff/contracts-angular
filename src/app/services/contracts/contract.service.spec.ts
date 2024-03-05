@@ -18,12 +18,13 @@ import {
 
 describe('ContractService', () => {
   let featureToggleServiceMock: jasmine.SpyObj<FeatureToggleService>
+  let service: ContractService
+  let httpTestingController: HttpTestingController
   const endpointPath = '/api/contracts'
 
-  function initService(): {
-    service: ContractService
-    httpTestingController: HttpTestingController
-  } {
+  beforeEach(() => {
+    featureToggleServiceMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['throwIfInactive'])
+    featureToggleServiceMock.throwIfInactive.withArgs('FT_Contracts').and.returnValue()
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [{
@@ -31,32 +32,15 @@ describe('ContractService', () => {
         useValue: featureToggleServiceMock
       }]
     })
-    const service = TestBed.inject(ContractService)
-    const httpTestingController = TestBed.inject(HttpTestingController)
-    return {
-      service,
-      httpTestingController
-    }
-  }
-
-  beforeEach(() => {
-    featureToggleServiceMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['isActive'])
-    featureToggleServiceMock.isActive.withArgs('FT_Contracts').and.returnValue(true)
+    service = TestBed.inject(ContractService)
+    httpTestingController = TestBed.inject(HttpTestingController)
   })
 
-  it('service cannot be used when feature is inactive', () => {
-    featureToggleServiceMock.isActive.withArgs('FT_Contracts').and.returnValue(false)
-
-    expect(() => {
-      initService()
-    }).toThrowError('Feature is inactive')
+  afterEach(() => {
+    httpTestingController.verify()
   })
 
-  it('getContracts dispatches request properly and returns expected data', () => {
-    const {
-      service, httpTestingController
-    } = initService()
-
+  it('FT_Contracts ON - getContracts dispatches request properly and returns expected data', () => {
     const expectedContracts: Contract[] = [
       {
         id: 'test_a',
@@ -82,25 +66,17 @@ describe('ContractService', () => {
     expectedContracts.forEach((expectedContract) => {
       expect(actualContracts).toContain(jasmine.objectContaining(expectedContract))
     })
-    httpTestingController.verify()
   })
 
-  it('deleteContract dispatches request properly', () => {
-    const {
-      service, httpTestingController
-    } = initService()
+  it('FT_Contracts ON - deleteContract dispatches request properly', () => {
     const contractId = 'some_contract_id'
 
     service.deleteContract(contractId).subscribe()
     const testRequest = httpTestingController.expectOne(`${endpointPath}/${contractId}`)
     expect(testRequest.request.method).toBe('DELETE')
-    httpTestingController.verify()
   })
 
-  it('createContract dispatches request properly', () => {
-    const {
-      service, httpTestingController
-    } = initService()
+  it('FT_Contracts ON - createContract dispatches request properly', () => {
     const contractToCreate = {
       number: 'APX_300',
       conditions: '3 year labour contract'
@@ -116,7 +92,25 @@ describe('ContractService', () => {
       id: contractId
     })
     expect(contractIdCreated).toBe(contractId)
+  })
 
-    httpTestingController.verify()
+  it('FT_Contracts OFF - all methods throw error', () => {
+    const errorMessage = 'Feature inactive'
+    featureToggleServiceMock.throwIfInactive.withArgs('FT_Contracts').and.throwError(errorMessage)
+
+    expect(() => {
+      service.getContracts()
+    }).toThrowError(errorMessage)
+
+    expect(() => {
+      service.deleteContract('some_contract_id')
+    }).toThrowError(errorMessage)
+
+    expect(() => {
+      service.createContract({
+        number: 'some number',
+        conditions: 'some conditionss'
+      })
+    }).toThrowError(errorMessage)
   })
 })
