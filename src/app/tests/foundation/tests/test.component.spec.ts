@@ -175,4 +175,18 @@ describe('Base harness', () => {
     await expectAsync(baseHarness.enterValue('input-element-update-on-blur-non-existent', '')).toBeRejected()
     expect(formValuesOnBlur.pop()).toBeUndefined()
   })
+
+  it('actOnMessageBox', async () => {
+    expect(await baseHarness.elementText('message-box-confirmation-status')).toBe('Rejected')
+
+    await baseHarness.actOnMessageBox(async () => {
+      await baseHarness.clickButton('button-triggers-message-box-confirmation')
+    }, 'confirm')
+    expect(await baseHarness.elementText('message-box-confirmation-status')).toBe('Confirmed')
+
+    await baseHarness.actOnMessageBox(async () => {
+      await baseHarness.clickButton('button-triggers-message-box-confirmation')
+    }, 'cancel')
+    expect(await baseHarness.elementText('message-box-confirmation-status')).toBe('Rejected')
+  })
 })

@@ -112,6 +112,11 @@
             </div>
             <div>child 2</div>
         </div>
+
+        <div>
+            <button data-id="button-triggers-message-box-confirmation" (click)="onConfirm('Are you sure?')">Confirm button</button>
+            <div data-id="message-box-confirmation-status">{{messageBoxConfirmed ? 'Confirmed' : 'Rejected'}}</div>
+        </div>
     </div>
 </ng-template>
 
