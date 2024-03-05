@@ -2,8 +2,5 @@
     "LOGIN_PLACEHOLDER": "Логин",
     "PASSWORD_PLACEHOLDER": "Пароль",
     "LOGIN_BUTTON_LABEL": "Войти",
-    "VALIDATION_ERRORS": {
-        "EMPTY_VALUE": "Пожалуйста, укажите непустое значение"
-    },
     "INVALID_CREDS": "Неверный логин или пароль"
 }
