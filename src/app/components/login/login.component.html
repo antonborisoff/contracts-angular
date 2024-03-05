@@ -6,7 +6,7 @@
                 formControlName="login"/>
             @if(loginForm.controls.login.errors && loginForm.controls.login.dirty) {
                 @if(loginForm.controls.login.errors['requiredAfterTrim']) {
-                    <div data-id="loginErrorEmpty">{{'login.VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</div>
+                    <div data-id="loginErrorEmpty">{{'VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</div>
                 }
             }
         </div>
@@ -17,7 +17,7 @@
                 formControlName="password"/>
             @if(loginForm.controls.password.errors && loginForm.controls.password.dirty) {
                 @if(loginForm.controls.password.errors['required']) {
-                    <div data-id="passwordErrorEmpty">{{'login.VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</div>
+                    <div data-id="passwordErrorEmpty">{{'VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</div>
                 }
             }
         </div>
