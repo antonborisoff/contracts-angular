@@ -4,6 +4,7 @@ import {
 import {
   Translation,
   TranslocoPipe,
+  TranslocoService,
   provideTranslocoScope
 } from '@ngneat/transloco'
 import {
@@ -21,6 +22,9 @@ import {
 import {
   BackendErrorHandlerService
 } from '../../services/backend-error-handler/backend-error-handler.service'
+import {
+  MessageBoxService
+} from '../../services/message-box/message-box.service'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'contracts'
 @Component({
@@ -45,7 +49,9 @@ export class ContractsComponent {
   public contracts: Contract[] = []
   public constructor(
     private contracts$: ContractService,
-    private backendErrorHandler: BackendErrorHandlerService
+    private backendErrorHandler: BackendErrorHandlerService,
+    private mb: MessageBoxService,
+    private ts: TranslocoService
   ) {
     this.loadContracts()
   }
@@ -60,9 +66,13 @@ export class ContractsComponent {
   }
 
   public deleteContract(id: string): void {
-    this.contracts$.deleteContract(id).subscribe({
-      next: () => this.loadContracts(),
-      error: () => this.backendErrorHandler.handleError()
+    this.mb.confirm(this.ts.translate('CONFIRM_DELETE_MESSAGE'), (confirmed) => {
+      if (confirmed) {
+        this.contracts$.deleteContract(id).subscribe({
+          next: () => this.loadContracts(),
+          error: () => this.backendErrorHandler.handleError()
+        })
+      }
     })
   }
 }

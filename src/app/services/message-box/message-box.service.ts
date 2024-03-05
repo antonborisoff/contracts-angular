@@ -12,4 +12,8 @@ export class MessageBoxService {
     console.error(message)
     alert(message)
   }
+
+  public confirm(message: string, onHandle: (confirmed: boolean) => void): void {
+    onHandle(window.confirm(message))
+  }
 }

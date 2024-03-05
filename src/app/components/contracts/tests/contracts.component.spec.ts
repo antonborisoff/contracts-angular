@@ -129,7 +129,27 @@ describe('ContractsComponent', () => {
     contractServiceMock.deleteContract.withArgs(contractToDelete.id).and.returnValue(of(void 0))
     contractServiceMock.getContracts.and.returnValue(of(expectedContracts))
 
-    await contractsHarness.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
+    await contractsHarness.actOnMessageBox(async () => {
+      await contractsHarness.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
+    }, 'confirm')
+    expect(await contractsHarness.elementChildCount('contractList')).toBe(expectedContracts.length)
+    for (const expectedContract of expectedContracts) {
+      expect(await contractsHarness.inElement(`contract-${expectedContract.id}`).elementText('contractNumber')).toBe(expectedContract.number)
+      expect(await contractsHarness.inElement(`contract-${expectedContract.id}`).elementText('contractConditions')).toBe(expectedContract.conditions)
+    }
+  })
+
+  it('contract delete - cancel', async () => {
+    const {
+      contractsHarness
+    } = await initComponent(CONTRACTS)
+
+    const contractToDelete = CONTRACTS[1]
+    const expectedContracts = CONTRACTS
+
+    await contractsHarness.actOnMessageBox(async () => {
+      await contractsHarness.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
+    }, 'cancel')
     expect(await contractsHarness.elementChildCount('contractList')).toBe(expectedContracts.length)
     for (const expectedContract of expectedContracts) {
       expect(await contractsHarness.inElement(`contract-${expectedContract.id}`).elementText('contractNumber')).toBe(expectedContract.number)
@@ -147,7 +167,9 @@ describe('ContractsComponent', () => {
       return new Error('some error')
     }))
 
-    await contractsHarness.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
+    await contractsHarness.actOnMessageBox(async () => {
+      await contractsHarness.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
+    }, 'confirm')
     expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
   })
 })

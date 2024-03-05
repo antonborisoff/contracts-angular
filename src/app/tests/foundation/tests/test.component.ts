@@ -8,6 +8,9 @@ import {
   FormBuilder,
   ReactiveFormsModule
 } from '@angular/forms'
+import {
+  MessageBoxService
+} from '../../../services/message-box/message-box.service'
 
 @Component({
   selector: 'app-test-component',
@@ -26,7 +29,12 @@ export class TestComponent {
     updateOn: 'blur'
   })
 
-  public constructor(private fb: FormBuilder) {}
+  public messageBoxConfirmed = false
+
+  public constructor(
+    private fb: FormBuilder,
+    private mb: MessageBoxService
+  ) {}
 
   public clickElement(target: EventTarget | null): void {
     const elementId = (target as HTMLElement).dataset['id'] as string
@@ -36,5 +44,11 @@ export class TestComponent {
 
   public getElementClicked(buttonId: string): string | undefined {
     return this.clickedElements[buttonId]
+  }
+
+  public onConfirm(message: string): void {
+    this.mb.confirm(message, (confirmed) => {
+      this.messageBoxConfirmed = confirmed
+    })
   }
 }

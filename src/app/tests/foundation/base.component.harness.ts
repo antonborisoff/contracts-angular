@@ -58,6 +58,23 @@ export class BaseHarness extends ComponentHarness {
     }
   }
 
+  public async actOnMessageBox(fn: () => Promise<void>, action: 'confirm' | 'cancel'): Promise<void> {
+    const windowConfirmOriginal = window.confirm
+    /* eslint-disable-next-line jasmine/no-unsafe-spy */
+    const confirmSpy = spyOn<typeof window, 'confirm'>(window, 'confirm')
+    if (action === 'confirm') {
+      confirmSpy.and.returnValue(true)
+    }
+    if (action === 'cancel') {
+      confirmSpy.and.returnValue(false)
+    }
+
+    await fn()
+
+    // restore window.confirm manually since Jasmine doesn't provide unspy method
+    window.confirm = windowConfirmOriginal
+  }
+
   /********************************
    * ASSERTIONS
    *******************************/
