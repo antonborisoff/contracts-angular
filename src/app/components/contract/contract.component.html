@@ -1,0 +1,29 @@
+<div class="componentBorder">
+    <div data-id="createContainer">
+        <form [formGroup]="contractForm" (ngSubmit)="onCreate()">
+            <div>
+                <input data-id="numberInput"
+                    placeholder="{{'contract.CONTRACT_NUMBER_PLACEHOLDER' | transloco}}" 
+                    formControlName="number"/>
+                @if(contractForm.controls.number.errors && contractForm.controls.number.dirty) {
+                    @if(contractForm.controls.number.errors['requiredAfterTrim']) {
+                        <div data-id="numberErrorEmpty">{{'VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</div>
+                    }
+                }
+            </div>
+            <div>
+                <input data-id="conditionsInput"
+                    placeholder="{{'contract.CONTRACT_CONDITIONS_PLACEHOLDER' | transloco}}" 
+                    formControlName="conditions"/>
+                @if(contractForm.controls.conditions.errors && contractForm.controls.conditions.dirty) {
+                    @if(contractForm.controls.conditions.errors['requiredAfterTrim']) {
+                        <div data-id="conditionsErrorEmpty">{{'VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</div>
+                    }
+                }
+            </div>
+            <button data-id="createContractButton"
+                [disabled]="contractForm.invalid"
+                type="submit">{{'contract.CREATE_BUTTON_LABEL' | transloco}}</button>
+        </form>
+    </div>
+</div>
