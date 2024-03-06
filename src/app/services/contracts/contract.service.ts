@@ -30,6 +30,11 @@ export class ContractService {
     return this.http.get<Contract[]>(this.endpointPath)
   }
 
+  public getContract(id: string): Observable<Contract> {
+    this.ft.throwIfInactive('FT_Contracts')
+    return this.http.get<Contract>(`${this.endpointPath}/${id}`)
+  }
+
   public deleteContract(id: string): Observable<void> {
     this.ft.throwIfInactive('FT_Contracts')
     return this.http.delete<void>(`${this.endpointPath}/${id}`)
@@ -40,5 +45,10 @@ export class ContractService {
     return this.http.post<{ id: string }>(`${this.endpointPath}`, contract).pipe(
       map(x => x.id)
     )
+  }
+
+  public updateContract(id: string, contract: Omit<Contract, 'id'>): Observable<void> {
+    this.ft.throwIfInactive('FT_Contracts')
+    return this.http.put<void>(`${this.endpointPath}/${id}`, contract)
   }
 }

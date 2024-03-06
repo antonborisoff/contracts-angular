@@ -68,6 +68,24 @@ describe('ContractService', () => {
     })
   })
 
+  it('FT_Contracts ON - getContract dispatches request properly and returns expected data', () => {
+    const expectedContract: Contract = {
+      id: 'test_a',
+      number: 'testA',
+      conditions: 'test a'
+    }
+    let actualContract: Contract | undefined
+
+    service.getContract(expectedContract.id).subscribe((contract) => {
+      actualContract = contract
+    })
+    const testRequest = httpTestingController.expectOne(`${endpointPath}/${expectedContract.id}`)
+    expect(testRequest.request.method).toBe('GET')
+
+    testRequest.flush(expectedContract)
+    expect(actualContract).toEqual(jasmine.objectContaining(expectedContract))
+  })
+
   it('FT_Contracts ON - deleteContract dispatches request properly', () => {
     const contractId = 'some_contract_id'
 
@@ -87,11 +105,25 @@ describe('ContractService', () => {
     service.createContract(contractToCreate).subscribe(id => contractIdCreated = id)
     const testRequest = httpTestingController.expectOne(`${endpointPath}`)
     expect(testRequest.request.method).toBe('POST')
+    expect(testRequest.request.body).toEqual(jasmine.objectContaining(contractToCreate))
 
     testRequest.flush({
       id: contractId
     })
     expect(contractIdCreated).toBe(contractId)
+  })
+
+  it('FT_Contracts ON - updateContract dispatches request properly', () => {
+    const updatedContract = {
+      number: 'APX_300_AB',
+      conditions: '3 year labour contract (edited)'
+    }
+    const contractId = 'some_contract_id'
+
+    service.updateContract(contractId, updatedContract).subscribe()
+    const testRequest = httpTestingController.expectOne(`${endpointPath}/${contractId}`)
+    expect(testRequest.request.method).toBe('PUT')
+    expect(testRequest.request.body).toEqual(jasmine.objectContaining(updatedContract))
   })
 
   it('FT_Contracts OFF - all methods throw error', () => {
@@ -103,11 +135,22 @@ describe('ContractService', () => {
     }).toThrowError(errorMessage)
 
     expect(() => {
+      service.getContract('some_contract_id')
+    }).toThrowError(errorMessage)
+
+    expect(() => {
       service.deleteContract('some_contract_id')
     }).toThrowError(errorMessage)
 
     expect(() => {
       service.createContract({
+        number: 'some number',
+        conditions: 'some conditionss'
+      })
+    }).toThrowError(errorMessage)
+
+    expect(() => {
+      service.updateContract('some_contract_id', {
         number: 'some number',
         conditions: 'some conditionss'
       })
