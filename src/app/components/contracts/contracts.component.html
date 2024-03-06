@@ -1,4 +1,7 @@
 <div class="componentBorder">
+    <button data-id="addContractButton"
+        type="button"
+        (click)="addContract()">{{'contracts.ADD_CONTRACT_BUTTON_LABEL' | transloco}}</button>
     <div>{{'contracts.CONTRACT_LIST_LABEL' | transloco}}</div>
     <div data-id="contractList">
         @for (contract of contracts; track contract.id) {

@@ -25,6 +25,9 @@ import {
 import {
   MessageBoxService
 } from '../../services/message-box/message-box.service'
+import {
+  Router
+} from '@angular/router'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'contracts'
 @Component({
@@ -50,6 +53,7 @@ export class ContractsComponent {
   public constructor(
     private contracts$: ContractService,
     private backendErrorHandler: BackendErrorHandlerService,
+    private router: Router,
     private mb: MessageBoxService,
     private ts: TranslocoService
   ) {
@@ -74,5 +78,9 @@ export class ContractsComponent {
         })
       }
     })
+  }
+
+  public addContract(): void {
+    this.router.navigate(['/contract'])
   }
 }
