@@ -1,6 +1,7 @@
 {
     "GENERAL_ERROR_MESSAGE": "Что-то пошло не так.",
     "CONFIRM_DELETE_MESSAGE": "Вы уверены, что хотите удалить эту сущность?",
+    "CANCEL_BUTTON_LABEL": "Отменить",
     "VALIDATION_ERRORS": {
         "EMPTY_VALUE": "Пожалуйста, укажите непустое значение"
     }

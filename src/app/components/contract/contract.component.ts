@@ -82,4 +82,8 @@ export class ContractComponent {
       error: () => this.backendErrorHandler.handleError()
     })
   }
+
+  public onCancelCreate(): void {
+    this.nb.back()
+  }
 }

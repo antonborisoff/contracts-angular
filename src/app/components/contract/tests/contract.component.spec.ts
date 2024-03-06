@@ -195,6 +195,21 @@ describe('ContractComponent', () => {
     await contractHarness.enterValue('conditionsInput', contractToCreate.conditions)
     await contractHarness.clickButton('createContractButton')
     expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
-    expect(navigationBackServiceMock.back).not.toHaveBeenCalledWith()
+    expect(navigationBackServiceMock.back).not.toHaveBeenCalled()
+  })
+
+  it('navigate back on cancel', async () => {
+    const {
+      contractHarness
+    } = await initComponent()
+    const contractToCreate = {
+      number: 'APX3000',
+      conditions: '3 year labour contract'
+    }
+
+    await contractHarness.enterValue('numberInput', contractToCreate.number)
+    await contractHarness.enterValue('conditionsInput', contractToCreate.conditions)
+    await contractHarness.clickButton('cancelCreateContractButton')
+    expect(navigationBackServiceMock.back).toHaveBeenCalledWith()
   })
 })
