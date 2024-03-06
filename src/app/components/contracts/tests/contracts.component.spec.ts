@@ -201,13 +201,11 @@ describe('ContractsComponent', () => {
     const contractToEdit = CONTRACTS[1]
 
     await contractsHarness.inElement(`contract-${contractToEdit.id}`).clickButton('editContract')
-    expect(navigateSpy).toHaveBeenCalledWith([
-      '/contract',
+    expect(navigateSpy).toHaveBeenCalledWith(['/contract'],
       jasmine.objectContaining({
         queryParams: {
           contractId: contractToEdit.id
         }
-      })
-    ])
+      }))
   })
 })
