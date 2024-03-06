@@ -19,6 +19,9 @@ import {
 import {
   ContractsComponent
 } from './components/contracts/contracts.component'
+import {
+  ContractComponent
+} from './components/contract/contract.component'
 
 export const routes: Routes = [
   {
@@ -36,6 +39,12 @@ export const routes: Routes = [
     canActivate: [authCanActivateGuard],
     canMatch: [featureCanMatchGuard(['FT_Contracts'])],
     component: ContractsComponent
+  },
+  {
+    path: 'contract',
+    canActivate: [authCanActivateGuard],
+    canMatch: [featureCanMatchGuard(['FT_Contracts'])],
+    component: ContractComponent
   },
   {
     path: 'login',
