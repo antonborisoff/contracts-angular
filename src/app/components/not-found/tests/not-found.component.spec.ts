@@ -18,14 +18,10 @@ import {
 import {
   RouterTestingModule
 } from '@angular/router/testing'
-import {
-  Router
-} from '@angular/router'
 
 describe('NotFoundComponent', () => {
   async function initComponent(): Promise<{
     notFoundHarness: NotFoundHarness
-    router: Router
   }> {
     await TestBed.configureTestingModule({
       imports: [
@@ -36,13 +32,10 @@ describe('NotFoundComponent', () => {
       providers: []
     }).compileComponents()
 
-    const router = TestBed.inject(Router)
-
     const fixture = TestBed.createComponent(NotFoundComponent)
     const notFoundHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, NotFoundHarness)
     return {
-      notFoundHarness,
-      router
+      notFoundHarness
     }
   }
 

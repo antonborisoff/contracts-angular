@@ -22,21 +22,26 @@ import {
   RouterTestingModule
 } from '@angular/router/testing'
 import {
-  Router
-} from '@angular/router'
+  Location
+} from '@angular/common'
+import {
+  TestComponent
+} from '../../../tests/utils'
 
 describe('HomeComponent', () => {
   let featureToggleServiceMock: jasmine.SpyObj<FeatureToggleService>
 
   async function initComponent(): Promise<{
     homeHarness: HomeHarness
-    router: Router
   }> {
     await TestBed.configureTestingModule({
       imports: [
         HomeComponent,
         getTranslocoTestingModule(HomeComponent, en),
-        RouterTestingModule.withRoutes([])
+        RouterTestingModule.withRoutes([{
+          path: 'contracts',
+          component: TestComponent
+        }])
       ],
       providers: [{
         provide: FeatureToggleService,
@@ -46,10 +51,8 @@ describe('HomeComponent', () => {
 
     const fixture = TestBed.createComponent(HomeComponent)
     const homeHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, HomeHarness)
-    const router = TestBed.inject(Router)
     return {
-      homeHarness,
-      router
+      homeHarness
     }
   }
 
@@ -77,12 +80,12 @@ describe('HomeComponent', () => {
   it('FT_Contracts ON - navigate to home page on link click', async () => {
     featureToggleServiceMock.isActive.withArgs('FT_Contracts').and.returnValue(true)
     const {
-      homeHarness, router
+      homeHarness
     } = await initComponent()
-    const navigateByUrlSpy = spyOn<Router, 'navigateByUrl'>(router, 'navigateByUrl')
 
     await homeHarness.clickLink('navToContractsLink')
-    expect(navigateByUrlSpy).toHaveBeenCalledWith(router.createUrlTree(['/contracts']), jasmine.anything())
+    const location = TestBed.inject(Location)
+    expect(location.path()).toBe('/contracts')
   })
 
   it('FT_Contracts OFF - hide link to contracts', async () => {
