@@ -12,9 +12,6 @@ import {
   RouterTestingModule
 } from '@angular/router/testing'
 import {
-  Router
-} from '@angular/router'
-import {
   ContractComponent
 } from '../contract.component'
 import {
@@ -41,7 +38,6 @@ describe('ContractComponent', () => {
 
   async function initComponent(): Promise<{
     contractHarness: ContractHarness
-    router: Router
   }> {
     await TestBed.configureTestingModule({
       imports: [
@@ -65,13 +61,10 @@ describe('ContractComponent', () => {
       ]
     }).compileComponents()
 
-    const router = TestBed.inject(Router)
-
     const fixture = TestBed.createComponent(ContractComponent)
     const contractHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, ContractHarness)
     return {
-      contractHarness,
-      router
+      contractHarness
     }
   }
 

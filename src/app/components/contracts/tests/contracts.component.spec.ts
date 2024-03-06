@@ -29,11 +29,14 @@ import {
   BackendErrorHandlerService
 } from '../../../services/backend-error-handler/backend-error-handler.service'
 import {
-  Router
-} from '@angular/router'
-import {
   RouterTestingModule
 } from '@angular/router/testing'
+import {
+  TestComponent
+} from '../../../tests/utils'
+import {
+  Location
+} from '@angular/common'
 
 describe('ContractsComponent', () => {
   let contractServiceMock: jasmine.SpyObj<ContractService>
@@ -53,7 +56,6 @@ describe('ContractsComponent', () => {
 
   async function initComponent(contracts?: Contract[]): Promise<{
     contractsHarness: ContractsHarness
-    router: Router
   }> {
     if (contracts) {
       contractServiceMock.getContracts.and.returnValue(of(contracts))
@@ -68,7 +70,10 @@ describe('ContractsComponent', () => {
       imports: [
         ContractsComponent,
         getTranslocoTestingModule(ContractsComponent, en),
-        RouterTestingModule.withRoutes([])
+        RouterTestingModule.withRoutes([{
+          path: 'contract',
+          component: TestComponent
+        }])
       ],
       providers: [
         {
@@ -84,10 +89,8 @@ describe('ContractsComponent', () => {
 
     const fixture = TestBed.createComponent(ContractsComponent)
     const contractsHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, ContractsHarness)
-    const router = TestBed.inject(Router)
     return {
-      contractsHarness,
-      router
+      contractsHarness
     }
   }
 
@@ -185,27 +188,22 @@ describe('ContractsComponent', () => {
 
   it('contract add', async () => {
     const {
-      contractsHarness, router
+      contractsHarness
     } = await initComponent(CONTRACTS)
-    const navigateSpy = spyOn<Router, 'navigate'>(router, 'navigate')
 
     await contractsHarness.clickButton('addContractButton')
-    expect(navigateSpy).toHaveBeenCalledWith(['/contract'])
+    const location = TestBed.inject(Location)
+    expect(location.path()).toBe('/contract')
   })
 
   it('contract edit', async () => {
     const {
-      contractsHarness, router
+      contractsHarness
     } = await initComponent(CONTRACTS)
-    const navigateSpy = spyOn<Router, 'navigate'>(router, 'navigate')
     const contractToEdit = CONTRACTS[1]
 
     await contractsHarness.inElement(`contract-${contractToEdit.id}`).clickButton('editContract')
-    expect(navigateSpy).toHaveBeenCalledWith(['/contract'],
-      jasmine.objectContaining({
-        queryParams: {
-          contractId: contractToEdit.id
-        }
-      }))
+    const location = TestBed.inject(Location)
+    expect(location.path()).toBe(`/contract?contractId=${contractToEdit.id}`)
   })
 })

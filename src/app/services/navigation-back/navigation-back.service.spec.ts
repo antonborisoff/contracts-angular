@@ -13,12 +13,12 @@ import {
   TestComponent
 } from '../../tests/utils'
 import {
-  Router
-} from '@angular/router'
+  Location
+} from '@angular/common'
 
 describe('NavigationBackService', () => {
   let service: NavigationBackService
-  let router: Router
+  let location: Location
   let routerHarness: RouterTestingHarness
 
   beforeEach(async () => {
@@ -47,7 +47,7 @@ describe('NavigationBackService', () => {
         }
       ])]
     })
-    router = TestBed.inject(Router)
+    location = TestBed.inject(Location)
     routerHarness = await RouterTestingHarness.create()
     service = TestBed.inject(NavigationBackService)
   })
@@ -58,12 +58,12 @@ describe('NavigationBackService', () => {
     await routerHarness.navigateByUrl('/route_b')
 
     await service.back()
-    expect(router.url).toBe('/route_a')
+    expect(location.path()).toBe('/route_a')
 
     await service.back()
-    expect(router.url).toBe('/base')
+    expect(location.path()).toBe('/base')
 
     await service.back()
-    expect(router.url).toBe('/home')
+    expect(location.path()).toBe('/home')
   })
 })

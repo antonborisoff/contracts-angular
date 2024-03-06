@@ -34,6 +34,9 @@ import {
 import {
   TestComponent
 } from './utils'
+import {
+  Location
+} from '@angular/common'
 
 describe('AppComponent', () => {
   let isAuthMock: BehaviorSubject<boolean>
@@ -42,7 +45,6 @@ describe('AppComponent', () => {
 
   async function initComponent(): Promise<{
     appHarness: AppHarness
-    router: Router
   }> {
     await TestBed.configureTestingModule({
       imports: [
@@ -60,6 +62,10 @@ describe('AppComponent', () => {
           {
             path: 'home/subhome',
             component: TestComponent
+          },
+          {
+            path: 'login',
+            component: TestComponent
           }
         ])
       ],
@@ -75,13 +81,10 @@ describe('AppComponent', () => {
       ]
     }).compileComponents()
 
-    const router = TestBed.inject(Router)
-
     const fixture = TestBed.createComponent(AppComponent)
     const appHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, AppHarness)
     return {
-      appHarness,
-      router
+      appHarness
     }
   }
 
@@ -107,12 +110,12 @@ describe('AppComponent', () => {
 
   it('navigate to login on successful logout', async () => {
     const {
-      appHarness, router
+      appHarness
     } = await initComponent()
-    const navigateSpy = spyOn<Router, 'navigate'>(router, 'navigate')
 
     await appHarness.clickButton('logoutButton')
-    expect(navigateSpy).toHaveBeenCalledWith(['/login'])
+    const location = TestBed.inject(Location)
+    expect(location.path()).toBe('/login')
   })
 
   it('handle backend error during logout', async () => {
@@ -143,8 +146,9 @@ describe('AppComponent', () => {
 
   it('display go home link on non-home page only', async () => {
     const {
-      appHarness, router
+      appHarness
     } = await initComponent()
+    const router = TestBed.inject(Router)
 
     await router.navigate(['non-home'])
     expect(await appHarness.elementVisible('navToHomeLink')).toBe(true)
@@ -158,11 +162,11 @@ describe('AppComponent', () => {
 
   it('navigate to home page on link click', async () => {
     const {
-      appHarness, router
+      appHarness
     } = await initComponent()
-    const navigateByUrlSpy = spyOn<Router, 'navigateByUrl'>(router, 'navigateByUrl')
 
     await appHarness.clickLink('navToHomeLink')
-    expect(navigateByUrlSpy).toHaveBeenCalledWith(router.createUrlTree(['/home']), jasmine.anything())
+    const location = TestBed.inject(Location)
+    expect(location.path()).toBe('/home')
   })
 })

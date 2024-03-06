@@ -29,11 +29,14 @@ import {
   RouterTestingModule
 } from '@angular/router/testing'
 import {
-  Router
-} from '@angular/router'
-import {
   BackendErrorHandlerService
 } from '../../../services/backend-error-handler/backend-error-handler.service'
+import {
+  TestComponent
+} from '../../../tests/utils'
+import {
+  Location
+} from '@angular/common'
 
 describe('LoginComponent', () => {
   let authServiceMock: jasmine.SpyObj<AuthService>
@@ -45,13 +48,15 @@ describe('LoginComponent', () => {
 
   async function initComponent(): Promise<{
     loginHarness: LoginHarness
-    router: Router
   }> {
     await TestBed.configureTestingModule({
       imports: [
         LoginComponent,
         getTranslocoTestingModule(LoginComponent, en),
-        RouterTestingModule.withRoutes([])
+        RouterTestingModule.withRoutes([{
+          path: 'home',
+          component: TestComponent
+        }])
       ],
       providers: [
         {
@@ -65,13 +70,10 @@ describe('LoginComponent', () => {
       ]
     }).compileComponents()
 
-    const router = TestBed.inject(Router)
-
     const fixture = TestBed.createComponent(LoginComponent)
     const loginHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, LoginHarness)
     return {
-      loginHarness,
-      router
+      loginHarness
     }
   }
 
@@ -182,14 +184,14 @@ describe('LoginComponent', () => {
 
   it('navigate to home on successful login', async () => {
     const {
-      loginHarness, router
+      loginHarness
     } = await initComponent()
-    const navigateSpy = spyOn<Router, 'navigate'>(router, 'navigate')
 
     await loginHarness.enterValue('loginInput', VALID_CREDS.login)
     await loginHarness.enterValue('passwordInput', VALID_CREDS.password)
     await loginHarness.clickButton('loginButton')
-    expect(navigateSpy).toHaveBeenCalledWith(['/home'])
+    const location = TestBed.inject(Location)
+    expect(location.path()).toBe('/home')
   })
 
   it('handle backend error during login', async () => {
