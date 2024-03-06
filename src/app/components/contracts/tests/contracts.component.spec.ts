@@ -192,4 +192,22 @@ describe('ContractsComponent', () => {
     await contractsHarness.clickButton('addContractButton')
     expect(navigateSpy).toHaveBeenCalledWith(['/contract'])
   })
+
+  it('contract edit', async () => {
+    const {
+      contractsHarness, router
+    } = await initComponent(CONTRACTS)
+    const navigateSpy = spyOn<Router, 'navigate'>(router, 'navigate')
+    const contractToEdit = CONTRACTS[1]
+
+    await contractsHarness.inElement(`contract-${contractToEdit.id}`).clickButton('editContract')
+    expect(navigateSpy).toHaveBeenCalledWith([
+      '/contract',
+      jasmine.objectContaining({
+        queryParams: {
+          contractId: contractToEdit.id
+        }
+      })
+    ])
+  })
 })
