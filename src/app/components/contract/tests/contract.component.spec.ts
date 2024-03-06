@@ -9,6 +9,7 @@ import {
   TestbedHarnessEnvironment
 } from '@angular/cdk/testing/testbed'
 import {
+  RouterTestingHarness,
   RouterTestingModule
 } from '@angular/router/testing'
 import {
@@ -28,13 +29,12 @@ import {
   BackendErrorHandlerService
 } from '../../../services/backend-error-handler/backend-error-handler.service'
 import {
-  NavigationBackService
-} from '../../../services/navigation-back/navigation-back.service'
+  Location
+} from '@angular/common'
 
 describe('ContractComponent', () => {
   let contractServiceMock: jasmine.SpyObj<ContractService>
   let backendErrorHandlerServiceMock: jasmine.SpyObj<BackendErrorHandlerService>
-  let navigationBackServiceMock: jasmine.SpyObj<NavigationBackService>
 
   async function initComponent(): Promise<{
     contractHarness: ContractHarness
@@ -43,7 +43,20 @@ describe('ContractComponent', () => {
       imports: [
         ContractComponent,
         getTranslocoTestingModule(ContractComponent, en),
-        RouterTestingModule.withRoutes([])
+        // we need to use contract component for both routes to make sure
+        // navigationBackService is initialized at the same time as root component
+        // created by RouterTestingHarness.create();
+        // if we use TestComponent for initial route, it won't be the case and some history will be missing;
+        RouterTestingModule.withRoutes([
+          {
+            path: 'initial',
+            component: ContractComponent
+          },
+          {
+            path: 'contract',
+            component: ContractComponent
+          }
+        ])
       ],
       providers: [
         {
@@ -53,16 +66,15 @@ describe('ContractComponent', () => {
         {
           provide: BackendErrorHandlerService,
           useValue: backendErrorHandlerServiceMock
-        },
-        {
-          provide: NavigationBackService,
-          useValue: navigationBackServiceMock
         }
       ]
     }).compileComponents()
 
-    const fixture = TestBed.createComponent(ContractComponent)
-    const contractHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, ContractHarness)
+    const routerHarness = await RouterTestingHarness.create('/initial')
+    await routerHarness.navigateByUrl('/contract')
+    const rootFixture = routerHarness.fixture
+    const rootHarnessLoader = TestbedHarnessEnvironment.loader(rootFixture)
+    const contractHarness = await rootHarnessLoader.getHarness(ContractHarness)
     return {
       contractHarness
     }
@@ -71,7 +83,6 @@ describe('ContractComponent', () => {
   beforeEach(() => {
     contractServiceMock = jasmine.createSpyObj<ContractService>('contractService', ['createContract'])
     backendErrorHandlerServiceMock = jasmine.createSpyObj<BackendErrorHandlerService>('backendErrorHandler', ['handleError'])
-    navigationBackServiceMock = jasmine.createSpyObj<NavigationBackService>('navigationBackService', ['back'])
   })
 
   it('enable/disable create button based on form validity', async () => {
@@ -169,7 +180,8 @@ describe('ContractComponent', () => {
     await contractHarness.enterValue('conditionsInput', contractToCreate.conditions)
     await contractHarness.clickButton('createContractButton')
     expect(contractServiceMock.createContract).toHaveBeenCalledWith(jasmine.objectContaining(contractToCreate))
-    expect(navigationBackServiceMock.back).toHaveBeenCalledWith()
+    const location = TestBed.inject(Location)
+    expect(location.path()).toBe('/initial')
   })
 
   it('handle backend error during creation', async () => {
@@ -188,7 +200,8 @@ describe('ContractComponent', () => {
     await contractHarness.enterValue('conditionsInput', contractToCreate.conditions)
     await contractHarness.clickButton('createContractButton')
     expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
-    expect(navigationBackServiceMock.back).not.toHaveBeenCalled()
+    const location = TestBed.inject(Location)
+    expect(location.path()).toBe('/contract')
   })
 
   it('navigate back on cancel', async () => {
@@ -203,6 +216,7 @@ describe('ContractComponent', () => {
     await contractHarness.enterValue('numberInput', contractToCreate.number)
     await contractHarness.enterValue('conditionsInput', contractToCreate.conditions)
     await contractHarness.clickButton('cancelCreateContractButton')
-    expect(navigationBackServiceMock.back).toHaveBeenCalledWith()
+    const location = TestBed.inject(Location)
+    expect(location.path()).toBe('/initial')
   })
 })
