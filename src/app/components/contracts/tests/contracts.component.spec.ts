@@ -28,6 +28,12 @@ import {
 import {
   BackendErrorHandlerService
 } from '../../../services/backend-error-handler/backend-error-handler.service'
+import {
+  Router
+} from '@angular/router'
+import {
+  RouterTestingModule
+} from '@angular/router/testing'
 
 describe('ContractsComponent', () => {
   let contractServiceMock: jasmine.SpyObj<ContractService>
@@ -47,6 +53,7 @@ describe('ContractsComponent', () => {
 
   async function initComponent(contracts?: Contract[]): Promise<{
     contractsHarness: ContractsHarness
+    router: Router
   }> {
     if (contracts) {
       contractServiceMock.getContracts.and.returnValue(of(contracts))
@@ -60,7 +67,8 @@ describe('ContractsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         ContractsComponent,
-        getTranslocoTestingModule(ContractsComponent, en)
+        getTranslocoTestingModule(ContractsComponent, en),
+        RouterTestingModule.withRoutes([])
       ],
       providers: [
         {
@@ -76,8 +84,10 @@ describe('ContractsComponent', () => {
 
     const fixture = TestBed.createComponent(ContractsComponent)
     const contractsHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, ContractsHarness)
+    const router = TestBed.inject(Router)
     return {
-      contractsHarness
+      contractsHarness,
+      router
     }
   }
 
@@ -171,5 +181,15 @@ describe('ContractsComponent', () => {
       await contractsHarness.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
     }, 'confirm')
     expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
+  })
+
+  it('contract add', async () => {
+    const {
+      contractsHarness, router
+    } = await initComponent(CONTRACTS)
+    const navigateSpy = spyOn<Router, 'navigate'>(router, 'navigate')
+
+    await contractsHarness.clickButton('addContractButton')
+    expect(navigateSpy).toHaveBeenCalledWith(['/contract'])
   })
 })
