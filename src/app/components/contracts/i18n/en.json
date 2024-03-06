@@ -2,6 +2,7 @@
     "CONTRACT_LIST_LABEL": "Contracts:",
     "CONDITIONS_LABEL": "Conditions:",
     "NO_CONTRACTS_LABEL": "No contracts available",
+    "EDIT_CONTRACT_BUTTON_LABEL": "Edit contract",
     "DELETE_CONTRACT_BUTTON_LABEL": "Delete contract",
     "ADD_CONTRACT_BUTTON_LABEL": "Add contract"
 }
