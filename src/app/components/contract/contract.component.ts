@@ -19,6 +19,15 @@ import {
 import {
   requiredAfterTrimValidator
 } from '../../validators'
+import {
+  ContractService
+} from '../../services/contracts/contract.service'
+import {
+  BackendErrorHandlerService
+} from '../../services/backend-error-handler/backend-error-handler.service'
+import {
+  NavigationBackService
+} from '../../services/navigation-back/navigation-back.service'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'contract'
 @Component({
@@ -43,7 +52,10 @@ export class ContractComponent {
 
   public contractForm
   public constructor(
-    private fb: FormBuilder
+    private backendErrorHandler: BackendErrorHandlerService,
+    private fb: FormBuilder,
+    private contracts$: ContractService,
+    private nb: NavigationBackService
   ) {
     this.contractForm = this.fb.nonNullable.group({
       number: [
@@ -60,6 +72,14 @@ export class ContractComponent {
   }
 
   public onCreate(): void {
-
+    this.contracts$.createContract({
+      number: this.contractForm.controls.number.value,
+      conditions: this.contractForm.controls.conditions.value
+    }).subscribe({
+      next: () => {
+        this.nb.back()
+      },
+      error: () => this.backendErrorHandler.handleError()
+    })
   }
 }

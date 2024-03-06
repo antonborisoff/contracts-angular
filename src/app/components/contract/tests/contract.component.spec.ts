@@ -20,8 +20,25 @@ import {
 import {
   ContractHarness
 } from './contract.component.harness'
+import {
+  ContractService
+} from '../../../services/contracts/contract.service'
+import {
+  of,
+  throwError
+} from 'rxjs'
+import {
+  BackendErrorHandlerService
+} from '../../../services/backend-error-handler/backend-error-handler.service'
+import {
+  NavigationBackService
+} from '../../../services/navigation-back/navigation-back.service'
 
 describe('ContractComponent', () => {
+  let contractServiceMock: jasmine.SpyObj<ContractService>
+  let backendErrorHandlerServiceMock: jasmine.SpyObj<BackendErrorHandlerService>
+  let navigationBackServiceMock: jasmine.SpyObj<NavigationBackService>
+
   async function initComponent(): Promise<{
     contractHarness: ContractHarness
     router: Router
@@ -32,7 +49,20 @@ describe('ContractComponent', () => {
         getTranslocoTestingModule(ContractComponent, en),
         RouterTestingModule.withRoutes([])
       ],
-      providers: []
+      providers: [
+        {
+          provide: ContractService,
+          useValue: contractServiceMock
+        },
+        {
+          provide: BackendErrorHandlerService,
+          useValue: backendErrorHandlerServiceMock
+        },
+        {
+          provide: NavigationBackService,
+          useValue: navigationBackServiceMock
+        }
+      ]
     }).compileComponents()
 
     const router = TestBed.inject(Router)
@@ -44,6 +74,12 @@ describe('ContractComponent', () => {
       router
     }
   }
+
+  beforeEach(() => {
+    contractServiceMock = jasmine.createSpyObj<ContractService>('contractService', ['createContract'])
+    backendErrorHandlerServiceMock = jasmine.createSpyObj<BackendErrorHandlerService>('backendErrorHandler', ['handleError'])
+    navigationBackServiceMock = jasmine.createSpyObj<NavigationBackService>('navigationBackService', ['back'])
+  })
 
   it('enable/disable create button based on form validity', async () => {
     const {
@@ -124,5 +160,41 @@ describe('ContractComponent', () => {
     // whitespaces are ignored
     await contractHarness.enterValue('conditionsInput', ' ')
     expect(await contractHarness.elementVisible('conditionsErrorEmpty')).toBe(true)
+  })
+
+  it('navigate back on successful creation', async () => {
+    contractServiceMock.createContract.and.returnValue(of('new_contract_id'))
+    const {
+      contractHarness
+    } = await initComponent()
+    const contractToCreate = {
+      number: 'APX3000',
+      conditions: '3 year labour contract'
+    }
+
+    await contractHarness.enterValue('numberInput', contractToCreate.number)
+    await contractHarness.enterValue('conditionsInput', contractToCreate.conditions)
+    await contractHarness.clickButton('createContractButton')
+    expect(contractServiceMock.createContract).toHaveBeenCalledWith(jasmine.objectContaining(contractToCreate))
+    expect(navigationBackServiceMock.back).toHaveBeenCalledWith()
+  })
+
+  it('handle backend error during creation', async () => {
+    contractServiceMock.createContract.and.callFake(() => {
+      return throwError(() => new Error('something went wrong'))
+    })
+    const {
+      contractHarness
+    } = await initComponent()
+    const contractToCreate = {
+      number: 'APX3000',
+      conditions: '3 year labour contract'
+    }
+
+    await contractHarness.enterValue('numberInput', contractToCreate.number)
+    await contractHarness.enterValue('conditionsInput', contractToCreate.conditions)
+    await contractHarness.clickButton('createContractButton')
+    expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
+    expect(navigationBackServiceMock.back).not.toHaveBeenCalledWith()
   })
 })
