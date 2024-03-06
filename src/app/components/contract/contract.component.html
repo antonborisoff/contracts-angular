@@ -24,6 +24,9 @@
             <button data-id="createContractButton"
                 [disabled]="contractForm.invalid"
                 type="submit">{{'contract.CREATE_BUTTON_LABEL' | transloco}}</button>
+            <button data-id="cancelCreateContractButton"
+                type="reset"
+                (click)="onCancelCreate()">{{'CANCEL_BUTTON_LABEL' | transloco}}</button>
         </form>
     </div>
 </div>
