@@ -85,13 +85,10 @@ export class ContractsComponent {
   }
 
   public editContract(id: string): void {
-    this.router.navigate([
-      '/contract',
-      {
-        queryParams: {
-          contractId: id
-        }
+    this.router.navigate(['/contract'], {
+      queryParams: {
+        contractId: id
       }
-    ])
+    })
   }
 }
