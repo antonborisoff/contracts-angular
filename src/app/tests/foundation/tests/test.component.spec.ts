@@ -197,4 +197,14 @@ describe('Base harness', () => {
     }, 'cancel')
     expect(await baseHarness.elementText('message-box-confirmation-status')).toBe('Rejected')
   })
+
+  it('errorMessageBoxPresent', async () => {
+    expect(await baseHarness.errorMessageBoxPresent(async () => {
+      await baseHarness.clickButton('button-triggers-message-box-error')
+    })).toBe(true)
+
+    expect(await baseHarness.errorMessageBoxPresent(async () => {
+      await baseHarness.clickButton('button-triggers-no-message-box-error')
+    })).toBe(false)
+  })
 })
