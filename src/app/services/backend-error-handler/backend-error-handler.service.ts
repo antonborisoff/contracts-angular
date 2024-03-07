@@ -27,7 +27,7 @@ export class BackendErrorHandlerService {
     private messageBox: MessageBoxService
   ) { }
 
-  public handleError(): void {
+  private handleError(): void {
     this.messageBox.error(this.translocoService.translate('GENERAL_ERROR_MESSAGE'))
   }
 
