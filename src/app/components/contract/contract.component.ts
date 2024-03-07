@@ -1,5 +1,6 @@
 import {
-  Component
+  Component,
+  OnDestroy
 } from '@angular/core'
 import {
   Translation,
@@ -28,6 +29,20 @@ import {
 import {
   NavigationBackService
 } from '../../services/navigation-back/navigation-back.service'
+import {
+  ActivatedRoute
+} from '@angular/router'
+import {
+  EMPTY,
+  Observable,
+  Subscription,
+  catchError,
+  of,
+  switchMap
+} from 'rxjs'
+import {
+  Contract
+} from '../../interfaces/contract'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'contract'
 @Component({
@@ -45,29 +60,57 @@ const COMPONENT_TRANSLOCO_SCOPE = 'contract'
     loader: getTranslocoInlineLoader((lang: string) => (): Promise<Translation> => import(`./i18n/${lang}.json`))
   })]
 })
-export class ContractComponent {
+export class ContractComponent implements OnDestroy {
   public static getTranslocoScope(): string {
     return COMPONENT_TRANSLOCO_SCOPE
   }
 
   public contractForm
+  private newContract: Contract = {
+    id: '',
+    number: '',
+    conditions: ''
+  }
+
+  private activatedRouteSubscription: Subscription
+
   public constructor(
+    private contracts$: ContractService,
+    private ar: ActivatedRoute,
     private backendErrorHandler: BackendErrorHandlerService,
     private fb: FormBuilder,
-    private contracts$: ContractService,
     private nb: NavigationBackService
   ) {
     this.contractForm = this.fb.nonNullable.group({
       number: [
-        '',
+        this.newContract.number,
         [requiredAfterTrimValidator()]
       ],
       conditions: [
-        '',
+        this.newContract.conditions,
         [requiredAfterTrimValidator()]
       ]
     }, {
       updateOn: 'blur'
+    })
+
+    this.activatedRouteSubscription = this.ar.queryParamMap.pipe(
+      switchMap((queryParamMap): Observable<Contract> => {
+        const contractId = queryParamMap.get('contractId')
+        if (contractId) {
+          return this.contracts$.getContract(contractId).pipe(
+            catchError(() => {
+              this.backendErrorHandler.handleError()
+              return EMPTY
+            })
+          )
+        }
+        else {
+          return of(this.newContract)
+        }
+      })
+    ).subscribe((contract) => {
+      this.contractForm.patchValue(contract)
     })
   }
 
@@ -85,5 +128,9 @@ export class ContractComponent {
 
   public onCancelCreate(): void {
     this.nb.back()
+  }
+
+  public ngOnDestroy(): void {
+    this.activatedRouteSubscription.unsubscribe()
   }
 }
