@@ -1,6 +1,6 @@
 <div class="componentBorder">
     <div data-id="createContainer">
-        <form [formGroup]="contractForm" (ngSubmit)="onCreate()">
+        <form [formGroup]="contractForm" (ngSubmit)="onSave()">
             <div>
                 <input data-id="numberInput"
                     placeholder="{{'contract.CONTRACT_NUMBER_PLACEHOLDER' | transloco}}" 
@@ -21,10 +21,10 @@
                     }
                 }
             </div>
-            <button data-id="createContractButton"
+            <button data-id="saveContractButton"
                 [disabled]="contractForm.invalid"
-                type="submit">{{'contract.CREATE_BUTTON_LABEL' | transloco}}</button>
-            <button data-id="cancelCreateContractButton"
+                type="submit">{{'SAVE_BUTTON_LABEL' | transloco}}</button>
+            <button data-id="cancelSaveContractButton"
                 type="reset"
                 (click)="onCancelCreate()">{{'CANCEL_BUTTON_LABEL' | transloco}}</button>
         </form>

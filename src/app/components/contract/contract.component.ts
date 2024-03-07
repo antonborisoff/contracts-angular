@@ -37,6 +37,7 @@ import {
   Observable,
   Subscription,
   catchError,
+  map,
   of,
   switchMap
 } from 'rxjs'
@@ -66,11 +67,14 @@ export class ContractComponent implements OnDestroy {
   }
 
   public contractForm
+
   private newContract: Contract = {
     id: '',
     number: '',
     conditions: ''
   }
+
+  private contractId = ''
 
   private activatedRouteSubscription: Subscription
 
@@ -97,6 +101,7 @@ export class ContractComponent implements OnDestroy {
     this.activatedRouteSubscription = this.ar.queryParamMap.pipe(
       switchMap((queryParamMap): Observable<Contract> => {
         const contractId = queryParamMap.get('contractId')
+        this.contractId = contractId || ''
         if (contractId) {
           return this.contracts$.getContract(contractId).pipe(
             catchError(() => {
@@ -114,11 +119,19 @@ export class ContractComponent implements OnDestroy {
     })
   }
 
-  public onCreate(): void {
-    this.contracts$.createContract({
+  public onSave(): void {
+    const externalizedContract = {
       number: this.contractForm.controls.number.value,
       conditions: this.contractForm.controls.conditions.value
-    }).subscribe({
+    }
+    let action
+    if (this.contractId) {
+      action = this.contracts$.updateContract(this.contractId, externalizedContract)
+    }
+    else {
+      action = this.contracts$.createContract(externalizedContract).pipe(map(() => void 0))
+    }
+    action.subscribe({
       next: () => {
         this.nb.back()
       },
