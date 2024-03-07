@@ -12,6 +12,9 @@ import {
   getTranslocoTestingModuleForService
 } from '../../../transloco/transloco-testing'
 import en from '../../../assets/i18n/en.json'
+import {
+  throwError
+} from 'rxjs'
 
 describe('BackendErrorHandlerService', () => {
   let messageBoxServiceMock: jasmine.SpyObj<MessageBoxService>
@@ -34,5 +37,22 @@ describe('BackendErrorHandlerService', () => {
     service.handleError()
 
     expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
+  })
+
+  it('processError - display translated error message in message box', () => {
+    throwError(() => new Error()).pipe(service.processError()).subscribe()
+
+    expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
+  })
+
+  it('processError - complete stream on error', () => {
+    const results: string[] = []
+    throwError(() => new Error()).pipe(service.processError()).subscribe({
+      next: () => results.push('next'),
+      complete: () => results.push('completed')
+    })
+
+    expect(results.length).toBe(1)
+    expect(results).toContain('completed')
   })
 })
