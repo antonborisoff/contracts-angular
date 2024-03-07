@@ -29,19 +29,18 @@ import {
   TestbedHarnessEnvironment
 } from '@angular/cdk/testing/testbed'
 import {
-  BackendErrorHandlerService
-} from '../services/backend-error-handler/backend-error-handler.service'
-import {
   TestComponent
 } from './utils'
 import {
   Location
 } from '@angular/common'
+import {
+  Utilities
+} from './foundation/utilities'
 
 describe('AppComponent', () => {
   let isAuthMock: BehaviorSubject<boolean>
   let authServiceMock: jasmine.SpyObj<AuthService>
-  let backendErrorHandlerServiceMock: jasmine.SpyObj<BackendErrorHandlerService>
 
   async function initComponent(): Promise<{
     appHarness: AppHarness
@@ -69,16 +68,10 @@ describe('AppComponent', () => {
           }
         ])
       ],
-      providers: [
-        {
-          provide: AuthService,
-          useValue: authServiceMock
-        },
-        {
-          provide: BackendErrorHandlerService,
-          useValue: backendErrorHandlerServiceMock
-        }
-      ]
+      providers: [{
+        provide: AuthService,
+        useValue: authServiceMock
+      }]
     }).compileComponents()
 
     const fixture = TestBed.createComponent(AppComponent)
@@ -96,8 +89,6 @@ describe('AppComponent', () => {
     ])
     authServiceMock.isAuth.and.returnValue(isAuthMock)
     authServiceMock.logout.and.returnValue(of(undefined))
-
-    backendErrorHandlerServiceMock = jasmine.createSpyObj<BackendErrorHandlerService>('backendErrorHandler', ['handleError'])
   })
 
   it('display translated welcome message', async () => {
@@ -126,8 +117,9 @@ describe('AppComponent', () => {
       appHarness
     } = await initComponent()
 
-    await appHarness.clickButton('logoutButton')
-    expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
+    expect (await Utilities.errorMessageBoxPresent(async () => {
+      await appHarness.clickButton('logoutButton')
+    })).toBe(true)
   })
 
   it('display header only to authenticated user', async () => {

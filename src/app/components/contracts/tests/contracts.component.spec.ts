@@ -26,9 +26,6 @@ import {
   ContractsHarness
 } from './contracts.component.harness'
 import {
-  BackendErrorHandlerService
-} from '../../../services/backend-error-handler/backend-error-handler.service'
-import {
   RouterTestingModule
 } from '@angular/router/testing'
 import {
@@ -37,10 +34,12 @@ import {
 import {
   Location
 } from '@angular/common'
+import {
+  Utilities
+} from '../../../tests/foundation/utilities'
 
 describe('ContractsComponent', () => {
   let contractServiceMock: jasmine.SpyObj<ContractService>
-  let backendErrorHandlerServiceMock: jasmine.SpyObj<BackendErrorHandlerService>
   const CONTRACTS: Contract[] = [
     {
       id: 'test_a',
@@ -75,16 +74,10 @@ describe('ContractsComponent', () => {
           component: TestComponent
         }])
       ],
-      providers: [
-        {
-          provide: ContractService,
-          useValue: contractServiceMock
-        },
-        {
-          provide: BackendErrorHandlerService,
-          useValue: backendErrorHandlerServiceMock
-        }
-      ]
+      providers: [{
+        provide: ContractService,
+        useValue: contractServiceMock
+      }]
     }).compileComponents()
 
     const fixture = TestBed.createComponent(ContractsComponent)
@@ -99,7 +92,6 @@ describe('ContractsComponent', () => {
       'getContracts',
       'deleteContract'
     ])
-    backendErrorHandlerServiceMock = jasmine.createSpyObj<BackendErrorHandlerService>('backendErrorHandler', ['handleError'])
   })
 
   it('display list of contracts', async () => {
@@ -125,9 +117,9 @@ describe('ContractsComponent', () => {
   })
 
   it('handle backend error during contracts fetch', async () => {
-    await initComponent()
-
-    expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
+    expect(await Utilities.errorMessageBoxPresent(async () => {
+      await initComponent()
+    })).toBe(true)
   })
 
   it('contract delete - success', async () => {
@@ -142,7 +134,7 @@ describe('ContractsComponent', () => {
     contractServiceMock.deleteContract.withArgs(contractToDelete.id).and.returnValue(of(void 0))
     contractServiceMock.getContracts.and.returnValue(of(expectedContracts))
 
-    await contractsHarness.actOnMessageBox(async () => {
+    await Utilities.actOnMessageBox(async () => {
       await contractsHarness.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
     }, 'confirm')
     expect(await contractsHarness.elementChildCount('contractList')).toBe(expectedContracts.length)
@@ -160,7 +152,7 @@ describe('ContractsComponent', () => {
     const contractToDelete = CONTRACTS[1]
     const expectedContracts = CONTRACTS
 
-    await contractsHarness.actOnMessageBox(async () => {
+    await Utilities.actOnMessageBox(async () => {
       await contractsHarness.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
     }, 'cancel')
     expect(await contractsHarness.elementChildCount('contractList')).toBe(expectedContracts.length)
@@ -180,10 +172,11 @@ describe('ContractsComponent', () => {
       return new Error('some error')
     }))
 
-    await contractsHarness.actOnMessageBox(async () => {
-      await contractsHarness.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
-    }, 'confirm')
-    expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
+    expect(await Utilities.errorMessageBoxPresent(async () => {
+      await Utilities.actOnMessageBox(async () => {
+        await contractsHarness.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
+      }, 'confirm')
+    })).toBe(true)
   })
 
   it('contract add', async () => {

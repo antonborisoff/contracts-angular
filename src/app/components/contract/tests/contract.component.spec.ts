@@ -26,18 +26,17 @@ import {
   throwError
 } from 'rxjs'
 import {
-  BackendErrorHandlerService
-} from '../../../services/backend-error-handler/backend-error-handler.service'
-import {
   Location
 } from '@angular/common'
 import {
   Contract
 } from '../../../interfaces/contract'
+import {
+  Utilities
+} from '../../../tests/foundation/utilities'
 
 describe('ContractComponent', () => {
   let contractServiceMock: jasmine.SpyObj<ContractService>
-  let backendErrorHandlerServiceMock: jasmine.SpyObj<BackendErrorHandlerService>
   const existingContract: Contract = {
     id: 'some_contract_id',
     number: 'APX1000',
@@ -72,16 +71,10 @@ describe('ContractComponent', () => {
           }
         ])
       ],
-      providers: [
-        {
-          provide: ContractService,
-          useValue: contractServiceMock
-        },
-        {
-          provide: BackendErrorHandlerService,
-          useValue: backendErrorHandlerServiceMock
-        }
-      ]
+      providers: [{
+        provide: ContractService,
+        useValue: contractServiceMock
+      }]
     }).compileComponents()
 
     const routerHarness = await RouterTestingHarness.create('/initial')
@@ -108,10 +101,9 @@ describe('ContractComponent', () => {
     contracts.forEach((contract) => {
       contractServiceMock.getContract.withArgs(contract.id).and.returnValue(of(contract))
     })
-    backendErrorHandlerServiceMock = jasmine.createSpyObj<BackendErrorHandlerService>('backendErrorHandler', ['handleError'])
   })
 
-  it('enable/disable create button based on form validity', async () => {
+  it('common - enable/disable create button based on form validity', async () => {
     const {
       contractHarness
     } = await initComponent()
@@ -146,7 +138,7 @@ describe('ContractComponent', () => {
     expect(await contractHarness.buttonEnabled('saveContractButton')).toBe(false)
   })
 
-  it('display/hide error message based on number validity', async () => {
+  it('common - display/hide error message based on number validity', async () => {
     const {
       contractHarness
     } = await initComponent()
@@ -169,7 +161,7 @@ describe('ContractComponent', () => {
     expect(await contractHarness.elementVisible('numberErrorEmpty')).toBe(true)
   })
 
-  it('display/hide error message based on conditions validity', async () => {
+  it('common - display/hide error message based on conditions validity', async () => {
     const {
       contractHarness
     } = await initComponent()
@@ -192,7 +184,7 @@ describe('ContractComponent', () => {
     expect(await contractHarness.elementVisible('conditionsErrorEmpty')).toBe(true)
   })
 
-  it('navigate back on successful creation', async () => {
+  it('add - navigate back on success', async () => {
     contractServiceMock.createContract.and.returnValue(of('new_contract_id'))
     const {
       contractHarness
@@ -210,7 +202,7 @@ describe('ContractComponent', () => {
     expect(location.path()).toBe('/initial')
   })
 
-  it('handle backend error during creation', async () => {
+  it('add - handle backend error', async () => {
     contractServiceMock.createContract.and.callFake(() => {
       return throwError(() => new Error('something went wrong'))
     })
@@ -222,15 +214,16 @@ describe('ContractComponent', () => {
       conditions: '3 year labour contract'
     }
 
-    await contractHarness.enterValue('numberInput', contractToCreate.number)
-    await contractHarness.enterValue('conditionsInput', contractToCreate.conditions)
-    await contractHarness.clickButton('saveContractButton')
-    expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
+    expect(await Utilities.errorMessageBoxPresent(async () => {
+      await contractHarness.enterValue('numberInput', contractToCreate.number)
+      await contractHarness.enterValue('conditionsInput', contractToCreate.conditions)
+      await contractHarness.clickButton('saveContractButton')
+    })).toBe(true)
     const location = TestBed.inject(Location)
     expect(location.path()).toBe('/contract')
   })
 
-  it('navigate back on successful edition', async () => {
+  it('edit - navigate back on success', async () => {
     contractServiceMock.updateContract.and.returnValue(of(void 0))
     const {
       contractHarness
@@ -248,7 +241,7 @@ describe('ContractComponent', () => {
     expect(location.path()).toBe('/initial')
   })
 
-  it('handle backend error during edition', async () => {
+  it('edit - handle backend error', async () => {
     contractServiceMock.updateContract.and.callFake(() => {
       return throwError(() => new Error('something went wrong'))
     })
@@ -260,15 +253,16 @@ describe('ContractComponent', () => {
       conditions: `${existingContract.conditions} (edited)`
     }
 
-    await contractHarness.enterValue('numberInput', contractToUpdate.number)
-    await contractHarness.enterValue('conditionsInput', contractToUpdate.conditions)
-    await contractHarness.clickButton('saveContractButton')
-    expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
+    expect(await Utilities.errorMessageBoxPresent(async () => {
+      await contractHarness.enterValue('numberInput', contractToUpdate.number)
+      await contractHarness.enterValue('conditionsInput', contractToUpdate.conditions)
+      await contractHarness.clickButton('saveContractButton')
+    })).toBe(true)
     const location = TestBed.inject(Location)
     expect(location.path()).toBe(`/contract?contractId=${existingContract.id}`)
   })
 
-  it('navigate back on cancel', async () => {
+  it('common - navigate back on cancel', async () => {
     const {
       contractHarness
     } = await initComponent()
@@ -284,7 +278,7 @@ describe('ContractComponent', () => {
     expect(location.path()).toBe('/initial')
   })
 
-  it('edit mode - populate form with existing contract data', async () => {
+  it('edit - populate form with existing contract data', async () => {
     const {
       contractHarness, routerHarness
     } = await initComponent()
@@ -295,7 +289,7 @@ describe('ContractComponent', () => {
     expect(await contractHarness.buttonEnabled('saveContractButton')).toBe(true)
   })
 
-  it('edit mode - form reacts to query param change', async () => {
+  it('edit - form reacts to query param change', async () => {
     const {
       contractHarness, routerHarness
     } = await initComponent()
@@ -312,7 +306,7 @@ describe('ContractComponent', () => {
     expect(await contractHarness.buttonEnabled('saveContractButton')).toBe(true)
   })
 
-  it('edit mode - form is cleared when switching to add mode', async () => {
+  it('edit - form is cleared when switching to add mode', async () => {
     const {
       contractHarness, routerHarness
     } = await initComponent()
@@ -329,7 +323,7 @@ describe('ContractComponent', () => {
     expect(await contractHarness.buttonEnabled('saveContractButton')).toBe(false)
   })
 
-  it('edit mode - form is populated when switching from add mode', async () => {
+  it('edit - form is populated when switching from add mode', async () => {
     const {
       contractHarness, routerHarness
     } = await initComponent()
@@ -347,7 +341,7 @@ describe('ContractComponent', () => {
     expect(await contractHarness.buttonEnabled('saveContractButton')).toBe(true)
   })
 
-  it('edit mode - form remains empty in case of data fetch error', async () => {
+  it('edit - form remains empty in case of data fetch error', async () => {
     contractServiceMock.getContract.withArgs(existingContract.id).and.callFake(() => {
       return throwError(() => new Error('something went wrong'))
     })
@@ -355,15 +349,15 @@ describe('ContractComponent', () => {
       contractHarness, routerHarness
     } = await initComponent()
 
-    await routerHarness.navigateByUrl(`/contract?contractId=${existingContract.id}`)
-
+    expect(await Utilities.errorMessageBoxPresent(async () => {
+      await routerHarness.navigateByUrl(`/contract?contractId=${existingContract.id}`)
+    })).toBe(true)
     expect(await contractHarness.inputValue('numberInput')).toBe('')
     expect(await contractHarness.inputValue('conditionsInput')).toBe('')
     expect(await contractHarness.buttonEnabled('saveContractButton')).toBe(false)
-    expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
   })
 
-  it('edit mode - form populated after data fetch error on param change', async () => {
+  it('edit - form populated after data fetch error on param change', async () => {
     contractServiceMock.getContract.withArgs(existingContract.id).and.callFake(() => {
       return throwError(() => new Error('something went wrong'))
     })
@@ -379,7 +373,7 @@ describe('ContractComponent', () => {
     expect(await contractHarness.buttonEnabled('saveContractButton')).toBe(true)
   })
 
-  it('edit mode - form data is not changed on data fetch error after param change', async () => {
+  it('edit - form data is not changed on data fetch error after param change', async () => {
     contractServiceMock.getContract.withArgs(anotherExistingContract.id).and.callFake(() => {
       return throwError(() => new Error('something went wrong'))
     })
