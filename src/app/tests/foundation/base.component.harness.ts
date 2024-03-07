@@ -120,4 +120,9 @@ export class BaseHarness extends ComponentHarness {
     const button = await this.locatorFor(`button${this.getIdSelector(id)}`)()
     return !(await button.getProperty('disabled'))
   }
+
+  public async inputValue(id: string): Promise<string> {
+    const input = await this.locatorFor(`input${this.getIdSelector(id)}`)()
+    return await input.getProperty('value')
+  }
 }
