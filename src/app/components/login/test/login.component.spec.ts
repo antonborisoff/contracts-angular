@@ -29,18 +29,17 @@ import {
   RouterTestingModule
 } from '@angular/router/testing'
 import {
-  BackendErrorHandlerService
-} from '../../../services/backend-error-handler/backend-error-handler.service'
-import {
   TestComponent
 } from '../../../tests/utils'
 import {
   Location
 } from '@angular/common'
+import {
+  Utilities
+} from '../../../tests/foundation/utilities'
 
 describe('LoginComponent', () => {
   let authServiceMock: jasmine.SpyObj<AuthService>
-  let backendErrorHandlerServiceMock: jasmine.SpyObj<BackendErrorHandlerService>
   const VALID_CREDS = {
     login: 'my_login',
     password: 'my_password'
@@ -58,16 +57,10 @@ describe('LoginComponent', () => {
           component: TestComponent
         }])
       ],
-      providers: [
-        {
-          provide: AuthService,
-          useValue: authServiceMock
-        },
-        {
-          provide: BackendErrorHandlerService,
-          useValue: backendErrorHandlerServiceMock
-        }
-      ]
+      providers: [{
+        provide: AuthService,
+        useValue: authServiceMock
+      }]
     }).compileComponents()
 
     const fixture = TestBed.createComponent(LoginComponent)
@@ -89,8 +82,6 @@ describe('LoginComponent', () => {
         }))
       }
     })
-
-    backendErrorHandlerServiceMock = jasmine.createSpyObj<BackendErrorHandlerService>('backendErrorHandler', ['handleError'])
   })
 
   it('enable/disable login button based on form validity', async () => {
@@ -204,9 +195,10 @@ describe('LoginComponent', () => {
       loginHarness
     } = await initComponent()
 
-    await loginHarness.enterValue('loginInput', VALID_CREDS.login)
-    await loginHarness.enterValue('passwordInput', VALID_CREDS.password)
-    await loginHarness.clickButton('loginButton')
-    expect(backendErrorHandlerServiceMock.handleError).toHaveBeenCalledWith()
+    expect(await Utilities.errorMessageBoxPresent(async () => {
+      await loginHarness.enterValue('loginInput', VALID_CREDS.login)
+      await loginHarness.enterValue('passwordInput', VALID_CREDS.password)
+      await loginHarness.clickButton('loginButton')
+    })).toBe(true)
   })
 })
