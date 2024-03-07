@@ -51,4 +51,10 @@ export class TestComponent {
       this.messageBoxConfirmed = confirmed
     })
   }
+
+  public onError(showErrorMessageBox: boolean): void {
+    if (showErrorMessageBox) {
+      this.mb.error('Something went wrong')
+    }
+  }
 }
