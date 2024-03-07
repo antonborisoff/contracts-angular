@@ -11,8 +11,12 @@ import {
   EMPTY,
   MonoTypeOperatorFunction,
   Observable,
-  catchError
+  catchError,
+  throwError
 } from 'rxjs'
+import {
+  HttpErrorResponse
+} from '@angular/common/http'
 
 @Injectable({
   providedIn: 'root'
@@ -27,13 +31,22 @@ export class BackendErrorHandlerService {
     this.messageBox.error(this.translocoService.translate('GENERAL_ERROR_MESSAGE'))
   }
 
-  public processError<T>(): MonoTypeOperatorFunction<T> {
+  public processError<T>(options?: {
+    not?: {
+      status?: number
+    }
+  }): MonoTypeOperatorFunction<T> {
     const handleError = this.handleError.bind(this)
     return function<T>(source: Observable<T>): Observable<T> {
       return source.pipe(
-        catchError(() => {
-          handleError()
-          return EMPTY
+        catchError((error: HttpErrorResponse) => {
+          if (options?.not?.status === error.status) {
+            return throwError(() => error)
+          }
+          else {
+            handleError()
+            return EMPTY
+          }
         })
       )
     }
