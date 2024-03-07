@@ -41,7 +41,7 @@ jobs:
                 hide_complexity: true
                 indicators: false
                 output: both
-                thresholds: '50 75'
+                thresholds: '100 50'
 
             - name: publish coverage report to Pull Request
               uses: marocchino/sticky-pull-request-comment@v2
