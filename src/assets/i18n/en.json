@@ -1,6 +1,7 @@
 {
     "GENERAL_ERROR_MESSAGE": "Something went wrong.",
     "CONFIRM_DELETE_MESSAGE": "Are you sure you want to delete this item?",
+    "SAVE_BUTTON_LABEL": "Save",
     "CANCEL_BUTTON_LABEL": "Cancel",
     "VALIDATION_ERRORS": {
         "EMPTY_VALUE": "Please, provide non-empty value"

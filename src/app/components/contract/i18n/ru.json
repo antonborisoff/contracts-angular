@@ -1,5 +1,4 @@
 {
     "CONTRACT_NUMBER_PLACEHOLDER": "Номер контракта",
-    "CONTRACT_CONDITIONS_PLACEHOLDER": "Условия контракта",
-    "CREATE_BUTTON_LABEL": "Создать контракт"
+    "CONTRACT_CONDITIONS_PLACEHOLDER": "Условия контракта"
 }
