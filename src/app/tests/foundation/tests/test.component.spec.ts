@@ -62,6 +62,14 @@ describe('Base harness', () => {
     await expectAsync(baseHarness.buttonEnabled('non-existent-button')).toBeRejected()
   })
 
+  it('inputValue', async () => {
+    await expectAsync(baseHarness.elementPresent('input-value', 'input')).toBeResolvedTo(true)
+    await expectAsync(baseHarness.inputValue('input-value')).toBeResolvedTo('some input value')
+
+    await expectAsync(baseHarness.elementPresent('non-existent-input-value', 'input')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.buttonEnabled('non-existent-input-value')).toBeRejected()
+  })
+
   it('elementVisible', async () => {
     const tags = [
       'h1',
