@@ -88,4 +88,24 @@ describe('BackendErrorHandlerService', () => {
     expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
     expect(actualError).toBeUndefined()
   })
+
+  it('processError - process all errors if options missing', () => {
+    let actualError: Error | undefined
+    // we use Error since then error instance doesn't have 'status' property
+    throwError(() => new Error('some error without status property')).pipe(service.processError()).subscribe({
+      error: error => actualError = error
+    })
+    expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
+    expect(actualError).toBeUndefined()
+  })
+
+  it('processError - process all errors if options "not" missing', () => {
+    let actualError: Error | undefined
+    // we use Error since then error instance doesn't have 'status' property
+    throwError(() => new Error('some error without status property')).pipe(service.processError({})).subscribe({
+      error: error => actualError = error
+    })
+    expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
+    expect(actualError).toBeUndefined()
+  })
 })
