@@ -22,8 +22,7 @@ import {
   ContractService
 } from '../../../services/contracts/contract.service'
 import {
-  of,
-  throwError
+  of
 } from 'rxjs'
 import {
   Location
@@ -34,6 +33,9 @@ import {
 import {
   Utilities
 } from '../../../tests/foundation/utilities'
+import {
+  throwBackendError
+} from '../../../tests/utils'
 
 describe('ContractComponent', () => {
   let contractServiceMock: jasmine.SpyObj<ContractService>
@@ -203,9 +205,7 @@ describe('ContractComponent', () => {
   })
 
   it('add - handle backend error', async () => {
-    contractServiceMock.createContract.and.callFake(() => {
-      return throwError(() => new Error('something went wrong'))
-    })
+    contractServiceMock.createContract.and.returnValue(throwBackendError())
     const {
       contractHarness
     } = await initComponent()
@@ -242,9 +242,7 @@ describe('ContractComponent', () => {
   })
 
   it('edit - handle backend error', async () => {
-    contractServiceMock.updateContract.and.callFake(() => {
-      return throwError(() => new Error('something went wrong'))
-    })
+    contractServiceMock.updateContract.and.returnValue(throwBackendError())
     const {
       contractHarness
     } = await initComponent(existingContract.id)
@@ -342,9 +340,7 @@ describe('ContractComponent', () => {
   })
 
   it('edit - form remains empty in case of data fetch error', async () => {
-    contractServiceMock.getContract.withArgs(existingContract.id).and.callFake(() => {
-      return throwError(() => new Error('something went wrong'))
-    })
+    contractServiceMock.getContract.withArgs(existingContract.id).and.returnValue(throwBackendError())
     const {
       contractHarness, routerHarness
     } = await initComponent()
@@ -358,9 +354,7 @@ describe('ContractComponent', () => {
   })
 
   it('edit - form populated after data fetch error on param change', async () => {
-    contractServiceMock.getContract.withArgs(existingContract.id).and.callFake(() => {
-      return throwError(() => new Error('something went wrong'))
-    })
+    contractServiceMock.getContract.withArgs(existingContract.id).and.returnValue(throwBackendError())
     const {
       contractHarness, routerHarness
     } = await initComponent()
@@ -374,9 +368,7 @@ describe('ContractComponent', () => {
   })
 
   it('edit - form data is not changed on data fetch error after param change', async () => {
-    contractServiceMock.getContract.withArgs(anotherExistingContract.id).and.callFake(() => {
-      return throwError(() => new Error('something went wrong'))
-    })
+    contractServiceMock.getContract.withArgs(anotherExistingContract.id).and.returnValue(throwBackendError())
     const {
       contractHarness, routerHarness
     } = await initComponent()

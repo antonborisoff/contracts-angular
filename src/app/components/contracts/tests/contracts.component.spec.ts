@@ -16,8 +16,7 @@ import {
   Contract
 } from '../../../interfaces/contract'
 import {
-  of,
-  throwError
+  of
 } from 'rxjs'
 import {
   TestbedHarnessEnvironment
@@ -29,7 +28,8 @@ import {
   RouterTestingModule
 } from '@angular/router/testing'
 import {
-  TestComponent
+  TestComponent,
+  throwBackendError
 } from '../../../tests/utils'
 import {
   Location
@@ -60,9 +60,7 @@ describe('ContractsComponent', () => {
       contractServiceMock.getContracts.and.returnValue(of(contracts))
     }
     else {
-      contractServiceMock.getContracts.and.callFake(() => {
-        return throwError(() => new Error())
-      })
+      contractServiceMock.getContracts.and.returnValue(throwBackendError())
     }
 
     await TestBed.configureTestingModule({
@@ -168,9 +166,7 @@ describe('ContractsComponent', () => {
     } = await initComponent(CONTRACTS)
 
     const contractToDelete = CONTRACTS[1]
-    contractServiceMock.deleteContract.withArgs(contractToDelete.id).and.returnValue(throwError(() => {
-      return new Error('some error')
-    }))
+    contractServiceMock.deleteContract.withArgs(contractToDelete.id).and.returnValue(throwBackendError())
 
     expect(await Utilities.errorMessageBoxPresent(async () => {
       await Utilities.actOnMessageBox(async () => {
