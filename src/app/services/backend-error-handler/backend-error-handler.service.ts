@@ -40,7 +40,7 @@ export class BackendErrorHandlerService {
     return function<T>(source: Observable<T>): Observable<T> {
       return source.pipe(
         catchError((error: HttpErrorResponse) => {
-          if (options?.not?.status === error.status) {
+          if (options?.not && options.not.status === error.status) {
             return throwError(() => error)
           }
           else {
