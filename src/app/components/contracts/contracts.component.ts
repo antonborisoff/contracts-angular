@@ -61,20 +61,16 @@ export class ContractsComponent {
   }
 
   public loadContracts(): void {
-    this.contracts$.getContracts().subscribe({
-      next: (contracts) => {
-        this.contracts = contracts
-      },
-      error: () => this.backendErrorHandler.handleError()
+    this.contracts$.getContracts().pipe(this.backendErrorHandler.processError()).subscribe((contracts) => {
+      this.contracts = contracts
     })
   }
 
   public deleteContract(id: string): void {
     this.mb.confirm(this.ts.translate('CONFIRM_DELETE_MESSAGE'), (confirmed) => {
       if (confirmed) {
-        this.contracts$.deleteContract(id).subscribe({
-          next: () => this.loadContracts(),
-          error: () => this.backendErrorHandler.handleError()
+        this.contracts$.deleteContract(id).pipe(this.backendErrorHandler.processError()).subscribe(() => {
+          this.loadContracts()
         })
       }
     })

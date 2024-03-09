@@ -21,14 +21,15 @@ import {
   AuthService
 } from '../../services/auth/auth.service'
 import {
-  HttpErrorResponse
-} from '@angular/common/http'
-import {
   Router
 } from '@angular/router'
 import {
   BackendErrorHandlerService
 } from '../../services/backend-error-handler/backend-error-handler.service'
+import {
+  EMPTY,
+  catchError
+} from 'rxjs'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'login'
 @Component({
@@ -74,18 +75,18 @@ export class LoginComponent {
 
   public onLogin(): void {
     this.incorrectLoginOrPassword = false
-    this.auth$.login(this.loginForm.controls.login.value, this.loginForm.controls.password.value).subscribe({
-      next: () => {
-        this.router.navigate(['/home'])
-      },
-      error: (error: HttpErrorResponse) => {
-        if (error.status === 403) {
-          this.incorrectLoginOrPassword = true
+    this.auth$.login(this.loginForm.controls.login.value, this.loginForm.controls.password.value).pipe(
+      this.backendErrorHandler.processError({
+        not: {
+          status: 403
         }
-        else {
-          this.backendErrorHandler.handleError()
-        }
-      }
+      }),
+      catchError(() => {
+        this.incorrectLoginOrPassword = true
+        return EMPTY
+      })
+    ).subscribe(() => {
+      this.router.navigate(['/home'])
     })
   }
 }

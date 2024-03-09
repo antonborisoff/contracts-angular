@@ -36,12 +36,6 @@ describe('BackendErrorHandlerService', () => {
     service = TestBed.inject(BackendErrorHandlerService)
   })
 
-  it('handleError - display translated error message in message box', () => {
-    service.handleError()
-
-    expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
-  })
-
   it('processError - display translated error message in message box', () => {
     throwError(() => new HttpErrorResponse({})).pipe(service.processError()).subscribe()
 

@@ -33,10 +33,8 @@ import {
   ActivatedRoute
 } from '@angular/router'
 import {
-  EMPTY,
   Observable,
   Subscription,
-  catchError,
   map,
   of,
   switchMap
@@ -104,10 +102,7 @@ export class ContractComponent implements OnDestroy {
         this.contractId = contractId || ''
         if (contractId) {
           return this.contracts$.getContract(contractId).pipe(
-            catchError(() => {
-              this.backendErrorHandler.handleError()
-              return EMPTY
-            })
+            this.backendErrorHandler.processError()
           )
         }
         else {
@@ -131,11 +126,10 @@ export class ContractComponent implements OnDestroy {
     else {
       action = this.contracts$.createContract(externalizedContract).pipe(map(() => void 0))
     }
-    action.subscribe({
-      next: () => {
-        this.nb.back()
-      },
-      error: () => this.backendErrorHandler.handleError()
+    action.pipe(
+      this.backendErrorHandler.processError()
+    ).subscribe(() => {
+      this.nb.back()
     })
   }
 
