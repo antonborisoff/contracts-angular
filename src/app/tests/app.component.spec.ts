@@ -16,8 +16,7 @@ import {
 } from '@angular/router'
 import {
   BehaviorSubject,
-  of,
-  throwError
+  of
 } from 'rxjs'
 import {
   RouterTestingModule
@@ -29,7 +28,8 @@ import {
   TestbedHarnessEnvironment
 } from '@angular/cdk/testing/testbed'
 import {
-  TestComponent
+  TestComponent,
+  throwBackendError
 } from './utils'
 import {
   Location
@@ -110,9 +110,7 @@ describe('AppComponent', () => {
   })
 
   it('handle backend error during logout', async () => {
-    authServiceMock.logout.and.returnValue(throwError(() => {
-      return new Error('some error')
-    }))
+    authServiceMock.logout.and.returnValue(throwBackendError())
     const {
       appHarness
     } = await initComponent()

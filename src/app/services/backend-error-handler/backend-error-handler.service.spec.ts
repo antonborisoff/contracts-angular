@@ -13,11 +13,12 @@ import {
 } from '../../../transloco/transloco-testing'
 import en from '../../../assets/i18n/en.json'
 import {
-  throwError
-} from 'rxjs'
-import {
   HttpErrorResponse
 } from '@angular/common/http'
+import {
+  throwBackendError,
+  throwGeneralError
+} from '../../tests/utils'
 
 describe('BackendErrorHandlerService', () => {
   let messageBoxServiceMock: jasmine.SpyObj<MessageBoxService>
@@ -37,14 +38,14 @@ describe('BackendErrorHandlerService', () => {
   })
 
   it('processError - display translated error message in message box', () => {
-    throwError(() => new HttpErrorResponse({})).pipe(service.processError()).subscribe()
+    throwBackendError().pipe(service.processError()).subscribe()
 
     expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
   })
 
   it('processError - complete stream on error', () => {
     const results: string[] = []
-    throwError(() => new HttpErrorResponse({})).pipe(service.processError()).subscribe({
+    throwBackendError().pipe(service.processError()).subscribe({
       next: () => results.push('next'),
       complete: () => results.push('completed')
     })
@@ -55,9 +56,7 @@ describe('BackendErrorHandlerService', () => {
 
   it('processError - ignore errors based on not-status code', () => {
     let actualError: HttpErrorResponse | undefined
-    throwError(() => new HttpErrorResponse({
-      status: 403
-    })).pipe(service.processError({
+    throwBackendError(403).pipe(service.processError({
       not: {
         status: 403
       }
@@ -70,9 +69,7 @@ describe('BackendErrorHandlerService', () => {
 
   it('processError - process errors based on not-status code', () => {
     let actualError: HttpErrorResponse | undefined
-    throwError(() => new HttpErrorResponse({
-      status: 500
-    })).pipe(service.processError({
+    throwBackendError(500).pipe(service.processError({
       not: {
         status: 403
       }
@@ -85,8 +82,8 @@ describe('BackendErrorHandlerService', () => {
 
   it('processError - process all errors if options missing', () => {
     let actualError: Error | undefined
-    // we use Error since then error instance doesn't have 'status' property
-    throwError(() => new Error('some error without status property')).pipe(service.processError()).subscribe({
+    // we use general Error since then error instance doesn't have 'status' property
+    throwGeneralError().pipe(service.processError()).subscribe({
       error: error => actualError = error
     })
     expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
@@ -95,8 +92,8 @@ describe('BackendErrorHandlerService', () => {
 
   it('processError - process all errors if options "not" missing', () => {
     let actualError: Error | undefined
-    // we use Error since then error instance doesn't have 'status' property
-    throwError(() => new Error('some error without status property')).pipe(service.processError({})).subscribe({
+    // we use general Error since then error instance doesn't have 'status' property
+    throwGeneralError().pipe(service.processError({})).subscribe({
       error: error => actualError = error
     })
     expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')

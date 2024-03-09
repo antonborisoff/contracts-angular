@@ -19,17 +19,14 @@ import {
   AuthService
 } from '../../../services/auth/auth.service'
 import {
-  of,
-  throwError
+  of
 } from 'rxjs'
-import {
-  HttpErrorResponse
-} from '@angular/common/http'
 import {
   RouterTestingModule
 } from '@angular/router/testing'
 import {
-  TestComponent
+  TestComponent,
+  throwBackendError
 } from '../../../tests/utils'
 import {
   Location
@@ -72,16 +69,8 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     authServiceMock = jasmine.createSpyObj<AuthService>('authService', ['login'])
-    authServiceMock.login.and.callFake((login: string, password: string) => {
-      if (login === VALID_CREDS.login && password === VALID_CREDS.password) {
-        return of(undefined)
-      }
-      else {
-        return throwError(() => new HttpErrorResponse({
-          status: 403
-        }))
-      }
-    })
+    authServiceMock.login.withArgs(VALID_CREDS.login, VALID_CREDS.password).and.returnValue(of(void 0))
+    authServiceMock.login.and.returnValue(throwBackendError(403))
   })
 
   it('enable/disable login button based on form validity', async () => {
@@ -186,11 +175,7 @@ describe('LoginComponent', () => {
   })
 
   it('handle backend error during login', async () => {
-    authServiceMock.login.and.callFake(() => {
-      return throwError(() => new HttpErrorResponse({
-        status: 500
-      }))
-    })
+    authServiceMock.login.withArgs(VALID_CREDS.login, VALID_CREDS.password).and.returnValue(throwBackendError(500))
     const {
       loginHarness
     } = await initComponent()

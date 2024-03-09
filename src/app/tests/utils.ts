@@ -1,9 +1,16 @@
 import {
+  HttpErrorResponse
+} from '@angular/common/http'
+import {
   Component
 } from '@angular/core'
 import {
   Route
 } from '@angular/router'
+import {
+  Observable,
+  throwError
+} from 'rxjs'
 
 @Component({
   standalone: true,
@@ -18,5 +25,18 @@ export function stubRouteComponents(routes: Route[]): Route[] {
       route.component = TestComponent
     }
     return route
+  })
+}
+
+export function throwGeneralError(): Observable<never> {
+  return throwError(() => {
+    return new Error('general error message')
+  })
+}
+export function throwBackendError(status: number = 500): Observable<never> {
+  return throwError(() => {
+    return new HttpErrorResponse({
+      status: status
+    })
   })
 }
