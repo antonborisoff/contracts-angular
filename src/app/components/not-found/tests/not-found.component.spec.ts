@@ -1,49 +1,25 @@
 import {
-  TestBed
-} from '@angular/core/testing'
-
-import {
   NotFoundComponent
 } from '../not-found.component'
 import {
-  getTranslocoTestingModule
-} from '../../../../transloco/transloco-testing'
-import en from '../i18n/en.json'
-import {
-  TestbedHarnessEnvironment
-} from '@angular/cdk/testing/testbed'
-import {
   NotFoundHarness
 } from './not-found.component.harness'
+import en from '../i18n/en.json'
 import {
-  RouterTestingModule
-} from '@angular/router/testing'
+  ComponentHarnessAndUtils,
+  initComponentBase
+} from '../../../tests/utils'
 
 describe('NotFoundComponent', () => {
-  async function initComponent(): Promise<{
-    notFoundHarness: NotFoundHarness
-  }> {
-    await TestBed.configureTestingModule({
-      imports: [
-        NotFoundComponent,
-        getTranslocoTestingModule(NotFoundComponent, en),
-        RouterTestingModule.withRoutes([])
-      ],
-      providers: []
-    }).compileComponents()
-
-    const fixture = TestBed.createComponent(NotFoundComponent)
-    const notFoundHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, NotFoundHarness)
-    return {
-      notFoundHarness
-    }
+  async function initComponent(): ComponentHarnessAndUtils<NotFoundHarness> {
+    return initComponentBase(NotFoundComponent, NotFoundHarness, en)
   }
 
   it('display "not found" message', async () => {
     const {
-      notFoundHarness
+      harnesses
     } = await initComponent()
 
-    expect(await notFoundHarness.elementVisible('notFoundMessage')).toBe(true)
+    expect(await harnesses.router.component.elementVisible('notFoundMessage')).toBe(true)
   })
 })

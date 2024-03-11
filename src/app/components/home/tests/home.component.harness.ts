@@ -3,5 +3,5 @@ import {
 } from '../../../tests/foundation/base.component.harness'
 
 export class HomeHarness extends BaseHarness {
-  public static hostSelector = 'app-not-found'
+  public static hostSelector = 'app-home'
 }
