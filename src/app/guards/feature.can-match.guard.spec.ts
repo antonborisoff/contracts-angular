@@ -15,13 +15,12 @@ import {
   TestComponent
 } from '../tests/utils'
 import {
-  Location
-} from '@angular/common'
+  Utilities
+} from '../tests/foundation/utilities'
 
 describe('featureCanMatchGuard', () => {
   let featureToggleServiceMock: jasmine.SpyObj<FeatureToggleService>
   let routerHarness: RouterTestingHarness
-  let location: Location
 
   beforeEach(async () => {
     featureToggleServiceMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['isActive'])
@@ -41,7 +40,6 @@ describe('featureCanMatchGuard', () => {
     }).compileComponents()
 
     routerHarness = await RouterTestingHarness.create()
-    location = TestBed.inject(Location)
   })
 
   it('both features inactive - cannot match the route', async () => {
@@ -63,6 +61,6 @@ describe('featureCanMatchGuard', () => {
     featureToggleServiceMock.isActive.withArgs('FT_Feature_B').and.returnValue(true)
 
     await routerHarness.navigateByUrl('/routeAB')
-    expect(location.path()).toBe('/routeAB')
+    expect(Utilities.getLocationPath()).toBe('/routeAB')
   })
 })

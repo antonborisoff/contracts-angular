@@ -18,13 +18,12 @@ import {
   AuthService
 } from '../services/auth/auth.service'
 import {
-  Location
-} from '@angular/common'
+  Utilities
+} from './foundation/utilities'
 
 describe('App navigation', () => {
   let isAuthMock: BehaviorSubject<boolean>
   let routerHarness: RouterTestingHarness
-  let location: Location
 
   beforeEach(async () => {
     isAuthMock = new BehaviorSubject(true)
@@ -40,28 +39,27 @@ describe('App navigation', () => {
     }).compileComponents()
 
     routerHarness = await RouterTestingHarness.create()
-    location = TestBed.inject(Location)
   })
 
   it('authenticated user - redirected to home page by default', async () => {
     isAuthMock.next(true)
 
     await routerHarness.navigateByUrl('/')
-    expect(location.path()).toBe('/home')
+    expect(Utilities.getLocationPath()).toBe('/home')
   })
 
   it('authenticated user - redirected to home page when trying to open login page', async () => {
     isAuthMock.next(true)
 
     await routerHarness.navigateByUrl('/login')
-    expect(location.path()).toBe('/home')
+    expect(Utilities.getLocationPath()).toBe('/home')
   })
 
   it('authenticated user - could access non-login page', async () => {
     isAuthMock.next(true)
 
     await routerHarness.navigateByUrl('/home')
-    expect(location.path()).toBe('/home')
+    expect(Utilities.getLocationPath()).toBe('/home')
   })
 
   it('authenticated user - unknown path handling should be configured', async () => {
@@ -74,27 +72,27 @@ describe('App navigation', () => {
     isAuthMock.next(false)
 
     await routerHarness.navigateByUrl('/')
-    expect(location.path()).toBe('/login')
+    expect(Utilities.getLocationPath()).toBe('/login')
   })
 
   it('non-authenticated user - redirected to login page when trying to open non-login page', async () => {
     isAuthMock.next(false)
 
     await routerHarness.navigateByUrl('/home')
-    expect(location.path()).toBe('/login')
+    expect(Utilities.getLocationPath()).toBe('/login')
   })
 
   it('non-authenticated user - could access login page', async () => {
     isAuthMock.next(false)
 
     await routerHarness.navigateByUrl('/login')
-    expect(location.path()).toBe('/login')
+    expect(Utilities.getLocationPath()).toBe('/login')
   })
 
   it('non-authenticated user - unknown path redirects to login page', async () => {
     isAuthMock.next(false)
 
     await routerHarness.navigateByUrl('/unknownRoute')
-    expect(location.path()).toBe('/login')
+    expect(Utilities.getLocationPath()).toBe('/login')
   })
 })
