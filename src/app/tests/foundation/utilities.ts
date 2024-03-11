@@ -1,3 +1,10 @@
+import {
+  Location
+} from '@angular/common'
+import {
+  TestBed
+} from '@angular/core/testing'
+
 export class Utilities {
   public static async actOnMessageBox(actions: () => Promise<void>, action: 'confirm' | 'cancel'): Promise<void> {
     const windowConfirmOriginal = window.confirm
@@ -27,5 +34,10 @@ export class Utilities {
     window.alert = windowAlertOriginal
 
     return errorSpy.calls.any()
+  }
+
+  public static getLocationPath(): string {
+    const location = TestBed.inject(Location)
+    return location.path()
   }
 }

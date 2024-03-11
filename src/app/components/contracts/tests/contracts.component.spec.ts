@@ -1,17 +1,13 @@
 import {
-  TestBed
-} from '@angular/core/testing'
-
-import {
   ContractsComponent
 } from '../contracts.component'
 import {
-  getTranslocoTestingModule
-} from '../../../../transloco/transloco-testing'
-import en from '../i18n/en.json'
+  ContractsHarness
+} from './contracts.component.harness'
 import {
   ContractService
 } from '../../../services/contracts/contract.service'
+import en from '../i18n/en.json'
 import {
   Contract
 } from '../../../interfaces/contract'
@@ -19,21 +15,10 @@ import {
   of
 } from 'rxjs'
 import {
-  TestbedHarnessEnvironment
-} from '@angular/cdk/testing/testbed'
-import {
-  ContractsHarness
-} from './contracts.component.harness'
-import {
-  RouterTestingModule
-} from '@angular/router/testing'
-import {
-  TestComponent,
+  ComponentHarnessAndUtils,
+  initComponentBase,
   throwBackendError
 } from '../../../tests/utils'
-import {
-  Location
-} from '@angular/common'
 import {
   Utilities
 } from '../../../tests/foundation/utilities'
@@ -53,36 +38,20 @@ describe('ContractsComponent', () => {
     }
   ]
 
-  async function initComponent(contracts?: Contract[]): Promise<{
-    contractsHarness: ContractsHarness
-  }> {
+  async function initComponent(contracts?: Contract[]): ComponentHarnessAndUtils<ContractsHarness> {
     if (contracts) {
       contractServiceMock.getContracts.and.returnValue(of(contracts))
     }
     else {
       contractServiceMock.getContracts.and.returnValue(throwBackendError())
     }
-
-    await TestBed.configureTestingModule({
-      imports: [
-        ContractsComponent,
-        getTranslocoTestingModule(ContractsComponent, en),
-        RouterTestingModule.withRoutes([{
-          path: 'contract',
-          component: TestComponent
-        }])
-      ],
+    return initComponentBase(ContractsComponent, ContractsHarness, en, {
+      routePaths: ['contract'],
       providers: [{
         provide: ContractService,
         useValue: contractServiceMock
       }]
-    }).compileComponents()
-
-    const fixture = TestBed.createComponent(ContractsComponent)
-    const contractsHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, ContractsHarness)
-    return {
-      contractsHarness
-    }
+    })
   }
 
   beforeEach(async () => {
@@ -94,24 +63,24 @@ describe('ContractsComponent', () => {
 
   it('display list of contracts', async () => {
     const {
-      contractsHarness
+      harnesses
     } = await initComponent(CONTRACTS)
 
-    expect(await contractsHarness.elementChildCount('contractList')).toBe(CONTRACTS.length)
-    expect(await contractsHarness.elementVisible('noContractsMessage')).toBe(false)
+    expect(await harnesses.router.component.elementChildCount('contractList')).toBe(CONTRACTS.length)
+    expect(await harnesses.router.component.elementVisible('noContractsMessage')).toBe(false)
     for (const contract of CONTRACTS) {
-      expect(await contractsHarness.inElement(`contract-${contract.id}`).elementText('contractNumber')).toBe(contract.number)
-      expect(await contractsHarness.inElement(`contract-${contract.id}`).elementText('contractConditions')).toBe(contract.conditions)
+      expect(await harnesses.router.component.inElement(`contract-${contract.id}`).elementText('contractNumber')).toBe(contract.number)
+      expect(await harnesses.router.component.inElement(`contract-${contract.id}`).elementText('contractConditions')).toBe(contract.conditions)
     }
   })
 
   it('display no contract message if there are no contracts', async () => {
     const {
-      contractsHarness: contractsHarness
+      harnesses
     } = await initComponent([])
 
-    expect(await contractsHarness.elementChildCount('contractList')).toBe(0)
-    expect(await contractsHarness.elementVisible('noContractsMessage')).toBe(true)
+    expect(await harnesses.router.component.elementChildCount('contractList')).toBe(0)
+    expect(await harnesses.router.component.elementVisible('noContractsMessage')).toBe(true)
   })
 
   it('handle backend error during contracts fetch', async () => {
@@ -122,7 +91,7 @@ describe('ContractsComponent', () => {
 
   it('contract delete - success', async () => {
     const {
-      contractsHarness
+      harnesses
     } = await initComponent(CONTRACTS)
 
     const contractToDelete = CONTRACTS[1]
@@ -133,36 +102,36 @@ describe('ContractsComponent', () => {
     contractServiceMock.getContracts.and.returnValue(of(expectedContracts))
 
     await Utilities.actOnMessageBox(async () => {
-      await contractsHarness.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
+      await harnesses.router.component.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
     }, 'confirm')
-    expect(await contractsHarness.elementChildCount('contractList')).toBe(expectedContracts.length)
+    expect(await harnesses.router.component.elementChildCount('contractList')).toBe(expectedContracts.length)
     for (const expectedContract of expectedContracts) {
-      expect(await contractsHarness.inElement(`contract-${expectedContract.id}`).elementText('contractNumber')).toBe(expectedContract.number)
-      expect(await contractsHarness.inElement(`contract-${expectedContract.id}`).elementText('contractConditions')).toBe(expectedContract.conditions)
+      expect(await harnesses.router.component.inElement(`contract-${expectedContract.id}`).elementText('contractNumber')).toBe(expectedContract.number)
+      expect(await harnesses.router.component.inElement(`contract-${expectedContract.id}`).elementText('contractConditions')).toBe(expectedContract.conditions)
     }
   })
 
   it('contract delete - cancel', async () => {
     const {
-      contractsHarness
+      harnesses
     } = await initComponent(CONTRACTS)
 
     const contractToDelete = CONTRACTS[1]
     const expectedContracts = CONTRACTS
 
     await Utilities.actOnMessageBox(async () => {
-      await contractsHarness.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
+      await harnesses.router.component.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
     }, 'cancel')
-    expect(await contractsHarness.elementChildCount('contractList')).toBe(expectedContracts.length)
+    expect(await harnesses.router.component.elementChildCount('contractList')).toBe(expectedContracts.length)
     for (const expectedContract of expectedContracts) {
-      expect(await contractsHarness.inElement(`contract-${expectedContract.id}`).elementText('contractNumber')).toBe(expectedContract.number)
-      expect(await contractsHarness.inElement(`contract-${expectedContract.id}`).elementText('contractConditions')).toBe(expectedContract.conditions)
+      expect(await harnesses.router.component.inElement(`contract-${expectedContract.id}`).elementText('contractNumber')).toBe(expectedContract.number)
+      expect(await harnesses.router.component.inElement(`contract-${expectedContract.id}`).elementText('contractConditions')).toBe(expectedContract.conditions)
     }
   })
 
   it('contract delete - handle backend error', async () => {
     const {
-      contractsHarness
+      harnesses
     } = await initComponent(CONTRACTS)
 
     const contractToDelete = CONTRACTS[1]
@@ -170,29 +139,27 @@ describe('ContractsComponent', () => {
 
     expect(await Utilities.errorMessageBoxPresent(async () => {
       await Utilities.actOnMessageBox(async () => {
-        await contractsHarness.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
+        await harnesses.router.component.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
       }, 'confirm')
     })).toBe(true)
   })
 
   it('contract add', async () => {
     const {
-      contractsHarness
+      harnesses
     } = await initComponent(CONTRACTS)
 
-    await contractsHarness.clickButton('addContractButton')
-    const location = TestBed.inject(Location)
-    expect(location.path()).toBe('/contract')
+    await harnesses.router.component.clickButton('addContractButton')
+    expect(Utilities.getLocationPath()).toBe('/contract')
   })
 
   it('contract edit', async () => {
     const {
-      contractsHarness
+      harnesses
     } = await initComponent(CONTRACTS)
     const contractToEdit = CONTRACTS[1]
 
-    await contractsHarness.inElement(`contract-${contractToEdit.id}`).clickButton('editContract')
-    const location = TestBed.inject(Location)
-    expect(location.path()).toBe(`/contract?contractId=${contractToEdit.id}`)
+    await harnesses.router.component.inElement(`contract-${contractToEdit.id}`).clickButton('editContract')
+    expect(Utilities.getLocationPath()).toBe(`/contract?contractId=${contractToEdit.id}`)
   })
 })
