@@ -37,6 +37,9 @@ import {
 import {
   BaseHarness
 } from './foundation/base.component.harness'
+import {
+  provideNoopAnimations
+} from '@angular/platform-browser/animations'
 
 @Component({
   standalone: true,
@@ -155,7 +158,7 @@ export async function initComponentBase<T extends Type<any>, K extends BaseHarne
       getTranslocoTestingModule(componentClass, enTranslation),
       RouterTestingModule.withRoutes(routes)
     ],
-    providers: options?.providers
+    providers: [provideNoopAnimations()].concat(options?.providers || [])
   }).compileComponents()
 
   const routerHarness = await RouterTestingHarness.create('/initial')
