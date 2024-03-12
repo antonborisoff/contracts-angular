@@ -1,6 +1,8 @@
 {
     "LOGIN_PLACEHOLDER": "Login",
     "PASSWORD_PLACEHOLDER": "Password",
+    "SHOW_PASSWORD_LABEL": "Show password",
+    "HIDE_PASSWORD_LABEL": "Hide password",
     "LOGIN_BUTTON_LABEL": "Log in",
     "INVALID_CREDS": "Login or password are incorrect"
 }

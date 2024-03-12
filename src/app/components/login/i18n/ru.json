@@ -1,6 +1,8 @@
 {
     "LOGIN_PLACEHOLDER": "Логин",
     "PASSWORD_PLACEHOLDER": "Пароль",
+    "SHOW_PASSWORD_LABEL": "Показать пароль",
+    "HIDE_PASSWORD_LABEL": "Скрыть пароль",
     "LOGIN_BUTTON_LABEL": "Войти",
     "INVALID_CREDS": "Неверный логин или пароль"
 }

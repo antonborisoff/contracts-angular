@@ -23,9 +23,18 @@
             <input
               data-id="passwordInput"
               matInput
-              type="password"
+              [type]="passwordHidden ? 'password' : 'text'"
               formControlName="password"
             />
+            <button
+              data-id="togglePasswordButton"
+              mat-icon-button
+              matSuffix
+              (click)="passwordHidden = !passwordHidden"
+              [title]="(passwordHidden ? 'login.SHOW_PASSWORD_LABEL' : 'login.HIDE_PASSWORD_LABEL') | transloco"
+              type="button">
+              <mat-icon data-id="togglePasswordButtonIcon">{{passwordHidden ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
             @if(loginForm.controls.password.errors?.['required']) {
               <mat-error data-id="passwordErrorEmpty">{{'VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</mat-error>
             }

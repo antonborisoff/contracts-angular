@@ -155,4 +155,22 @@ describe('LoginComponent', () => {
       await harnesses.router.component.clickButton('loginButton')
     })).toBe(true)
   })
+
+  it('show/hide password', async () => {
+    const {
+      harnesses
+    } = await initComponent()
+
+    // initial state
+    expect(await harnesses.router.component.inputType('passwordInput')).toBe('password')
+    expect(await harnesses.router.component.elementText('togglePasswordButtonIcon')).toBe('visibility_off')
+
+    await harnesses.router.component.clickButton('togglePasswordButton')
+    expect(await harnesses.router.component.inputType('passwordInput')).toBe('text')
+    expect(await harnesses.router.component.elementText('togglePasswordButtonIcon')).toBe('visibility')
+
+    await harnesses.router.component.clickButton('togglePasswordButton')
+    expect(await harnesses.router.component.inputType('passwordInput')).toBe('password')
+    expect(await harnesses.router.component.elementText('togglePasswordButtonIcon')).toBe('visibility_off')
+  })
 })
