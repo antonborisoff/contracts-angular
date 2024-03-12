@@ -57,9 +57,6 @@ export const contractRoutes = {
   }
 }
 
-function updateContract(contract: Contract, fieldsToUpdate: Partial<Omit<Contract, 'id'>>): Contract {
-  return {
-    ...contract,
-    ...fieldsToUpdate
-  }
+function updateContract(contract: Contract, fieldsToUpdate: Partial<Omit<Contract, 'id'>>): void {
+  Object.assign(contract, fieldsToUpdate)
 }
