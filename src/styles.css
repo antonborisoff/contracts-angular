@@ -10,13 +10,34 @@
     margin-left: 0.5rem;
 }
 
+.flex-container-column {
+    display: flex;
+    flex-direction: column;
+}
+
 .flex-container-row {
     display: flex;
     flex-direction: row;
 }
 
+.flex-container-content-center {
+    justify-content: center;
+}
+
+.flex-container-items-center {
+    align-items: center;
+}
+
 .flex-item-spacer {
     flex: 1 1 auto
+}
+
+.full-height {
+    height: 100%;
+}
+
+.text-align-center {
+    text-align: center;
 }
 
 .componentBorder {

@@ -30,6 +30,18 @@ import {
   EMPTY,
   catchError
 } from 'rxjs'
+import {
+  MatButtonModule
+} from '@angular/material/button'
+import {
+  MatToolbarModule
+} from '@angular/material/toolbar'
+import {
+  MatCardModule
+} from '@angular/material/card'
+import {
+  MatInputModule
+} from '@angular/material/input'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'login'
 @Component({
@@ -37,7 +49,11 @@ const COMPONENT_TRANSLOCO_SCOPE = 'login'
   standalone: true,
   imports: [
     TranslocoPipe,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatCardModule,
+    MatInputModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
@@ -62,7 +78,10 @@ export class LoginComponent {
     this.loginForm = this.fb.nonNullable.group({
       login: [
         '',
-        [requiredAfterTrimValidator()]
+        [
+          Validators.required,
+          requiredAfterTrimValidator()
+        ]
       ],
       password: [
         '',

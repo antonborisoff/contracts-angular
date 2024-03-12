@@ -1,31 +1,54 @@
-<div class="componentBorder">
-    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-        <div>
-            <input data-id="loginInput"
-                placeholder="{{'login.LOGIN_PLACEHOLDER' | transloco}}" 
-                formControlName="login"/>
-            @if(loginForm.controls.login.errors && loginForm.controls.login.dirty) {
-                @if(loginForm.controls.login.errors['requiredAfterTrim']) {
-                    <div data-id="loginErrorEmpty">{{'VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</div>
-                }
+<div class="flex-container-row full-height flex-container-content-center flex-container-items-center">
+  <mat-card style="width: 30%">
+    <mat-card-content>
+      <div>
+        <form
+          [formGroup]="loginForm"
+          (ngSubmit)="onLogin()"
+        >
+          <mat-form-field style="width: 100%">
+            <mat-label>{{'login.LOGIN_PLACEHOLDER' | transloco}}</mat-label>
+            <input
+              matInput
+              data-id="loginInput"
+              formControlName="login"
+            />
+            @if(loginForm.controls.login.errors?.['requiredAfterTrim']) {
+              <mat-error data-id="loginErrorEmpty">{{'VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</mat-error>
             }
-        </div>
-        <div>
-            <input data-id="passwordInput"
-                placeholder="{{'login.PASSWORD_PLACEHOLDER' | transloco}}" 
-                type="password" 
-                formControlName="password"/>
-            @if(loginForm.controls.password.errors && loginForm.controls.password.dirty) {
-                @if(loginForm.controls.password.errors['required']) {
-                    <div data-id="passwordErrorEmpty">{{'VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</div>
-                }
+          </mat-form-field>
+
+          <mat-form-field style="width: 100%">
+            <mat-label>{{'login.PASSWORD_PLACEHOLDER' | transloco}}</mat-label>
+            <input
+              data-id="passwordInput"
+              matInput
+              type="password"
+              formControlName="password"
+            />
+            @if(loginForm.controls.password.errors?.['required']) {
+              <mat-error data-id="passwordErrorEmpty">{{'VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</mat-error>
             }
-        </div>
-        @if(incorrectLoginOrPassword) {
-            <div data-id="incorrectCreds">{{'login.INVALID_CREDS' | transloco}}</div>
-        }
-        <button data-id="loginButton"
+          </mat-form-field>
+
+          <button
+            mat-raised-button
+            color="primary"
+            data-id="loginButton"
+            style="width: 100%"
             [disabled]="loginForm.invalid"
-            type="submit">{{'login.LOGIN_BUTTON_LABEL' | transloco}}</button>
-    </form>
+            type="submit"
+          >
+            {{'login.LOGIN_BUTTON_LABEL' | transloco}}
+          </button>
+          @if(incorrectLoginOrPassword) {
+          <mat-error
+            data-id="incorrectCreds"
+            class="text-align-center margin-top"
+          >{{'login.INVALID_CREDS' | transloco}}</mat-error>
+          }
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>
