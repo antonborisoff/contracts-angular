@@ -27,6 +27,12 @@ import {
 import {
   BackendErrorHandlerService
 } from './services/backend-error-handler/backend-error-handler.service'
+import {
+  MatToolbarModule
+} from '@angular/material/toolbar'
+import {
+  MatButtonModule
+} from '@angular/material/button'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'app'
 @Component({
@@ -37,7 +43,9 @@ const COMPONENT_TRANSLOCO_SCOPE = 'app'
     RouterLinkActive,
     RouterOutlet,
     TranslocoPipe,
-    AsyncPipe
+    AsyncPipe,
+    MatToolbarModule,
+    MatButtonModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
