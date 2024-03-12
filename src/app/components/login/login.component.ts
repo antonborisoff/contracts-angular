@@ -42,6 +42,9 @@ import {
 import {
   MatInputModule
 } from '@angular/material/input'
+import {
+  MatIconModule
+} from '@angular/material/icon'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'login'
 @Component({
@@ -53,7 +56,8 @@ const COMPONENT_TRANSLOCO_SCOPE = 'login'
     MatButtonModule,
     MatToolbarModule,
     MatCardModule,
-    MatInputModule
+    MatInputModule,
+    MatIconModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
@@ -68,6 +72,7 @@ export class LoginComponent {
   }
 
   public loginForm
+  public passwordHidden = true
   public incorrectLoginOrPassword = false
   public constructor(
     private fb: FormBuilder,

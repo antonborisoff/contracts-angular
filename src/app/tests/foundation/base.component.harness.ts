@@ -87,7 +87,8 @@ export class BaseHarness extends ComponentHarness {
       'h1',
       'h4',
       'p',
-      'div'
+      'div',
+      'mat-icon'
     ], this.ancestorSelector)
     const element = await this.locatorFor(cssSelector)()
     return await element.text()
