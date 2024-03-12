@@ -66,11 +66,17 @@ describe('Base harness', () => {
   })
 
   it('inputValue', async () => {
-    await expectAsync(baseHarness.elementPresent('input-value', 'input')).toBeResolvedTo(true)
-    await expectAsync(baseHarness.inputValue('input-value')).toBeResolvedTo('some input value')
+    const tags = [
+      'input',
+      'textarea'
+    ]
+    for (const tag of tags) {
+      await expectAsync(baseHarness.elementPresent(`${tag}-value`, tag)).toBeResolvedTo(true)
+      await expectAsync(baseHarness.inputValue(`${tag}-value`)).toBeResolvedTo(`some ${tag} value`)
 
-    await expectAsync(baseHarness.elementPresent('non-existent-input-value', 'input')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.buttonEnabled('non-existent-input-value')).toBeRejected()
+      await expectAsync(baseHarness.elementPresent(`non-existent-${tag}-value`, tag)).toBeResolvedTo(false)
+      await expectAsync(baseHarness.buttonEnabled(`non-existent-${tag}-value`)).toBeRejected()
+    }
   })
 
   it('elementVisible', async () => {
@@ -142,49 +148,73 @@ describe('Base harness', () => {
   })
 
   it('enterValue - updateOn: change', async () => {
-    let formValuesOnChange: string[] = []
-    testComponent.formControlUpdateOnChange.valueChanges.subscribe((value: string) => {
-      formValuesOnChange.push(value)
-    })
+    const tags = [
+      {
+        tag: 'input',
+        formControl: testComponent.formControlInputUpdateOnChange
+      },
+      {
+        tag: 'textarea',
+        formControl: testComponent.formControlTextareaUpdateOnChange
+      }
+    ]
+    for (const tag of tags) {
+      let formValuesOnChange: string[] = []
+      tag.formControl.valueChanges.subscribe((value: string) => {
+        formValuesOnChange.push(value)
+      })
 
-    formValuesOnChange = []
-    await baseHarness.enterValue('input-element-update-on-change', 'some value')
-    expect(formValuesOnChange.pop()).toBe('some value')
+      formValuesOnChange = []
+      await baseHarness.enterValue(`${tag.tag}-element-update-on-change`, `some ${tag.tag} value`)
+      expect(formValuesOnChange.pop()).toBe(`some ${tag.tag} value`)
 
-    formValuesOnChange = []
-    await baseHarness.enterValue('input-element-update-on-change', '')
-    expect(formValuesOnChange.pop()).toBe('')
+      formValuesOnChange = []
+      await baseHarness.enterValue(`${tag.tag}-element-update-on-change`, '')
+      expect(formValuesOnChange.pop()).toBe('')
 
-    formValuesOnChange = []
-    await expectAsync(baseHarness.enterValue('input-element-update-on-change-non-existent', '')).toBeRejected()
-    expect(formValuesOnChange.pop()).toBeUndefined()
+      formValuesOnChange = []
+      await expectAsync(baseHarness.enterValue(`${tag.tag}-element-update-on-change-non-existent`, '')).toBeRejected()
+      expect(formValuesOnChange.pop()).toBeUndefined()
+    }
   })
 
   it('enterValue - updateOn: blur', async () => {
-    let formValuesOnBlur: string[] = []
-    testComponent.formControlUpdateOnBlur.valueChanges.subscribe((value: string) => {
-      formValuesOnBlur.push(value)
-    })
+    const tags = [
+      {
+        tag: 'input',
+        formControl: testComponent.formControlInputUpdateOnBlur
+      },
+      {
+        tag: 'textarea',
+        formControl: testComponent.formControlTextareaUpdateOnBlur
+      }
+    ]
+    for (const tag of tags) {
+      let formValuesOnBlur: string[] = []
+      tag.formControl.valueChanges.subscribe((value: string) => {
+        formValuesOnBlur.push(value)
+      })
 
-    formValuesOnBlur = []
-    await baseHarness.enterValue('input-element-update-on-blur', 'some value', false)
-    expect(formValuesOnBlur.pop()).toBeUndefined()
+      formValuesOnBlur = []
+      await baseHarness.enterValue(`${tag.tag}-element-update-on-blur`, `some ${tag.tag} value`, false)
+      expect(formValuesOnBlur.pop()).toBeUndefined()
 
-    formValuesOnBlur = []
-    await baseHarness.enterValue('input-element-update-on-blur', 'some value')
-    expect(formValuesOnBlur.pop()).toBe('some value')
+      formValuesOnBlur = []
+      await baseHarness.enterValue(`${tag.tag}-element-update-on-blur`, `some ${tag.tag} value`)
+      expect(formValuesOnBlur.pop()).toBe(`some ${tag.tag} value`)
 
-    formValuesOnBlur = []
-    await baseHarness.enterValue('input-element-update-on-blur', '', false)
-    expect(formValuesOnBlur.pop()).toBeUndefined()
+      formValuesOnBlur = []
+      await baseHarness.enterValue(`${tag.tag}-element-update-on-blur`, '', false)
+      expect(formValuesOnBlur.pop()).toBeUndefined()
 
-    formValuesOnBlur = []
-    await baseHarness.enterValue('input-element-update-on-blur', '')
-    expect(formValuesOnBlur.pop()).toBe('')
+      formValuesOnBlur = []
+      await baseHarness.enterValue(`${tag.tag}-element-update-on-blur`, '')
+      expect(formValuesOnBlur.pop()).toBe('')
 
-    formValuesOnBlur = []
-    await expectAsync(baseHarness.enterValue('input-element-update-on-blur-non-existent', '')).toBeRejected()
-    expect(formValuesOnBlur.pop()).toBeUndefined()
+      formValuesOnBlur = []
+      await expectAsync(baseHarness.enterValue(`${tag.tag}-element-update-on-blur-non-existent`, '')).toBeRejected()
+      expect(formValuesOnBlur.pop()).toBeUndefined()
+    }
   })
 
   it('Utilities - actOnMessageBox', async () => {

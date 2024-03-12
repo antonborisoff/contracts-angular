@@ -24,8 +24,13 @@ import {
 })
 export class TestComponent {
   private clickedElements: Record<string, string> = {}
-  public formControlUpdateOnChange = this.fb.nonNullable.control<string>('')
-  public formControlUpdateOnBlur = this.fb.nonNullable.control<string>('', {
+  public formControlInputUpdateOnChange = this.fb.nonNullable.control<string>('')
+  public formControlInputUpdateOnBlur = this.fb.nonNullable.control<string>('', {
+    updateOn: 'blur'
+  })
+
+  public formControlTextareaUpdateOnChange = this.fb.nonNullable.control<string>('')
+  public formControlTextareaUpdateOnBlur = this.fb.nonNullable.control<string>('', {
     updateOn: 'blur'
   })
 
