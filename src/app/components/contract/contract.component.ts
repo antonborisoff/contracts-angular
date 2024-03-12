@@ -15,7 +15,8 @@ import {
 } from '@angular/common'
 import {
   FormBuilder,
-  ReactiveFormsModule
+  ReactiveFormsModule,
+  Validators
 } from '@angular/forms'
 import {
   requiredAfterTrimValidator
@@ -42,6 +43,15 @@ import {
 import {
   Contract
 } from '../../interfaces/contract'
+import {
+  MatButtonModule
+} from '@angular/material/button'
+import {
+  MatCardModule
+} from '@angular/material/card'
+import {
+  MatInputModule
+} from '@angular/material/input'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'contract'
 @Component({
@@ -50,7 +60,10 @@ const COMPONENT_TRANSLOCO_SCOPE = 'contract'
   imports: [
     TranslocoPipe,
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatCardModule,
+    MatInputModule
   ],
   templateUrl: './contract.component.html',
   styleUrl: './contract.component.css',
@@ -86,11 +99,17 @@ export class ContractComponent implements OnDestroy {
     this.contractForm = this.fb.nonNullable.group({
       number: [
         this.newContract.number,
-        [requiredAfterTrimValidator()]
+        [
+          Validators.required,
+          requiredAfterTrimValidator()
+        ]
       ],
       conditions: [
         this.newContract.conditions,
-        [requiredAfterTrimValidator()]
+        [
+          Validators.required,
+          requiredAfterTrimValidator()
+        ]
       ]
     }, {
       updateOn: 'blur'

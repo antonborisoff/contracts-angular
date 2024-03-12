@@ -1,32 +1,50 @@
-<div class="componentBorder">
-    <div data-id="createContainer">
-        <form [formGroup]="contractForm" (ngSubmit)="onSave()">
-            <div>
-                <input data-id="numberInput"
-                    placeholder="{{'contract.CONTRACT_NUMBER_PLACEHOLDER' | transloco}}" 
-                    formControlName="number"/>
-                @if(contractForm.controls.number.errors && contractForm.controls.number.dirty) {
-                    @if(contractForm.controls.number.errors['requiredAfterTrim']) {
-                        <div data-id="numberErrorEmpty">{{'VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</div>
+<div class="flex-container-row full-height flex-container-content-center flex-container-items-center">
+    <mat-card style="width: 30%">
+        <mat-card-content>
+            <form
+                [formGroup]="contractForm"
+                (ngSubmit)="onSave()"
+            >
+                <mat-form-field style="width: 100%">
+                    <mat-label>{{'contract.CONTRACT_NUMBER_PLACEHOLDER' | transloco}}</mat-label>
+                    <input
+                        matInput
+                        data-id="numberInput"
+                        formControlName="number"
+                    />
+                    @if(contractForm.controls.number.errors?.['requiredAfterTrim']) {
+                        <mat-error data-id="numberErrorEmpty">{{'VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</mat-error>
                     }
-                }
-            </div>
-            <div>
-                <input data-id="conditionsInput"
-                    placeholder="{{'contract.CONTRACT_CONDITIONS_PLACEHOLDER' | transloco}}" 
-                    formControlName="conditions"/>
-                @if(contractForm.controls.conditions.errors && contractForm.controls.conditions.dirty) {
-                    @if(contractForm.controls.conditions.errors['requiredAfterTrim']) {
-                        <div data-id="conditionsErrorEmpty">{{'VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</div>
+                </mat-form-field>
+
+                <mat-form-field style="width: 100%">
+                    <mat-label>{{'contract.CONTRACT_CONDITIONS_PLACEHOLDER' | transloco}}</mat-label>
+                    <textarea
+                        matInput
+                        data-id="conditionsInput"
+                        formControlName="conditions"
+                    ></textarea>
+                    @if(contractForm.controls.conditions.errors?.['requiredAfterTrim']) {
+                        <mat-error data-id="conditionsErrorEmpty">{{'VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</mat-error>
                     }
-                }
-            </div>
-            <button data-id="saveContractButton"
-                [disabled]="contractForm.invalid"
-                type="submit">{{'SAVE_BUTTON_LABEL' | transloco}}</button>
-            <button data-id="cancelSaveContractButton"
-                type="reset"
-                (click)="onCancelCreate()">{{'CANCEL_BUTTON_LABEL' | transloco}}</button>
-        </form>
-    </div>
+                </mat-form-field>
+                <mat-card-actions align="end">
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        data-id="saveContractButton"
+                        [disabled]="contractForm.invalid"
+                        type="submit"
+                        class="margin-end"
+                    >{{'SAVE_BUTTON_LABEL' | transloco}}</button>
+                    <button
+                        mat-raised-button
+                        data-id="cancelSaveContractButton"
+                        type="reset"
+                        (click)="onCancelCreate()"
+                    >{{'CANCEL_BUTTON_LABEL' | transloco}}</button>
+                </mat-card-actions>
+            </form>
+        </mat-card-content>
+    </mat-card>
 </div>

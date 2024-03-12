@@ -45,7 +45,11 @@ export class BaseHarness extends ComponentHarness {
   }
 
   public async enterValue(id: string, value: string, blur: boolean = true): Promise<void> {
-    const input = await this.locatorFor(`input${this.getIdSelector(id)}`)()
+    const cssSelector = this.getCssSelector(id, [
+      'input',
+      'textarea'
+    ])
+    const input = await this.locatorFor(cssSelector)()
     if (value.length) {
       await input.setInputValue(value)
     }
@@ -107,7 +111,11 @@ export class BaseHarness extends ComponentHarness {
   }
 
   public async inputValue(id: string): Promise<string> {
-    const input = await this.locatorFor(`input${this.getIdSelector(id)}`)()
+    const cssSelector = this.getCssSelector(id, [
+      'input',
+      'textarea'
+    ])
+    const input = await this.locatorFor(cssSelector)()
     return await input.getProperty('value')
   }
 }

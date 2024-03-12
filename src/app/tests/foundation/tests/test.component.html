@@ -92,13 +92,23 @@
         </div>
     
         <div>
-            <div>Form control with update on change:</div>
-            <input data-id="input-element-update-on-change" [formControl]="formControlUpdateOnChange"/>
+            <div>Form control input with update on change:</div>
+            <input data-id="input-element-update-on-change" [formControl]="formControlInputUpdateOnChange"/>
         </div>
     
         <div>
-            <div>Form control with update on blur:</div>
-            <input data-id="input-element-update-on-blur" [formControl]="formControlUpdateOnBlur"/>
+            <div>Form control input with update on blur:</div>
+            <input data-id="input-element-update-on-blur" [formControl]="formControlInputUpdateOnBlur"/>
+        </div>
+
+        <div>
+            <div>Form control textarea with update on change:</div>
+            <textarea data-id="textarea-element-update-on-change" [formControl]="formControlTextareaUpdateOnChange"></textarea>
+        </div>
+    
+        <div>
+            <div>Form control textarea with update on blur:</div>
+            <textarea data-id="textarea-element-update-on-blur" [formControl]="formControlTextareaUpdateOnBlur"></textarea>
         </div>
     
         <div data-id="div-child-count-no-grandchild-present">
@@ -121,6 +131,11 @@
         <div>
             <div>input value:</div>
             <input data-id="input-value" value="some input value"/>
+        </div>
+
+        <div>
+            <div>textarea value:</div>
+            <textarea data-id="textarea-value">some textarea value</textarea>
         </div>
 
         <div>
