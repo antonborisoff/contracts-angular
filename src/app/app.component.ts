@@ -33,6 +33,9 @@ import {
 import {
   MatButtonModule
 } from '@angular/material/button'
+import {
+  MatIconModule
+} from '@angular/material/icon'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'app'
 @Component({
@@ -45,7 +48,8 @@ const COMPONENT_TRANSLOCO_SCOPE = 'app'
     TranslocoPipe,
     AsyncPipe,
     MatToolbarModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

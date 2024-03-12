@@ -1,5 +1,6 @@
 <div class="app-height componentBorder">
   <mat-toolbar color="primary">
+    <mat-icon fontIcon="description"></mat-icon>
     {{'APP_TITLE' | transloco}}
     @if(isAuth | async) {
       <span class="flex-item-spacer"></span>
@@ -27,6 +28,10 @@
           class="margin-start"
         >
           {{'app.LOGOUT_BUTTON' | transloco}}
+          <mat-icon
+            fontIcon="exit_to_app"
+            iconPositionEnd
+          ></mat-icon>
         </button>
       </div>
     }
