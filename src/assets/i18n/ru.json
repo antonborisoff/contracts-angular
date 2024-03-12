@@ -1,4 +1,5 @@
 {
+    "APP_TITLE": "Управление контрактами",
     "GENERAL_ERROR_MESSAGE": "Что-то пошло не так.",
     "CONFIRM_DELETE_MESSAGE": "Вы уверены, что хотите удалить эту сущность?",
     "SAVE_BUTTON_LABEL": "Сохранить",

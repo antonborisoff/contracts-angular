@@ -1,22 +1,39 @@
-<div class="componentBorder">
-  @if(isAuth | async) {
-    <div data-id="appHeader">
-      <a
-        data-id="navToHomeLink"
-        [routerLink]="['/home']"
-        routerLinkActive="goHomeLinkHidden"
-        [routerLinkActiveOptions]="{exact: true}">{{'app.GO_HOME' | transloco}}</a>
-      <h1
-        data-id="welcomeMessage">
+<div class="app-height componentBorder">
+  <mat-toolbar color="primary">
+    {{'APP_TITLE' | transloco}}
+    @if(isAuth | async) {
+      <span class="flex-item-spacer"></span>
+      <div
+        data-id="appHeader"
+        class="flex-container-row"
+      >
+        <a
+          mat-flat-button
+          data-id="navToHomeLink"
+          [routerLink]="['/home']"
+          routerLinkActive="goHomeLinkHidden"
+          [routerLinkActiveOptions]="{exact: true}"
+          class="margin-end"
+        >
+          {{'app.GO_HOME' | transloco}}
+        </a>
+        <h1 data-id="welcomeMessage">
           {{ 'app.HELLO' | transloco:{value: title} }}
-      </h1>
-      <button
-        data-id="logoutButton"
-        (click)="onLogout()">
+        </h1>
+        <button
+          mat-flat-button
+          data-id="logoutButton"
+          (click)="onLogout()"
+          class="margin-start"
+        >
           {{'app.LOGOUT_BUTTON' | transloco}}
-      </button>
-    </div>
-  }  
-  <router-outlet />
-</div>
+        </button>
+      </div>
+    }
+  </mat-toolbar>
 
+  <div class="app-content-without-toolbar">
+    <router-outlet />
+  </div>
+
+</div>

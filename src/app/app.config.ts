@@ -26,6 +26,16 @@ import {
 import {
   authInterceptor
 } from './interceptors'
+import {
+  provideAnimationsAsync
+} from '@angular/platform-browser/animations/async'
+import {
+  ErrorStateMatcher,
+  ShowOnDirtyErrorStateMatcher
+} from '@angular/material/core'
+import {
+  MAT_FORM_FIELD_DEFAULT_OPTIONS
+} from '@angular/material/form-field'
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -39,6 +49,17 @@ export const appConfig: ApplicationConfig = {
         prodMode: !isDevMode()
       },
       loader: TranslocoHttpLoader
-    })
+    }),
+    provideAnimationsAsync(),
+    {
+      provide: ErrorStateMatcher,
+      useClass: ShowOnDirtyErrorStateMatcher
+    },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {
+        appearance: 'outline'
+      }
+    }
   ]
 }
