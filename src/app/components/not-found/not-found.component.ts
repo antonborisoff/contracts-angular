@@ -12,6 +12,9 @@ import {
 import {
   RouterLink
 } from '@angular/router'
+import {
+  MatIconModule
+} from '@angular/material/icon'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'notFound'
 @Component({
@@ -19,7 +22,8 @@ const COMPONENT_TRANSLOCO_SCOPE = 'notFound'
   standalone: true,
   imports: [
     TranslocoPipe,
-    RouterLink
+    RouterLink,
+    MatIconModule
   ],
   templateUrl: './not-found.component.html',
   styleUrl: './not-found.component.css',
