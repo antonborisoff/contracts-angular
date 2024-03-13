@@ -33,14 +33,6 @@ describe('HomeComponent', () => {
     featureToggleServiceMock = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['isActive'])
   })
 
-  it('display welcome message', async () => {
-    const {
-      harnesses
-    } = await initComponent()
-
-    expect(await harnesses.router.component.elementVisible('welcomeMessage')).toBe(true)
-  })
-
   it('FT_Contracts ON - show link to contracts', async () => {
     featureToggleServiceMock.isActive.withArgs('FT_Contracts').and.returnValue(true)
     const {
@@ -56,7 +48,7 @@ describe('HomeComponent', () => {
       harnesses
     } = await initComponent()
 
-    await harnesses.router.component.clickLink('navToContractsLink')
+    await harnesses.router.component.clickMatCard('navToContractsLink')
     expect(Utilities.getLocationPath()).toBe('/contracts')
   })
 

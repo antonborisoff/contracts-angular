@@ -18,6 +18,9 @@ import {
 import {
   FeatureToggleService
 } from '../../services/features/feature-toggle.service'
+import {
+  MatCardModule
+} from '@angular/material/card'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'home'
 @Component({
@@ -26,7 +29,8 @@ const COMPONENT_TRANSLOCO_SCOPE = 'home'
   imports: [
     TranslocoPipe,
     CommonModule,
-    RouterLink
+    RouterLink,
+    MatCardModule
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',

@@ -1,7 +1,14 @@
-<p data-id="welcomeMessage">{{'home.WELCOME_MESSAGE' | transloco}}</p>
-
-<div>
+<div class="content-margin margin-top">
     @if(ft.isActive('FT_Contracts')) {
-        <a data-id="navToContractsLink" [routerLink]="['/contracts']">{{'home.GO_TO_CONTRACTS' | transloco}}</a>
+        <mat-card
+            data-id="navToContractsLink"
+            style="width: 10rem;"
+            class="margin-start margin-end clickable"
+            [routerLink]="['/contracts']"
+        >
+            <mat-card-title class="text-align-center">
+                {{'home.GO_TO_CONTRACTS' | transloco}}
+            </mat-card-title>
+        </mat-card>
     }
 </div>
