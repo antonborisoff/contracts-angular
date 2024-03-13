@@ -1,6 +1,8 @@
 {
     "CONTRACT_LIST_LABEL": "Контракты:",
-    "CONDITIONS_LABEL": "Условия:",
+    "NUMBER_COLUMN_LABEL": "Номер",
+    "CONDITIONS_COLUMN_LABEL": "Условия",
+    "ACTIONS_COLUMN_LABEL": "Действия",
     "NO_CONTRACTS_LABEL": "Нет доступных контрактов",
     "EDIT_CONTRACT_BUTTON_LABEL": "Изменить контракт",
     "DELETE_CONTRACT_BUTTON_LABEL": "Удалить контракт",

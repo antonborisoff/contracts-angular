@@ -1,22 +1,93 @@
-<div class="componentBorder">
-    <button data-id="addContractButton"
-        type="button"
-        (click)="addContract()">{{'contracts.ADD_CONTRACT_BUTTON_LABEL' | transloco}}</button>
-    <div>{{'contracts.CONTRACT_LIST_LABEL' | transloco}}</div>
-    <div data-id="contractList">
-        @for (contract of contracts; track contract.id) {
-            <div [attr.data-id]="'contract-' + contract.id">
-                <h4 data-id="contractNumber">{{contract.number}}</h4>
-                <h5>{{'contracts.CONDITIONS_LABEL' | transloco}}</h5>
-                <div data-id="contractConditions">{{contract.conditions}}</div>
-                <div>
-                    <button data-id="editContract" (click)="editContract(contract.id)">{{'contracts.EDIT_CONTRACT_BUTTON_LABEL' | transloco}}</button>
-                    <button data-id="deleteContract" (click)="deleteContract(contract.id)">{{'contracts.DELETE_CONTRACT_BUTTON_LABEL' | transloco}}</button>
-                </div>
-            </div>
-        }   
-    </div>
-    @if(!contracts.length) {
-        <div data-id="noContractsMessage">{{'contracts.NO_CONTRACTS_LABEL' | transloco}}</div>
-    }
+<div class="mat-elevation-z8 content-margin margin-top">
+    <mat-toolbar class="flex-container-row">
+        <div>{{'contracts.CONTRACT_LIST_LABEL' | transloco}}</div>
+        <span class="flex-item-spacer"></span>
+        <button
+            mat-raised-button
+            data-id="addContractButton"
+            type="button"
+            (click)="addContract()"
+        >{{'contracts.ADD_CONTRACT_BUTTON_LABEL' | transloco}}
+        <mat-icon>add</mat-icon>
+        </button>
+    </mat-toolbar>
+    <table
+        mat-table
+        [dataSource]="contracts"
+        [trackBy]="trackContract"
+        fixedLayout="true"
+        data-id="contractList"
+    >
+
+        <ng-container matColumnDef="id">
+            <th
+                mat-header-cell
+                *matHeaderCellDef
+            > {{'contracts.ACTIONS_COLUMN_LABEL' | transloco}} </th>
+            <td
+                mat-cell
+                *matCellDef="let contract"
+            >
+                <button
+                    mat-icon-button
+                    matTooltip="{{'contracts.EDIT_CONTRACT_BUTTON_LABEL' | transloco}}"
+                    data-id="editContract"
+                    (click)="editContract(contract.id)"
+                >
+                    <mat-icon>mode_edit</mat-icon>
+                </button>
+                <button
+                    mat-icon-button
+                    matTooltip="{{'contracts.DELETE_CONTRACT_BUTTON_LABEL' | transloco}}"
+                    data-id="deleteContract"
+                    (click)="deleteContract(contract.id)"
+                >
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="number">
+            <th
+                mat-header-cell
+                *matHeaderCellDef
+            > {{'contracts.NUMBER_COLUMN_LABEL' | transloco}} </th>
+            <td
+                mat-cell
+                *matCellDef="let contract"
+                data-id="contractNumber"
+            > {{contract.number}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="conditions">
+            <th
+                mat-header-cell
+                *matHeaderCellDef
+            > {{'contracts.CONDITIONS_COLUMN_LABEL' | transloco}} </th>
+            <td
+                mat-cell
+                *matCellDef="let contract"
+                data-id="contractConditions"
+            > {{contract.conditions}} </td>
+        </ng-container>
+
+        <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns"
+        ></tr>
+        <tr
+            mat-row
+            *matRowDef="let row; let rowIndex = index; columns: displayedColumns; "
+            [attr.data-id]="'mat-data-row-' + rowIndex"
+        ></tr>
+        <tr *matNoDataRow>
+            <td
+                data-id="noContractsMessage"
+                [attr.colspan]="displayedColumns.length"
+                class="text-align-center"
+            >
+                {{'contracts.NO_CONTRACTS_LABEL' | transloco}}
+            </td>
+        </tr>
+    </table>
 </div>

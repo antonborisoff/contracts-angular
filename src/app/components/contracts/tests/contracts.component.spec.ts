@@ -66,12 +66,17 @@ describe('ContractsComponent', () => {
       harnesses
     } = await initComponent(CONTRACTS)
 
-    expect(await harnesses.router.component.elementChildCount('contractList')).toBe(CONTRACTS.length)
+    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(CONTRACTS.length)
     expect(await harnesses.router.component.elementVisible('noContractsMessage')).toBe(false)
     for (const contract of CONTRACTS) {
-      expect(await harnesses.router.component.inElement(`contract-${contract.id}`).elementText('contractNumber')).toBe(contract.number)
-      expect(await harnesses.router.component.inElement(`contract-${contract.id}`).elementText('contractConditions')).toBe(contract.conditions)
+      expect(await harnesses.router.component.inMatTableRow('contractList', {
+        number: contract.number
+      }).elementText('contractNumber')).toBe(contract.number)
+      expect(await harnesses.router.component.inMatTableRow('contractList', {
+        number: contract.number
+      }).elementText('contractConditions')).toBe(contract.conditions)
     }
+    expect(await harnesses.router.component.elementVisible('noContractsMessage')).toBe(false)
   })
 
   it('display no contract message if there are no contracts', async () => {
@@ -79,7 +84,7 @@ describe('ContractsComponent', () => {
       harnesses
     } = await initComponent([])
 
-    expect(await harnesses.router.component.elementChildCount('contractList')).toBe(0)
+    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(0)
     expect(await harnesses.router.component.elementVisible('noContractsMessage')).toBe(true)
   })
 
@@ -102,12 +107,18 @@ describe('ContractsComponent', () => {
     contractServiceMock.getContracts.and.returnValue(of(expectedContracts))
 
     await Utilities.actOnMessageBox(async () => {
-      await harnesses.router.component.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
+      await harnesses.router.component.inMatTableRow('contractList', {
+        number: contractToDelete.number
+      }).clickButton('deleteContract')
     }, 'confirm')
-    expect(await harnesses.router.component.elementChildCount('contractList')).toBe(expectedContracts.length)
+    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(expectedContracts.length)
     for (const expectedContract of expectedContracts) {
-      expect(await harnesses.router.component.inElement(`contract-${expectedContract.id}`).elementText('contractNumber')).toBe(expectedContract.number)
-      expect(await harnesses.router.component.inElement(`contract-${expectedContract.id}`).elementText('contractConditions')).toBe(expectedContract.conditions)
+      expect(await harnesses.router.component.inMatTableRow('contractList', {
+        number: expectedContract.number
+      }).elementText('contractNumber')).toBe(expectedContract.number)
+      expect(await harnesses.router.component.inMatTableRow('contractList', {
+        number: expectedContract.number
+      }).elementText('contractConditions')).toBe(expectedContract.conditions)
     }
   })
 
@@ -120,12 +131,18 @@ describe('ContractsComponent', () => {
     const expectedContracts = CONTRACTS
 
     await Utilities.actOnMessageBox(async () => {
-      await harnesses.router.component.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
+      await harnesses.router.component.inMatTableRow('contractList', {
+        number: contractToDelete.number
+      }).clickButton('deleteContract')
     }, 'cancel')
-    expect(await harnesses.router.component.elementChildCount('contractList')).toBe(expectedContracts.length)
+    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(expectedContracts.length)
     for (const expectedContract of expectedContracts) {
-      expect(await harnesses.router.component.inElement(`contract-${expectedContract.id}`).elementText('contractNumber')).toBe(expectedContract.number)
-      expect(await harnesses.router.component.inElement(`contract-${expectedContract.id}`).elementText('contractConditions')).toBe(expectedContract.conditions)
+      expect(await harnesses.router.component.inMatTableRow('contractList', {
+        number: expectedContract.number
+      }).elementText('contractNumber')).toBe(expectedContract.number)
+      expect(await harnesses.router.component.inMatTableRow('contractList', {
+        number: expectedContract.number
+      }).elementText('contractConditions')).toBe(expectedContract.conditions)
     }
   })
 
@@ -139,7 +156,9 @@ describe('ContractsComponent', () => {
 
     expect(await Utilities.errorMessageBoxPresent(async () => {
       await Utilities.actOnMessageBox(async () => {
-        await harnesses.router.component.inElement(`contract-${contractToDelete.id}`).clickButton('deleteContract')
+        await harnesses.router.component.inMatTableRow('contractList', {
+          number: contractToDelete.number
+        }).clickButton('deleteContract')
       }, 'confirm')
     })).toBe(true)
   })
@@ -159,7 +178,9 @@ describe('ContractsComponent', () => {
     } = await initComponent(CONTRACTS)
     const contractToEdit = CONTRACTS[1]
 
-    await harnesses.router.component.inElement(`contract-${contractToEdit.id}`).clickButton('editContract')
+    await harnesses.router.component.inMatTableRow('contractList', {
+      number: contractToEdit.number
+    }).clickButton('editContract')
     expect(Utilities.getLocationPath()).toBe(`/contract?contractId=${contractToEdit.id}`)
   })
 })
