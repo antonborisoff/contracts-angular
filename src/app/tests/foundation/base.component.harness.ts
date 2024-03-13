@@ -89,6 +89,11 @@ export class BaseHarness extends ComponentHarness {
     await link.click()
   }
 
+  public async clickMatCard(id: string): Promise<void> {
+    const matCard = await this.locatorFor(`mat-card${this.getIdSelector(id)}`)()
+    await matCard.click()
+  }
+
   public async enterValue(id: string, value: string, blur: boolean = true): Promise<void> {
     const cssSelector = this.getCssSelector(id, [
       'input',
@@ -119,7 +124,8 @@ export class BaseHarness extends ComponentHarness {
       'button',
       'a',
       'td',
-      'mat-error'
+      'mat-error',
+      'mat-card'
     ])
     const element = await this.locatorForOptional(cssSelector)()
     if (element) {
