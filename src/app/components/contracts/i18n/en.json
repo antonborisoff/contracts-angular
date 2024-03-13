@@ -1,6 +1,8 @@
 {
     "CONTRACT_LIST_LABEL": "Contracts:",
-    "CONDITIONS_LABEL": "Conditions:",
+    "NUMBER_COLUMN_LABEL": "Number",
+    "CONDITIONS_COLUMN_LABEL": "Conditions",
+    "ACTIONS_COLUMN_LABEL": "Actions",
     "NO_CONTRACTS_LABEL": "No contracts available",
     "EDIT_CONTRACT_BUTTON_LABEL": "Edit contract",
     "DELETE_CONTRACT_BUTTON_LABEL": "Delete contract",

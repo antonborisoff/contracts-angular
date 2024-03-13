@@ -1,13 +1,26 @@
 import {
-  ComponentHarness
+  ComponentHarness,
+  HarnessPredicate
 } from '@angular/cdk/testing'
+import {
+  MatTableHarness,
+  MatRowHarness
+} from '@angular/material/table/testing'
+
+interface ancestorHarnessConfig<T extends ComponentHarness> {
+  itemTag: string
+  itemHarnessPredicate: HarnessPredicate<T>
+}
 
 export class BaseHarness extends ComponentHarness {
+  private idAttribute = 'data-id'
   // TODO: convert to private once ancestorSelector is managed centrally via getCssSelector (not passed to it)
   protected ancestorSelector: string = ''
 
+  protected ancestorHarnessConfig?: ancestorHarnessConfig<MatRowHarness>
+
   protected getIdSelector(id: string): string {
-    return `[data-id="${id}"]`
+    return `[${this.idAttribute}="${id}"]`
   }
 
   protected getCssSelector(id: string, tags: string[], ancestorSelector: string = ''): string {
@@ -19,6 +32,18 @@ export class BaseHarness extends ComponentHarness {
     }, '')
   }
 
+  protected async updateAncestorSelector(): Promise<void> {
+    if (this.ancestorHarnessConfig) {
+      const harness = await this.locatorFor(this.ancestorHarnessConfig.itemHarnessPredicate)()
+      const host = await harness.host()
+      const hostId = await host.getAttribute(this.idAttribute)
+      if (!hostId) {
+        throw new Error(`Cannot execute the method: the host element of the harness returned by the wrapper does not have ${this.idAttribute} property`)
+      }
+      this.ancestorSelector = `${this.ancestorHarnessConfig.itemTag}${this.getIdSelector(hostId)} `
+    }
+  }
+
   /********************************
    * WRAPPERS
    *******************************/
@@ -26,8 +51,27 @@ export class BaseHarness extends ComponentHarness {
     const copy = Object.create(
       Object.getPrototypeOf(this),
       Object.getOwnPropertyDescriptors(this)
-    )
+    ) as this
     copy.ancestorSelector = `div${this.getIdSelector(id)} `
+    return copy
+  }
+
+  public inMatTableRow(tableId: string, rowFilter: Record<string, string>): this {
+    const copy = Object.create(
+      Object.getPrototypeOf(this),
+      Object.getOwnPropertyDescriptors(this)
+    ) as this
+    copy.ancestorHarnessConfig = {
+      itemHarnessPredicate: MatRowHarness.with({
+        ancestor: this.getIdSelector(tableId)
+      }).addOption(`row`, rowFilter, async (harness, rowFilter) => {
+        const rowValues = await harness.getCellTextByColumnName()
+        return Object.keys(rowFilter).every((key) => {
+          return rowValues[key] === rowFilter[key]
+        })
+      }),
+      itemTag: 'tr'
+    }
     return copy
   }
   /********************************
@@ -35,6 +79,7 @@ export class BaseHarness extends ComponentHarness {
    *******************************/
 
   public async clickButton(id: string): Promise<void> {
+    await this.updateAncestorSelector()
     const button = await this.locatorFor(`${this.ancestorSelector}button${this.getIdSelector(id)}:not([disabled])`)()
     await button.click()
   }
@@ -73,6 +118,7 @@ export class BaseHarness extends ComponentHarness {
       'div',
       'button',
       'a',
+      'td',
       'mat-error'
     ])
     const element = await this.locatorForOptional(cssSelector)()
@@ -87,11 +133,13 @@ export class BaseHarness extends ComponentHarness {
   }
 
   public async elementText(id: string): Promise<string> {
+    await this.updateAncestorSelector()
     const cssSelector = this.getCssSelector(id, [
       'h1',
       'h4',
       'p',
       'div',
+      'td',
       'mat-icon'
     ], this.ancestorSelector)
     const element = await this.locatorFor(cssSelector)()
@@ -117,5 +165,13 @@ export class BaseHarness extends ComponentHarness {
     ])
     const input = await this.locatorFor(cssSelector)()
     return await input.getProperty('value')
+  }
+
+  public async matTableNRows(id: string): Promise<number> {
+    const matTable = await this.locatorFor(MatTableHarness.with({
+      selector: this.getIdSelector(id)
+    }))()
+    const rows = await matTable.getRows()
+    return rows.length
   }
 }

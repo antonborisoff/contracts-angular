@@ -28,6 +28,21 @@ import {
 import {
   Router
 } from '@angular/router'
+import {
+  MatToolbarModule
+} from '@angular/material/toolbar'
+import {
+  MatButtonModule
+} from '@angular/material/button'
+import {
+  MatIconModule
+} from '@angular/material/icon'
+import {
+  MatTableModule
+} from '@angular/material/table'
+import {
+  MatTooltipModule
+} from '@angular/material/tooltip'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'contracts'
 @Component({
@@ -35,7 +50,12 @@ const COMPONENT_TRANSLOCO_SCOPE = 'contracts'
   standalone: true,
   imports: [
     TranslocoPipe,
-    CommonModule
+    CommonModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTableModule,
+    MatTooltipModule
   ],
   templateUrl: './contracts.component.html',
   styleUrl: './contracts.component.css',
@@ -50,6 +70,12 @@ export class ContractsComponent {
   }
 
   public contracts: Contract[] = []
+  public displayedColumns = [
+    'number',
+    'conditions',
+    'id'
+  ]
+
   public constructor(
     private contracts$: ContractService,
     private backendErrorHandler: BackendErrorHandlerService,
@@ -58,6 +84,10 @@ export class ContractsComponent {
     private ts: TranslocoService
   ) {
     this.loadContracts()
+  }
+
+  public trackContract(index: number, contract: Contract): string {
+    return contract.id
   }
 
   public loadContracts(): void {
