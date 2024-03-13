@@ -28,23 +28,23 @@
                         <mat-error data-id="conditionsErrorEmpty">{{'VALIDATION_ERRORS.EMPTY_VALUE' | transloco}}</mat-error>
                     }
                 </mat-form-field>
-                <mat-card-actions align="end">
-                    <button
-                        mat-raised-button
-                        color="primary"
-                        data-id="saveContractButton"
-                        [disabled]="contractForm.invalid"
-                        type="submit"
-                        class="margin-end"
-                    >{{'SAVE_BUTTON_LABEL' | transloco}}</button>
-                    <button
-                        mat-raised-button
-                        data-id="cancelSaveContractButton"
-                        type="reset"
-                        (click)="onCancelCreate()"
-                    >{{'CANCEL_BUTTON_LABEL' | transloco}}</button>
-                </mat-card-actions>
             </form>
         </mat-card-content>
+        <mat-card-actions align="end">
+            <button
+                mat-raised-button
+                color="primary"
+                data-id="saveContractButton"
+                [disabled]="contractForm.invalid"
+                type="submit"
+                class="margin-end"
+            >{{'SAVE_BUTTON_LABEL' | transloco}}</button>
+            <button
+                mat-raised-button
+                data-id="cancelSaveContractButton"
+                type="reset"
+                (click)="onCancelCreate()"
+            >{{'CANCEL_BUTTON_LABEL' | transloco}}</button>
+        </mat-card-actions>
     </mat-card>
 </div>
