@@ -55,18 +55,6 @@ export class TestComponent {
     return this.clickedElements[buttonId]
   }
 
-  public onConfirm(message: string): void {
-    this.mb.confirm(message, (confirmed) => {
-      this.messageBoxConfirmed = confirmed
-    })
-  }
-
-  public onError(showErrorMessageBox: boolean): void {
-    if (showErrorMessageBox) {
-      this.mb.error('Something went wrong')
-    }
-  }
-
   public onError2(): void {
     this.mb.error2('message box error2')
   }

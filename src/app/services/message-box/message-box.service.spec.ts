@@ -50,16 +50,6 @@ describe('MessageBoxService', () => {
     rootLoader = TestbedHarnessEnvironment.documentRootLoader(fixture)
   })
 
-  it('error displays errors properly', () => {
-    const alertSpy = spyOn<typeof window, 'alert'>(window, 'alert')
-    const consoleSpy = spyOn<typeof console, 'error'>(console, 'error')
-    const errorMessage = 'some error'
-
-    service.error(errorMessage)
-    expect(alertSpy).toHaveBeenCalledWith(errorMessage)
-    expect(consoleSpy).toHaveBeenCalledWith(errorMessage)
-  })
-
   it('error2 display test', async () => {
     const errorMessage = 'Error message for error message box'
 
@@ -100,29 +90,6 @@ describe('MessageBoxService', () => {
 
     await closeButtonHarness.click()
     expect(await rootLoader.getHarnessOrNull(MatDialogHarness)).toBeNull()
-  })
-
-  it('confirm displays confirmation properly', () => {
-    const confirmSpy = spyOn<typeof window, 'confirm'>(window, 'confirm')
-    const onHandleSpy = jasmine.createSpy('onHandle')
-    const confirmMessage = 'Are you sure?'
-
-    service.confirm(confirmMessage, onHandleSpy)
-    expect(confirmSpy).toHaveBeenCalledWith(confirmMessage)
-  })
-
-  it('confirm executes onHandle with correct flag', () => {
-    const confirmSpy = spyOn<typeof window, 'confirm'>(window, 'confirm')
-    const onHandleSpy = jasmine.createSpy('onHandle')
-    const confirmMessage = 'Are you sure?'
-
-    confirmSpy.and.returnValue(true)
-    service.confirm(confirmMessage, onHandleSpy)
-    expect(onHandleSpy).toHaveBeenCalledWith(true)
-
-    confirmSpy.and.returnValue(false)
-    service.confirm(confirmMessage, onHandleSpy)
-    expect(onHandleSpy).toHaveBeenCalledWith(false)
   })
 
   it('confirm2 display test', async () => {

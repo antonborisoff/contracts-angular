@@ -12,8 +12,7 @@ import {
   TestComponentHarness
 } from './test.component.harness'
 import {
-  MessageBoxUtils,
-  Utilities
+  MessageBoxUtils
 } from '../utilities'
 import {
   MessageActions,
@@ -227,30 +226,6 @@ describe('Base harness', () => {
       await expectAsync(baseHarness.enterValue(`${tag.tag}-element-update-on-blur-non-existent`, '')).toBeRejected()
       expect(formValuesOnBlur.pop()).toBeUndefined()
     }
-  })
-
-  it('Utilities - actOnMessageBox', async () => {
-    expect(await baseHarness.elementText('message-box-confirmation-status')).toBe('Rejected')
-
-    await Utilities.actOnMessageBox(async () => {
-      await baseHarness.clickButton('button-triggers-message-box-confirmation')
-    }, 'confirm')
-    expect(await baseHarness.elementText('message-box-confirmation-status')).toBe('Confirmed')
-
-    await Utilities.actOnMessageBox(async () => {
-      await baseHarness.clickButton('button-triggers-message-box-confirmation')
-    }, 'cancel')
-    expect(await baseHarness.elementText('message-box-confirmation-status')).toBe('Rejected')
-  })
-
-  it('Utilities - errorMessageBoxPresent', async () => {
-    expect(await Utilities.errorMessageBoxPresent(async () => {
-      await baseHarness.clickButton('button-triggers-message-box-error')
-    })).toBe(true)
-
-    expect(await Utilities.errorMessageBoxPresent(async () => {
-      await baseHarness.clickButton('button-triggers-no-message-box-error')
-    })).toBe(false)
   })
 
   it('MessageBoxUtils - present', async () => {
