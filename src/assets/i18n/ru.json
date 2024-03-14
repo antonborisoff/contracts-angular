@@ -13,6 +13,6 @@
         "NEXT_PAGE_LABEL": "К следующей",
         "PREVIOUS_PAGE_LABEL": "К предыдущей",
         "ITEMS_PER_PAGE_LABEL": "Позиций на странице:",
-        "FROM_ITEM_TO_ITEM_OUT_OF_ITEMS": "{{fromItem}} - {{toItem}} из {{items}}"
+        "FROM_ITEM_TO_ITEM_OUT_OF_ITEMS": "{{fromItem}} - {{toItem}} из {{totalItems}}"
     }
 }
