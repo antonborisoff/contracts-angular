@@ -19,6 +19,9 @@ import {
 import {
   Utilities
 } from '../../../tests/foundation/utilities'
+import {
+  MessageType
+} from '../../../services/message-box/interfaces'
 
 describe('LoginComponent', () => {
   let authServiceMock: jasmine.SpyObj<AuthService>
@@ -149,11 +152,10 @@ describe('LoginComponent', () => {
       harnesses
     } = await initComponent()
 
-    expect(await Utilities.errorMessageBoxPresent(async () => {
-      await harnesses.router.component.enterValue('loginInput', VALID_CREDS.login)
-      await harnesses.router.component.enterValue('passwordInput', VALID_CREDS.password)
-      await harnesses.router.component.clickButton('loginButton')
-    })).toBe(true)
+    await harnesses.router.component.enterValue('loginInput', VALID_CREDS.login)
+    await harnesses.router.component.enterValue('passwordInput', VALID_CREDS.password)
+    await harnesses.router.component.clickButton('loginButton')
+    await expectAsync(harnesses.messageBox.present(MessageType.ERROR)).toBeResolvedTo(true)
   })
 
   it('show/hide password', async () => {

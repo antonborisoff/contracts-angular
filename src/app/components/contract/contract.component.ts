@@ -121,7 +121,9 @@ export class ContractComponent implements OnDestroy {
         this.contractId = contractId || ''
         if (contractId) {
           return this.contracts$.getContract(contractId).pipe(
-            this.backendErrorHandler.processError()
+            this.backendErrorHandler.processError({
+              v2: true
+            })
           )
         }
         else {
@@ -146,7 +148,9 @@ export class ContractComponent implements OnDestroy {
       action = this.contracts$.createContract(externalizedContract).pipe(map(() => void 0))
     }
     action.pipe(
-      this.backendErrorHandler.processError()
+      this.backendErrorHandler.processError({
+        v2: true
+      })
     ).subscribe(() => {
       this.nb.back()
     })
