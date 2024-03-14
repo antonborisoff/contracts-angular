@@ -97,7 +97,7 @@ export class ContractsComponent {
   }
 
   public deleteContract(id: string): void {
-    this.mb.confirm2(this.ts.translate('CONFIRM_DELETE_MESSAGE'), (confirmed) => {
+    this.mb.confirm(this.ts.translate('CONFIRM_DELETE_MESSAGE'), (confirmed) => {
       if (confirmed) {
         this.contracts$.deleteContract(id).pipe(this.backendErrorHandler.processError()).subscribe(() => {
           this.loadContracts()

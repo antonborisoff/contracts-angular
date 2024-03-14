@@ -26,7 +26,7 @@ export class MessageBoxService {
     }
   }
 
-  public error2(message: string): void {
+  public error(message: string): void {
     this.dialog.open(MessageComponent, {
       data: {
         type: MessageType.ERROR,
@@ -40,7 +40,7 @@ export class MessageBoxService {
     })
   }
 
-  public confirm2(message: string, onHandle?: (confirmed: boolean) => void): void {
+  public confirm(message: string, onHandle?: (confirmed: boolean) => void): void {
     const dialogRef = this.dialog.open(MessageComponent, {
       data: {
         type: MessageType.CONFIRM,

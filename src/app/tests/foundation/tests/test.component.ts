@@ -55,7 +55,7 @@ export class TestComponent {
     return this.clickedElements[buttonId]
   }
 
-  public onError2(): void {
-    this.mb.error2('message box error2')
+  public onError(): void {
+    this.mb.error('message box error')
   }
 }

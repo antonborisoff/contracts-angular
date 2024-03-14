@@ -234,9 +234,9 @@ describe('Base harness', () => {
     await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(false)
     await expectAsync(messageBoxHarness.present(MessageType.CONFIRM)).toBeResolvedTo(false)
 
-    await baseHarness.clickButton('button-triggers-message-box-error2')
+    await baseHarness.clickButton('button-triggers-message-box-error')
     await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(true)
-    await expectAsync(messageBoxHarness.present(MessageType.ERROR, 'message box error2')).toBeResolvedTo(true)
+    await expectAsync(messageBoxHarness.present(MessageType.ERROR, 'message box error')).toBeResolvedTo(true)
     await expectAsync(messageBoxHarness.present(MessageType.ERROR, 'some random message')).toBeResolvedTo(false)
     await expectAsync(messageBoxHarness.present(MessageType.CONFIRM)).toBeResolvedTo(false)
   })
@@ -246,7 +246,7 @@ describe('Base harness', () => {
 
     await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(false)
 
-    await baseHarness.clickButton('button-triggers-message-box-error2')
+    await baseHarness.clickButton('button-triggers-message-box-error')
     await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(true)
 
     await messageBoxHarness.act(MessageActions.CLOSE)
@@ -264,7 +264,7 @@ describe('Base harness', () => {
   it('MessageBoxUtils - act - no message action', async () => {
     const messageBoxHarness = new MessageBoxUtils(fixture)
 
-    await baseHarness.clickButton('button-triggers-message-box-error2')
+    await baseHarness.clickButton('button-triggers-message-box-error')
 
     await expectAsync(messageBoxHarness.act(MessageActions.CONFIRM)).toBeRejectedWithError()
   })

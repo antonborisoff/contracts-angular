@@ -50,10 +50,10 @@ describe('MessageBoxService', () => {
     rootLoader = TestbedHarnessEnvironment.documentRootLoader(fixture)
   })
 
-  it('error2 display test', async () => {
+  it('error display test', async () => {
     const errorMessage = 'Error message for error message box'
 
-    service.error2(errorMessage)
+    service.error(errorMessage)
     const errorMessageHarness = await rootLoader.getHarness(MatDialogHarness)
 
     expect(await errorMessageHarness.getId()).toBe('errorMessageBox')
@@ -81,10 +81,10 @@ describe('MessageBoxService', () => {
     expect(await closeButton.getAttribute('data-id')).toBe('closeButton')
   })
 
-  it('error2 close test', async () => {
+  it('error close test', async () => {
     const errorMessage = 'Error message for error message box'
 
-    service.error2(errorMessage)
+    service.error(errorMessage)
     const errorMessageHarness = await rootLoader.getHarness(MatDialogHarness)
     const closeButtonHarness = (await errorMessageHarness.getAllHarnesses(MatButtonHarness))[0]
 
@@ -92,10 +92,10 @@ describe('MessageBoxService', () => {
     expect(await rootLoader.getHarnessOrNull(MatDialogHarness)).toBeNull()
   })
 
-  it('confirm2 display test', async () => {
+  it('confirm display test', async () => {
     const confirmMessage = 'Confirm message for confirm message box?'
 
-    service.confirm2(confirmMessage)
+    service.confirm(confirmMessage)
     const confirmMessageHarness = await rootLoader.getHarness(MatDialogHarness)
 
     expect(await confirmMessageHarness.getId()).toBe('confirmMessageBox')
@@ -130,12 +130,12 @@ describe('MessageBoxService', () => {
     expect(await confirmButton.getAttribute('data-id')).toBe('confirmButton')
   })
 
-  it('confirm2 confirm/cancel test', async () => {
+  it('confirm confirm/cancel test', async () => {
     const confirmMessage = 'Confirm message for confirm message box?'
     let confirmResult: boolean
     let confirmMessageHarness: MatDialogHarness
 
-    service.confirm2(confirmMessage, confirmed => confirmResult = confirmed)
+    service.confirm(confirmMessage, confirmed => confirmResult = confirmed)
     confirmMessageHarness = await rootLoader.getHarness(MatDialogHarness)
     const cancelButtonHarness = (await confirmMessageHarness.getAllHarnesses(MatButtonHarness))[0]
     confirmResult = true
@@ -144,7 +144,7 @@ describe('MessageBoxService', () => {
     expect(await rootLoader.getHarnessOrNull(MatDialogHarness)).toBeNull()
     expect(confirmResult).toBe(false)
 
-    service.confirm2(confirmMessage, confirmed => confirmResult = confirmed)
+    service.confirm(confirmMessage, confirmed => confirmResult = confirmed)
     confirmMessageHarness = await rootLoader.getHarness(MatDialogHarness)
     const confirmButton = (await confirmMessageHarness.getAllHarnesses(MatButtonHarness))[1]
     confirmResult = false
