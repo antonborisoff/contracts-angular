@@ -31,17 +31,12 @@ export class BackendErrorHandlerService {
     this.messageBox.error2(this.translocoService.translate('GENERAL_ERROR_MESSAGE'))
   }
 
-  private handleError2(): void {
-    this.messageBox.error2(this.translocoService.translate('GENERAL_ERROR_MESSAGE'))
-  }
-
   public processError<T>(options?: {
     not?: {
       status?: number
     }
-    v2?: boolean
   }): MonoTypeOperatorFunction<T> {
-    const handleError = options?.v2 ? this.handleError2.bind(this) : this.handleError.bind(this)
+    const handleError = this.handleError.bind(this)
     return function<T>(source: Observable<T>): Observable<T> {
       return source.pipe(
         catchError((error: HttpErrorResponse) => {

@@ -103,8 +103,7 @@ export class LoginComponent {
       this.backendErrorHandler.processError({
         not: {
           status: 403
-        },
-        v2: true
+        }
       }),
       catchError(() => {
         this.incorrectLoginOrPassword = true
