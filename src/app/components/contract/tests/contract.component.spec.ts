@@ -22,6 +22,9 @@ import {
   initComponentBase,
   throwBackendError
 } from '../../../tests/utils'
+import {
+  MessageType
+} from '../../../services/message-box/interfaces'
 
 describe('ContractComponent', () => {
   let contractServiceMock: jasmine.SpyObj<ContractService>
@@ -170,11 +173,10 @@ describe('ContractComponent', () => {
       conditions: '3 year labour contract'
     }
 
-    expect(await Utilities.errorMessageBoxPresent(async () => {
-      await harnesses.router.component.enterValue('numberInput', contractToCreate.number)
-      await harnesses.router.component.enterValue('conditionsInput', contractToCreate.conditions)
-      await harnesses.router.component.clickButton('saveContractButton')
-    })).toBe(true)
+    await harnesses.router.component.enterValue('numberInput', contractToCreate.number)
+    await harnesses.router.component.enterValue('conditionsInput', contractToCreate.conditions)
+    await harnesses.router.component.clickButton('saveContractButton')
+    await expectAsync(harnesses.messageBox.present(MessageType.ERROR)).toBeResolvedTo(true)
     expect(Utilities.getLocationPath()).toBe('/contract')
   })
 
@@ -205,11 +207,10 @@ describe('ContractComponent', () => {
       conditions: `${existingContract.conditions} (edited)`
     }
 
-    expect(await Utilities.errorMessageBoxPresent(async () => {
-      await harnesses.router.component.enterValue('numberInput', contractToUpdate.number)
-      await harnesses.router.component.enterValue('conditionsInput', contractToUpdate.conditions)
-      await harnesses.router.component.clickButton('saveContractButton')
-    })).toBe(true)
+    await harnesses.router.component.enterValue('numberInput', contractToUpdate.number)
+    await harnesses.router.component.enterValue('conditionsInput', contractToUpdate.conditions)
+    await harnesses.router.component.clickButton('saveContractButton')
+    await expectAsync(harnesses.messageBox.present(MessageType.ERROR)).toBeResolvedTo(true)
     expect(Utilities.getLocationPath()).toBe(`/contract?contractId=${existingContract.id}`)
   })
 
@@ -297,9 +298,8 @@ describe('ContractComponent', () => {
       harnesses
     } = await initComponent()
 
-    expect(await Utilities.errorMessageBoxPresent(async () => {
-      await harnesses.router.navigateByUrl(`/contract?contractId=${existingContract.id}`)
-    })).toBe(true)
+    await harnesses.router.navigateByUrl(`/contract?contractId=${existingContract.id}`)
+    await expectAsync(harnesses.messageBox.present(MessageType.ERROR)).toBeResolvedTo(true)
     expect(await harnesses.router.component.inputValue('numberInput')).toBe('')
     expect(await harnesses.router.component.inputValue('conditionsInput')).toBe('')
     expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(false)
