@@ -1,6 +1,5 @@
 import {
-  ComponentHarnessConstructor,
-  HarnessLoader
+  ComponentHarnessConstructor
 } from '@angular/cdk/testing'
 import {
   HttpErrorResponse
@@ -42,18 +41,17 @@ import {
   provideNoopAnimations
 } from '@angular/platform-browser/animations'
 import {
-  MessageType
-} from '../services/message-box/interfaces'
-import {
-  MatDialogHarness
-} from '@angular/material/dialog/testing'
+  MessageBoxUtils
+} from './foundation/utilities'
 
 @Component({
   standalone: true,
   selector: 'app-test',
   template: '<div></div>'
 })
-export class TestComponent {}
+export class TestComponent {
+
+}
 
 export function stubRouteComponents(routes: Route[]): Route[] {
   return routes.map((route: Route) => {
@@ -77,22 +75,6 @@ export function throwBackendError(status: number = 500): Observable<never> {
   })
 }
 
-class MessageBoxUtils {
-  private documentRootLoader: HarnessLoader
-  public constructor(private routerHarness: RouterTestingHarness) {
-    this.documentRootLoader = TestbedHarnessEnvironment.documentRootLoader(this.routerHarness.fixture)
-  }
-
-  public async present(type: MessageType, message?: string): Promise<boolean> {
-    const messageBoxDialog = await this.documentRootLoader.getHarnessOrNull(MatDialogHarness.with({
-      selector: `#${type}MessageBox`
-    }).addOption('message', message, async (harness, message): Promise<boolean> => {
-      return (await harness.getContentText()) === message
-    }))
-    return !!messageBoxDialog
-  }
-}
-
 class RouterTestingHarnessWithNavigationDetection<K extends BaseHarness> {
   private routerHarness: RouterTestingHarness
   private componentHarnessContrusctor: ComponentHarnessConstructor<K>
@@ -102,7 +84,7 @@ class RouterTestingHarnessWithNavigationDetection<K extends BaseHarness> {
   public constructor(routerHarness: RouterTestingHarness, componentHarnessContrusctor: ComponentHarnessConstructor<K>) {
     this.routerHarness = routerHarness
     this.componentHarnessContrusctor = componentHarnessContrusctor
-    this.messageBoxUtils = new MessageBoxUtils(this.routerHarness)
+    this.messageBoxUtils = new MessageBoxUtils(this.routerHarness.fixture)
   }
 
   public async init(): Promise<void> {

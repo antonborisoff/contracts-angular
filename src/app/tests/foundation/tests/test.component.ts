@@ -23,6 +23,10 @@ import {
   styleUrl: './test.component.css'
 })
 export class TestComponent {
+  public static getTranslocoScope(): string {
+    return ''
+  }
+
   private clickedElements: Record<string, string> = {}
   public formControlInputUpdateOnChange = this.fb.nonNullable.control<string>('')
   public formControlInputUpdateOnBlur = this.fb.nonNullable.control<string>('', {
@@ -61,5 +65,9 @@ export class TestComponent {
     if (showErrorMessageBox) {
       this.mb.error('Something went wrong')
     }
+  }
+
+  public onError2(): void {
+    this.mb.error2('message box error2')
   }
 }
