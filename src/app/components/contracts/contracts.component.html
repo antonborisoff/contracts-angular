@@ -8,12 +8,12 @@
             type="button"
             (click)="addContract()"
         >{{'contracts.ADD_CONTRACT_BUTTON_LABEL' | transloco}}
-        <mat-icon>add</mat-icon>
+            <mat-icon>add</mat-icon>
         </button>
     </mat-toolbar>
     <table
         mat-table
-        [dataSource]="contracts"
+        [dataSource]="contractDataSource"
         [trackBy]="trackContract"
         fixedLayout="true"
         data-id="contractList"
@@ -90,4 +90,9 @@
             </td>
         </tr>
     </table>
+    <mat-paginator
+        [pageSizeOptions]="pageSizeOptions"
+        showFirstLastButtons
+    >
+    </mat-paginator>
 </div>

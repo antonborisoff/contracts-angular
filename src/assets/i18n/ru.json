@@ -6,5 +6,13 @@
     "CANCEL_BUTTON_LABEL": "Отменить",
     "VALIDATION_ERRORS": {
         "EMPTY_VALUE": "Пожалуйста, укажите непустое значение"
+    },
+    "PAGINATOR": {
+        "FIRST_PAGE_LABEL": "К началу",
+        "LAST_PAGE_LABEL": "К концу",
+        "NEXT_PAGE_LABEL": "К следующей",
+        "PREVIOUS_PAGE_LABEL": "К предыдущей",
+        "ITEMS_PER_PAGE_LABEL": "Позиций на странице:",
+        "FROM_ITEM_TO_ITEM_OUT_OF_ITEMS": "{{fromItem}} - {{toItem}} из {{items}}"
     }
 }

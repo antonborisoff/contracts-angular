@@ -39,8 +39,31 @@ describe('ContractsComponent', () => {
       id: 'test_b',
       number: 'TESTB',
       conditions: 'test contract b'
+    },
+    {
+      id: 'test_c',
+      number: 'TESTC',
+      conditions: 'test contract c'
+    },
+    {
+      id: 'test_d',
+      number: 'TESTD',
+      conditions: 'test contract d'
+    },
+    {
+      id: 'test_e',
+      number: 'TESTE',
+      conditions: 'test contract e'
+    },
+    {
+      id: 'test_f',
+      number: 'TESTF',
+      conditions: 'test contract f'
     }
   ]
+  function getVisibleContracts(contracts: Contract[]): Contract[] {
+    return contracts.slice(0, 5)
+  }
 
   async function initComponent(contracts?: Contract[]): ComponentHarnessAndUtils<ContractsHarness> {
     if (contracts) {
@@ -70,9 +93,9 @@ describe('ContractsComponent', () => {
       harnesses
     } = await initComponent(CONTRACTS)
 
-    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(CONTRACTS.length)
+    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(getVisibleContracts(CONTRACTS).length)
     expect(await harnesses.router.component.elementVisible('noContractsMessage')).toBe(false)
-    for (const contract of CONTRACTS) {
+    for (const contract of getVisibleContracts(CONTRACTS)) {
       expect(await harnesses.router.component.inMatTableRow('contractList', {
         number: contract.number
       }).elementText('contractNumber')).toBe(contract.number)
@@ -105,9 +128,9 @@ describe('ContractsComponent', () => {
     } = await initComponent(CONTRACTS)
 
     const contractToDelete = CONTRACTS[1]
-    const expectedContracts = CONTRACTS.filter((contract) => {
+    const expectedContracts = getVisibleContracts(CONTRACTS.filter((contract) => {
       return contract.id !== contractToDelete.id
-    })
+    }))
     contractServiceMock.deleteContract.withArgs(contractToDelete.id).and.returnValue(of(void 0))
     contractServiceMock.getContracts.and.returnValue(of(expectedContracts))
 
@@ -132,7 +155,7 @@ describe('ContractsComponent', () => {
     } = await initComponent(CONTRACTS)
 
     const contractToDelete = CONTRACTS[1]
-    const expectedContracts = CONTRACTS
+    const expectedContracts = getVisibleContracts(CONTRACTS)
 
     await harnesses.router.component.inMatTableRow('contractList', {
       number: contractToDelete.number
