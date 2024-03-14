@@ -36,6 +36,12 @@ import {
 import {
   MAT_FORM_FIELD_DEFAULT_OPTIONS
 } from '@angular/material/form-field'
+import {
+  MatPaginatorIntl
+} from '@angular/material/paginator'
+import {
+  CustomMatPaginatorIntlService
+} from '../transloco/custom-mat-paginator-intl.service'
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -60,6 +66,10 @@ export const appConfig: ApplicationConfig = {
       useValue: {
         appearance: 'outline'
       }
+    },
+    {
+      provide: MatPaginatorIntl,
+      useClass: CustomMatPaginatorIntlService
     }
   ]
 }

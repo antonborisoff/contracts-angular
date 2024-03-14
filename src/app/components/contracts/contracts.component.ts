@@ -1,5 +1,7 @@
 import {
-  Component
+  AfterViewInit,
+  Component,
+  ViewChild
 } from '@angular/core'
 import {
   Translation,
@@ -38,11 +40,16 @@ import {
   MatIconModule
 } from '@angular/material/icon'
 import {
+  MatTableDataSource,
   MatTableModule
 } from '@angular/material/table'
 import {
   MatTooltipModule
 } from '@angular/material/tooltip'
+import {
+  MatPaginator,
+  MatPaginatorModule
+} from '@angular/material/paginator'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'contracts'
 @Component({
@@ -55,6 +62,7 @@ const COMPONENT_TRANSLOCO_SCOPE = 'contracts'
     MatButtonModule,
     MatIconModule,
     MatTableModule,
+    MatPaginatorModule,
     MatTooltipModule
   ],
   templateUrl: './contracts.component.html',
@@ -64,12 +72,19 @@ const COMPONENT_TRANSLOCO_SCOPE = 'contracts'
     loader: getTranslocoInlineLoader((lang: string) => (): Promise<Translation> => import(`./i18n/${lang}.json`))
   })]
 })
-export class ContractsComponent {
+export class ContractsComponent implements AfterViewInit {
   public static getTranslocoScope(): string {
     return COMPONENT_TRANSLOCO_SCOPE
   }
 
-  public contracts: Contract[] = []
+  public pageSizeOptions = [
+    5,
+    10,
+    20
+  ]
+
+  @ViewChild(MatPaginator) private paginator?: MatPaginator
+  public contractDataSource: MatTableDataSource<Contract> = new MatTableDataSource<Contract>([])
   public displayedColumns = [
     'number',
     'conditions',
@@ -86,13 +101,19 @@ export class ContractsComponent {
     this.loadContracts()
   }
 
+  public ngAfterViewInit(): void {
+    if (this.paginator) {
+      this.contractDataSource.paginator = this.paginator
+    }
+  }
+
   public trackContract(index: number, contract: Contract): string {
     return contract.id
   }
 
   public loadContracts(): void {
     this.contracts$.getContracts().pipe(this.backendErrorHandler.processError()).subscribe((contracts) => {
-      this.contracts = contracts
+      this.contractDataSource.data = contracts
     })
   }
 
