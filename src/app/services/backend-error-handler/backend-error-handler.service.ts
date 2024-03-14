@@ -28,7 +28,7 @@ export class BackendErrorHandlerService {
   ) { }
 
   private handleError(): void {
-    this.messageBox.error2(this.translocoService.translate('GENERAL_ERROR_MESSAGE'))
+    this.messageBox.error(this.translocoService.translate('GENERAL_ERROR_MESSAGE'))
   }
 
   public processError<T>(options?: {

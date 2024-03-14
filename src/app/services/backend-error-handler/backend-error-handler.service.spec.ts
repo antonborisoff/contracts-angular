@@ -25,7 +25,7 @@ describe('BackendErrorHandlerService', () => {
   let service: BackendErrorHandlerService
 
   beforeEach(() => {
-    messageBoxServiceMock = jasmine.createSpyObj('messageBox', ['error2'])
+    messageBoxServiceMock = jasmine.createSpyObj('messageBox', ['error'])
 
     TestBed.configureTestingModule({
       imports: [getTranslocoTestingModuleForService(en)],
@@ -40,7 +40,7 @@ describe('BackendErrorHandlerService', () => {
   it('processError - display translated error message in message box', () => {
     throwBackendError().pipe(service.processError()).subscribe()
 
-    expect(messageBoxServiceMock.error2).toHaveBeenCalledWith('Something went wrong.')
+    expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
   })
 
   it('processError - complete stream on error', () => {
@@ -63,7 +63,7 @@ describe('BackendErrorHandlerService', () => {
     })).subscribe({
       error: error => actualError = error
     })
-    expect(messageBoxServiceMock.error2).not.toHaveBeenCalled()
+    expect(messageBoxServiceMock.error).not.toHaveBeenCalled()
     expect(actualError?.status).toBe(403)
   })
 
@@ -76,7 +76,7 @@ describe('BackendErrorHandlerService', () => {
     })).subscribe({
       error: error => actualError = error
     })
-    expect(messageBoxServiceMock.error2).toHaveBeenCalledWith('Something went wrong.')
+    expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
     expect(actualError).toBeUndefined()
   })
 
@@ -86,7 +86,7 @@ describe('BackendErrorHandlerService', () => {
     throwGeneralError().pipe(service.processError()).subscribe({
       error: error => actualError = error
     })
-    expect(messageBoxServiceMock.error2).toHaveBeenCalledWith('Something went wrong.')
+    expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
     expect(actualError).toBeUndefined()
   })
 
@@ -96,7 +96,7 @@ describe('BackendErrorHandlerService', () => {
     throwGeneralError().pipe(service.processError({})).subscribe({
       error: error => actualError = error
     })
-    expect(messageBoxServiceMock.error2).toHaveBeenCalledWith('Something went wrong.')
+    expect(messageBoxServiceMock.error).toHaveBeenCalledWith('Something went wrong.')
     expect(actualError).toBeUndefined()
   })
 })
