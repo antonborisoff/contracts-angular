@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  OnDestroy,
   ViewChild
 } from '@angular/core'
 import {
@@ -50,6 +51,16 @@ import {
   MatPaginator,
   MatPaginatorModule
 } from '@angular/material/paginator'
+import {
+  MatInputModule
+} from '@angular/material/input'
+import {
+  FormBuilder,
+  ReactiveFormsModule
+} from '@angular/forms'
+import {
+  Subscription
+} from 'rxjs'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'contracts'
 @Component({
@@ -58,12 +69,14 @@ const COMPONENT_TRANSLOCO_SCOPE = 'contracts'
   imports: [
     TranslocoPipe,
     CommonModule,
+    ReactiveFormsModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
     MatTableModule,
     MatPaginatorModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatInputModule
   ],
   templateUrl: './contracts.component.html',
   styleUrl: './contracts.component.css',
@@ -72,10 +85,17 @@ const COMPONENT_TRANSLOCO_SCOPE = 'contracts'
     loader: getTranslocoInlineLoader((lang: string) => (): Promise<Translation> => import(`./i18n/${lang}.json`))
   })]
 })
-export class ContractsComponent implements AfterViewInit {
+export class ContractsComponent implements AfterViewInit, OnDestroy {
   public static getTranslocoScope(): string {
     return COMPONENT_TRANSLOCO_SCOPE
   }
+
+  public contractDataSource: MatTableDataSource<Contract> = new MatTableDataSource<Contract>([])
+  public displayedColumns = [
+    'number',
+    'conditions',
+    'id'
+  ]
 
   public pageSizeOptions = [
     5,
@@ -84,27 +104,32 @@ export class ContractsComponent implements AfterViewInit {
   ]
 
   @ViewChild(MatPaginator) private paginator?: MatPaginator
-  public contractDataSource: MatTableDataSource<Contract> = new MatTableDataSource<Contract>([])
-  public displayedColumns = [
-    'number',
-    'conditions',
-    'id'
-  ]
+
+  public searchFormControl = this.fb.nonNullable.control('')
+  private searchSubscription: Subscription
 
   public constructor(
     private contracts$: ContractService,
     private backendErrorHandler: BackendErrorHandlerService,
     private router: Router,
     private mb: MessageBoxService,
-    private ts: TranslocoService
+    private ts: TranslocoService,
+    private fb: FormBuilder
   ) {
     this.loadContracts()
+    this.searchSubscription = this.searchFormControl.valueChanges.subscribe((searhTerm) => {
+      this.contractDataSource.filter = searhTerm
+    })
   }
 
   public ngAfterViewInit(): void {
     if (this.paginator) {
       this.contractDataSource.paginator = this.paginator
     }
+  }
+
+  public ngOnDestroy(): void {
+    this.searchSubscription.unsubscribe()
   }
 
   public trackContract(index: number, contract: Contract): string {

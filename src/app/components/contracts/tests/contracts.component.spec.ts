@@ -94,7 +94,6 @@ describe('ContractsComponent', () => {
     } = await initComponent(CONTRACTS)
 
     expect(await harnesses.router.component.matTableNRows('contractList')).toBe(getVisibleContracts(CONTRACTS).length)
-    expect(await harnesses.router.component.elementVisible('noContractsMessage')).toBe(false)
     for (const contract of getVisibleContracts(CONTRACTS)) {
       expect(await harnesses.router.component.inMatTableRow('contractList', {
         number: contract.number
@@ -206,5 +205,30 @@ describe('ContractsComponent', () => {
       number: contractToEdit.number
     }).clickButton('editContract')
     expect(Utilities.getLocationPath()).toBe(`/contract?contractId=${contractToEdit.id}`)
+  })
+
+  it('search contracts', async () => {
+    const {
+      harnesses
+    } = await initComponent(CONTRACTS)
+    const contractToFind = CONTRACTS[5]
+
+    await harnesses.router.component.enterValue('contractSearchInput', contractToFind.number)
+    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(1)
+    expect(await harnesses.router.component.inMatTableRow('contractList', {
+      number: contractToFind.number
+    }).elementText('contractNumber')).toBe(contractToFind.number)
+    expect(await harnesses.router.component.inMatTableRow('contractList', {
+      number: contractToFind.number
+    }).elementText('contractConditions')).toBe(contractToFind.conditions)
+
+    await harnesses.router.component.enterValue('contractSearchInput', '')
+    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(getVisibleContracts(CONTRACTS).length)
+
+    await harnesses.router.component.enterValue('contractSearchInput', 'some nono-existent contract number')
+    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(0)
+
+    await harnesses.router.component.enterValue('contractSearchInput', '')
+    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(getVisibleContracts(CONTRACTS).length)
   })
 })

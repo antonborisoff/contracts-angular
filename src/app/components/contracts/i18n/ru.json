@@ -1,5 +1,6 @@
 {
     "CONTRACT_LIST_LABEL": "Контракты:",
+    "SEARCH_CONTRACTS_PLACEHOLDER": "Начните печатать для поиска контрактов...",
     "NUMBER_COLUMN_LABEL": "Номер",
     "CONDITIONS_COLUMN_LABEL": "Условия",
     "ACTIONS_COLUMN_LABEL": "Действия",
