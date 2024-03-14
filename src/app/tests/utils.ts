@@ -1,5 +1,6 @@
 import {
-  ComponentHarnessConstructor
+  ComponentHarnessConstructor,
+  HarnessLoader
 } from '@angular/cdk/testing'
 import {
   HttpErrorResponse
@@ -40,6 +41,12 @@ import {
 import {
   provideNoopAnimations
 } from '@angular/platform-browser/animations'
+import {
+  MessageType
+} from '../services/message-box/interfaces'
+import {
+  MatDialogHarness
+} from '@angular/material/dialog/testing'
 
 @Component({
   standalone: true,
@@ -70,14 +77,32 @@ export function throwBackendError(status: number = 500): Observable<never> {
   })
 }
 
+class MessageBoxUtils {
+  private documentRootLoader: HarnessLoader
+  public constructor(private routerHarness: RouterTestingHarness) {
+    this.documentRootLoader = TestbedHarnessEnvironment.documentRootLoader(this.routerHarness.fixture)
+  }
+
+  public async present(type: MessageType, message?: string): Promise<boolean> {
+    const messageBoxDialog = await this.documentRootLoader.getHarnessOrNull(MatDialogHarness.with({
+      selector: `#${type}MessageBox`
+    }).addOption('message', message, async (harness, message): Promise<boolean> => {
+      return (await harness.getContentText()) === message
+    }))
+    return !!messageBoxDialog
+  }
+}
+
 class RouterTestingHarnessWithNavigationDetection<K extends BaseHarness> {
   private routerHarness: RouterTestingHarness
   private componentHarnessContrusctor: ComponentHarnessConstructor<K>
   private targetHarness: K | undefined
+  private messageBoxUtils: MessageBoxUtils
 
   public constructor(routerHarness: RouterTestingHarness, componentHarnessContrusctor: ComponentHarnessConstructor<K>) {
     this.routerHarness = routerHarness
     this.componentHarnessContrusctor = componentHarnessContrusctor
+    this.messageBoxUtils = new MessageBoxUtils(this.routerHarness)
   }
 
   public async init(): Promise<void> {
@@ -112,11 +137,16 @@ class RouterTestingHarnessWithNavigationDetection<K extends BaseHarness> {
     }
     return this.targetHarness
   }
+
+  public get messagebox(): MessageBoxUtils {
+    return this.messageBoxUtils
+  }
 }
 
 export type ComponentHarnessAndUtils<K extends BaseHarness> = Promise<{
   harnesses: {
     router: RouterTestingHarnessWithNavigationDetection<K>
+    messageBox: MessageBoxUtils
   }
 }>
 
@@ -169,7 +199,8 @@ export async function initComponentBase<T extends Type<any>, K extends BaseHarne
   await routerHarnessWithNavDetect.init()
   return {
     harnesses: {
-      router: routerHarnessWithNavDetect
+      router: routerHarnessWithNavDetect,
+      messageBox: routerHarnessWithNavDetect.messagebox
     }
   }
 }
