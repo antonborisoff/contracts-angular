@@ -20,6 +20,9 @@ import {
 import {
   Utilities
 } from './foundation/utilities'
+import {
+  MessageType
+} from '../services/message-box/interfaces'
 
 describe('AppComponent', () => {
   let isAuthMock: BehaviorSubject<boolean>
@@ -73,9 +76,8 @@ describe('AppComponent', () => {
       harnesses
     } = await initComponent()
 
-    expect (await Utilities.errorMessageBoxPresent(async () => {
-      await harnesses.router.component.clickButton('logoutButton')
-    })).toBe(true)
+    await harnesses.router.component.clickButton('logoutButton')
+    await expectAsync(harnesses.messageBox.present(MessageType.ERROR)).toBeResolvedTo(true)
   })
 
   it('display header only to authenticated user', async () => {
