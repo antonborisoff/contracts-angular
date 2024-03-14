@@ -1,5 +1,6 @@
 {
     "CONTRACT_LIST_LABEL": "Contracts:",
+    "SEARCH_CONTRACTS_PLACEHOLDER": "Type to search contracts...",
     "NUMBER_COLUMN_LABEL": "Number",
     "CONDITIONS_COLUMN_LABEL": "Conditions",
     "ACTIONS_COLUMN_LABEL": "Actions",

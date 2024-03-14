@@ -2,6 +2,19 @@
     <mat-toolbar class="flex-container-row">
         <div>{{'contracts.CONTRACT_LIST_LABEL' | transloco}}</div>
         <span class="flex-item-spacer"></span>
+        <mat-form-field
+            subscriptSizing="dynamic"
+            style="width: 25rem;"
+        >
+            <mat-label>{{'contracts.SEARCH_CONTRACTS_PLACEHOLDER' | transloco}}</mat-label>
+            <input
+                matInput
+                data-id="contractSearchInput"
+                [formControl]="searchFormControl"
+            >
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+        <span class="flex-item-spacer"></span>
         <button
             mat-raised-button
             data-id="addContractButton"
