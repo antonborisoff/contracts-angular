@@ -33,11 +33,13 @@ export class CustomMatPaginatorIntlService extends MatPaginatorIntl implements O
     })
   }
 
-  public override getRangeLabel = (page: number, pageSize: number, length: number): string => {
+  public override getRangeLabel = (page: number, pageSize: number, totalItems: number): string => {
+    const fromItem = page * pageSize
+    const toItem = fromItem + pageSize > totalItems ? totalItems : fromItem + pageSize
     return this.ts.translate('PAGINATOR.FROM_ITEM_TO_ITEM_OUT_OF_ITEMS', {
-      fromItem: page * pageSize,
-      toItem: (page + 1) * pageSize,
-      items: length
+      fromItem: fromItem,
+      toItem: toItem,
+      totalItems: totalItems
     })
   }
 

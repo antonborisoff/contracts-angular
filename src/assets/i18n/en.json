@@ -13,6 +13,6 @@
         "NEXT_PAGE_LABEL": "To next",
         "PREVIOUS_PAGE_LABEL": "To previous",
         "ITEMS_PER_PAGE_LABEL": "Items per page:",
-        "FROM_ITEM_TO_ITEM_OUT_OF_ITEMS": "{{fromItem}} - {{toItem}} out of {{items}}"
+        "FROM_ITEM_TO_ITEM_OUT_OF_ITEMS": "{{fromItem}} - {{toItem}} out of {{totalItems}}"
     }
 }
