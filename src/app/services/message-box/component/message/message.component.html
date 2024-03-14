@@ -1,0 +1,37 @@
+<mat-toolbar
+    mat-dialog-title
+    data-id="messageToolbar"
+    [class]="data.type"
+>
+    <mat-icon
+        data-id="messageIcon"
+        style="vertical-align: text-bottom;"
+    >{{messages[data.type].icon}}</mat-icon>
+    {{'message.' + messages[data.type].titleKey | transloco}}
+</mat-toolbar>
+
+<mat-dialog-content>
+    <p data-id="message">{{data.message}}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    @for(button of data.buttons; track button.key) {
+        @if(button.raised) {
+            <button
+                mat-raised-button
+                [mat-dialog-close]="button.key"
+                cdkFocusInitial
+                [attr.data-id]="button.key + 'Button'"
+                [class]="data.type"
+            >{{('message.' + (button.key | uppercase)) | transloco}}</button>
+        }
+        @else {
+            <button
+                mat-button
+                [mat-dialog-close]="button.key"
+                [attr.data-id]="button.key + 'Button'"
+            >{{('message.' + (button.key | uppercase)) | transloco}}</button>
+        }
+    }
+
+</mat-dialog-actions>

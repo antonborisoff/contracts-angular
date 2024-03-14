@@ -1,0 +1,9 @@
+.error {
+    background-color: maroon !important;
+    color: white !important;
+}
+
+.confirm {
+    background-color: #E18237 !important;
+    color: white !important;
+}
