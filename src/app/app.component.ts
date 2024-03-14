@@ -75,9 +75,7 @@ export class AppComponent {
   }
 
   public onLogout(): void {
-    this.auth$.logout().pipe(this.backendErrorHandler.processError({
-      v2: true
-    })).subscribe(() => {
+    this.auth$.logout().pipe(this.backendErrorHandler.processError()).subscribe(() => {
       this.router.navigate(['/login'])
     })
   }
