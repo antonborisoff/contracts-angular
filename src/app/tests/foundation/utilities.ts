@@ -12,11 +12,15 @@ import {
   TestBed
 } from '@angular/core/testing'
 import {
+  MessageActions,
   MessageType
 } from '../../services/message-box/interfaces'
 import {
   MatDialogHarness
 } from '@angular/material/dialog/testing'
+import {
+  MatButtonHarness
+} from '@angular/material/button/testing'
 
 export class Utilities {
   public static async actOnMessageBox(actions: () => Promise<void>, action: 'confirm' | 'cancel'): Promise<void> {
@@ -62,12 +66,20 @@ export class MessageBoxUtils {
   }
 
   public async present(type: MessageType, message?: string): Promise<boolean> {
-    const messageBoxDialog = await this.documentRootLoader.getHarnessOrNull(MatDialogHarness.with({
+    const messageBox = await this.documentRootLoader.getHarnessOrNull(MatDialogHarness.with({
       selector: `#${type}MessageBox`
     }).addOption('message', message, async (harness, message): Promise<boolean> => {
       const actualMessage = await harness.getContentText()
       return actualMessage === message
     }))
-    return !!messageBoxDialog
+    return !!messageBox
+  }
+
+  public async act(action: MessageActions): Promise<void> {
+    const messageBox = await this.documentRootLoader.getHarness(MatDialogHarness)
+    const button = await messageBox.getHarness(MatButtonHarness.with({
+      selector: `[data-id="${action}Button"]`
+    }))
+    await button.click()
   }
 }

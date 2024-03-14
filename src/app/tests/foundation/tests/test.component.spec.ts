@@ -16,6 +16,7 @@ import {
   Utilities
 } from '../utilities'
 import {
+  MessageActions,
   MessageType
 } from '../../../services/message-box/interfaces'
 import {
@@ -263,5 +264,33 @@ describe('Base harness', () => {
     await expectAsync(messageBoxHarness.present(MessageType.ERROR, 'message box error2')).toBeResolvedTo(true)
     await expectAsync(messageBoxHarness.present(MessageType.ERROR, 'some random message')).toBeResolvedTo(false)
     await expectAsync(messageBoxHarness.present(MessageType.CONFIRM)).toBeResolvedTo(false)
+  })
+
+  it('MessageBoxUtils - act', async () => {
+    const messageBoxHarness = new MessageBoxUtils(fixture)
+
+    await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(false)
+
+    await baseHarness.clickButton('button-triggers-message-box-error2')
+    await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(true)
+
+    await messageBoxHarness.act(MessageActions.CLOSE)
+    await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(false)
+  })
+
+  it('MessageBoxUtils - act - no message box', async () => {
+    const messageBoxHarness = new MessageBoxUtils(fixture)
+
+    await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(false)
+
+    await expectAsync(messageBoxHarness.act(MessageActions.CLOSE)).toBeRejectedWithError()
+  })
+
+  it('MessageBoxUtils - act - no message action', async () => {
+    const messageBoxHarness = new MessageBoxUtils(fixture)
+
+    await baseHarness.clickButton('button-triggers-message-box-error2')
+
+    await expectAsync(messageBoxHarness.act(MessageActions.CONFIRM)).toBeRejectedWithError()
   })
 })

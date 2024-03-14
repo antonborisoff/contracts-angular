@@ -91,15 +91,19 @@ export class ContractsComponent {
   }
 
   public loadContracts(): void {
-    this.contracts$.getContracts().pipe(this.backendErrorHandler.processError()).subscribe((contracts) => {
+    this.contracts$.getContracts().pipe(this.backendErrorHandler.processError({
+      v2: true
+    })).subscribe((contracts) => {
       this.contracts = contracts
     })
   }
 
   public deleteContract(id: string): void {
-    this.mb.confirm(this.ts.translate('CONFIRM_DELETE_MESSAGE'), (confirmed) => {
+    this.mb.confirm2(this.ts.translate('CONFIRM_DELETE_MESSAGE'), (confirmed) => {
       if (confirmed) {
-        this.contracts$.deleteContract(id).pipe(this.backendErrorHandler.processError()).subscribe(() => {
+        this.contracts$.deleteContract(id).pipe(this.backendErrorHandler.processError({
+          v2: true
+        })).subscribe(() => {
           this.loadContracts()
         })
       }

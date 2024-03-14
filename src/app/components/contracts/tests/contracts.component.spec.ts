@@ -22,6 +22,10 @@ import {
 import {
   Utilities
 } from '../../../tests/foundation/utilities'
+import {
+  MessageActions,
+  MessageType
+} from '../../../services/message-box/interfaces'
 
 describe('ContractsComponent', () => {
   let contractServiceMock: jasmine.SpyObj<ContractService>
@@ -89,9 +93,10 @@ describe('ContractsComponent', () => {
   })
 
   it('handle backend error during contracts fetch', async () => {
-    expect(await Utilities.errorMessageBoxPresent(async () => {
-      await initComponent()
-    })).toBe(true)
+    const {
+      harnesses
+    } = await initComponent()
+    await expectAsync(harnesses.messageBox.present(MessageType.ERROR)).toBeResolvedTo(true)
   })
 
   it('contract delete - success', async () => {
@@ -106,11 +111,10 @@ describe('ContractsComponent', () => {
     contractServiceMock.deleteContract.withArgs(contractToDelete.id).and.returnValue(of(void 0))
     contractServiceMock.getContracts.and.returnValue(of(expectedContracts))
 
-    await Utilities.actOnMessageBox(async () => {
-      await harnesses.router.component.inMatTableRow('contractList', {
-        number: contractToDelete.number
-      }).clickButton('deleteContract')
-    }, 'confirm')
+    await harnesses.router.component.inMatTableRow('contractList', {
+      number: contractToDelete.number
+    }).clickButton('deleteContract')
+    await harnesses.messageBox.act(MessageActions.CONFIRM)
     expect(await harnesses.router.component.matTableNRows('contractList')).toBe(expectedContracts.length)
     for (const expectedContract of expectedContracts) {
       expect(await harnesses.router.component.inMatTableRow('contractList', {
@@ -130,11 +134,10 @@ describe('ContractsComponent', () => {
     const contractToDelete = CONTRACTS[1]
     const expectedContracts = CONTRACTS
 
-    await Utilities.actOnMessageBox(async () => {
-      await harnesses.router.component.inMatTableRow('contractList', {
-        number: contractToDelete.number
-      }).clickButton('deleteContract')
-    }, 'cancel')
+    await harnesses.router.component.inMatTableRow('contractList', {
+      number: contractToDelete.number
+    }).clickButton('deleteContract')
+    await harnesses.messageBox.act(MessageActions.CANCEL)
     expect(await harnesses.router.component.matTableNRows('contractList')).toBe(expectedContracts.length)
     for (const expectedContract of expectedContracts) {
       expect(await harnesses.router.component.inMatTableRow('contractList', {
@@ -154,13 +157,11 @@ describe('ContractsComponent', () => {
     const contractToDelete = CONTRACTS[1]
     contractServiceMock.deleteContract.withArgs(contractToDelete.id).and.returnValue(throwBackendError())
 
-    expect(await Utilities.errorMessageBoxPresent(async () => {
-      await Utilities.actOnMessageBox(async () => {
-        await harnesses.router.component.inMatTableRow('contractList', {
-          number: contractToDelete.number
-        }).clickButton('deleteContract')
-      }, 'confirm')
-    })).toBe(true)
+    await harnesses.router.component.inMatTableRow('contractList', {
+      number: contractToDelete.number
+    }).clickButton('deleteContract')
+    await harnesses.messageBox.act(MessageActions.CONFIRM)
+    await expectAsync(harnesses.messageBox.present(MessageType.ERROR)).toBeResolvedTo(true)
   })
 
   it('contract add', async () => {
