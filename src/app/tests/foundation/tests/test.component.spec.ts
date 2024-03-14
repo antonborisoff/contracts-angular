@@ -1,7 +1,7 @@
 import {
+  ComponentFixture,
   TestBed
 } from '@angular/core/testing'
-
 import {
   TestComponent
 } from './test.component'
@@ -12,19 +12,30 @@ import {
   TestComponentHarness
 } from './test.component.harness'
 import {
+  MessageBoxUtils,
   Utilities
 } from '../utilities'
+import {
+  MessageType
+} from '../../../services/message-box/interfaces'
+import {
+  getTranslocoTestingModule
+} from '../../../../transloco/transloco-testing'
 
 describe('Base harness', () => {
   let baseHarness: TestComponentHarness
+  let fixture: ComponentFixture<TestComponent>
   let testComponent: TestComponent
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TestComponent]
+      imports: [
+        TestComponent,
+        getTranslocoTestingModule(TestComponent, {})
+      ]
     }).compileComponents()
 
-    const fixture = TestBed.createComponent(TestComponent)
+    fixture = TestBed.createComponent(TestComponent)
     baseHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TestComponentHarness)
     testComponent = fixture.componentInstance
   })
@@ -239,5 +250,18 @@ describe('Base harness', () => {
     expect(await Utilities.errorMessageBoxPresent(async () => {
       await baseHarness.clickButton('button-triggers-no-message-box-error')
     })).toBe(false)
+  })
+
+  it('MessageBoxUtils - present', async () => {
+    const messageBoxHarness = new MessageBoxUtils(fixture)
+
+    await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(false)
+    await expectAsync(messageBoxHarness.present(MessageType.CONFIRM)).toBeResolvedTo(false)
+
+    await baseHarness.clickButton('button-triggers-message-box-error2')
+    await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(true)
+    await expectAsync(messageBoxHarness.present(MessageType.ERROR, 'message box error2')).toBeResolvedTo(true)
+    await expectAsync(messageBoxHarness.present(MessageType.ERROR, 'some random message')).toBeResolvedTo(false)
+    await expectAsync(messageBoxHarness.present(MessageType.CONFIRM)).toBeResolvedTo(false)
   })
 })
