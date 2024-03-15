@@ -21,7 +21,8 @@ export const contractRoutes = {
     })
     if (contract) {
       res.status(200).json(contract)
-    } else {
+    }
+    else {
       res.status(404).end()
     }
   },

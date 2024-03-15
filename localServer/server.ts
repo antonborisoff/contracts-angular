@@ -13,6 +13,9 @@ import {
 import {
   contractRoutes
 } from './contracts.route'
+import {
+  delay
+} from './delay.middleware'
 
 const app: Application = express()
 
@@ -22,6 +25,7 @@ app.use(cors({
 app.use(bodyParser.json())
 
 app.use(checkAuth)
+app.use(delay)
 
 app.route('/api/auth/login').post(authRoutes.login)
 app.route('/api/auth/logout').post(authRoutes.logout)
