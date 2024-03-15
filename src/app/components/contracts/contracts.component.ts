@@ -59,8 +59,16 @@ import {
   ReactiveFormsModule
 } from '@angular/forms'
 import {
-  Subscription
+  Observable,
+  Subscription,
+  switchMap
 } from 'rxjs'
+import {
+  BusyDirective
+} from '../../services/busy/busy.directive'
+import {
+  BusyStateService
+} from '../../services/busy/busy-state.service'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'contracts'
 @Component({
@@ -76,7 +84,8 @@ const COMPONENT_TRANSLOCO_SCOPE = 'contracts'
     MatTableModule,
     MatPaginatorModule,
     MatTooltipModule,
-    MatInputModule
+    MatInputModule,
+    BusyDirective
   ],
   templateUrl: './contracts.component.html',
   styleUrl: './contracts.component.css',
@@ -114,7 +123,8 @@ export class ContractsComponent implements AfterViewInit, OnDestroy {
     private router: Router,
     private mb: MessageBoxService,
     private ts: TranslocoService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private bs: BusyStateService
   ) {
     this.loadContracts()
     this.searchSubscription = this.searchFormControl.valueChanges.subscribe((searhTerm) => {
@@ -136,18 +146,25 @@ export class ContractsComponent implements AfterViewInit, OnDestroy {
     return contract.id
   }
 
-  public loadContracts(): void {
-    this.contracts$.getContracts().pipe(this.backendErrorHandler.processError()).subscribe((contracts) => {
+  public loadContracts(): Observable<Contract[]> {
+    const loadContracts = this.contracts$.getContracts().pipe(
+      this.backendErrorHandler.processError(),
+      this.bs.processLoading('contracts')
+    )
+    loadContracts.subscribe((contracts) => {
       this.contractDataSource.data = contracts
     })
+    return loadContracts
   }
 
   public deleteContract(id: string): void {
     this.mb.confirm(this.ts.translate('CONFIRM_DELETE_MESSAGE'), (confirmed) => {
       if (confirmed) {
-        this.contracts$.deleteContract(id).pipe(this.backendErrorHandler.processError()).subscribe(() => {
-          this.loadContracts()
-        })
+        this.contracts$.deleteContract(id).pipe(
+          this.backendErrorHandler.processError(),
+          switchMap(this.loadContracts.bind(this)),
+          this.bs.processLoading('contracts')
+        ).subscribe()
       }
     })
   }

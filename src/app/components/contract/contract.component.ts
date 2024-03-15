@@ -52,6 +52,12 @@ import {
 import {
   MatInputModule
 } from '@angular/material/input'
+import {
+  BusyDirective
+} from '../../services/busy/busy.directive'
+import {
+  BusyStateService
+} from '../../services/busy/busy-state.service'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'contract'
 @Component({
@@ -63,7 +69,8 @@ const COMPONENT_TRANSLOCO_SCOPE = 'contract'
     ReactiveFormsModule,
     MatButtonModule,
     MatCardModule,
-    MatInputModule
+    MatInputModule,
+    BusyDirective
   ],
   templateUrl: './contract.component.html',
   styleUrl: './contract.component.css',
@@ -93,6 +100,7 @@ export class ContractComponent implements OnDestroy {
     private contracts$: ContractService,
     private ar: ActivatedRoute,
     private backendErrorHandler: BackendErrorHandlerService,
+    private bs: BusyStateService,
     private fb: FormBuilder,
     private nb: NavigationBackService
   ) {
@@ -121,7 +129,8 @@ export class ContractComponent implements OnDestroy {
         this.contractId = contractId || ''
         if (contractId) {
           return this.contracts$.getContract(contractId).pipe(
-            this.backendErrorHandler.processError()
+            this.backendErrorHandler.processError(),
+            this.bs.processLoading('createEditForm')
           )
         }
         else {
@@ -146,7 +155,8 @@ export class ContractComponent implements OnDestroy {
       action = this.contracts$.createContract(externalizedContract).pipe(map(() => void 0))
     }
     action.pipe(
-      this.backendErrorHandler.processError()
+      this.backendErrorHandler.processError(),
+      this.bs.processLoading('createEditForm')
     ).subscribe(() => {
       this.nb.back()
     })
