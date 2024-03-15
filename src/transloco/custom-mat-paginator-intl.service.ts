@@ -17,6 +17,7 @@ import {
 })
 export class CustomMatPaginatorIntlService extends MatPaginatorIntl implements OnDestroy {
   private translationSubscription: Subscription
+  private translationsLoaded = false
   public constructor(private ts: TranslocoService) {
     super()
 
@@ -28,6 +29,7 @@ export class CustomMatPaginatorIntlService extends MatPaginatorIntl implements O
       this.nextPageLabel = translation['NEXT_PAGE_LABEL']
       this.previousPageLabel = translation['PREVIOUS_PAGE_LABEL']
       this.itemsPerPageLabel = translation['ITEMS_PER_PAGE_LABEL']
+      this.translationsLoaded = true
       // notify paginator about the changes
       this.changes.next()
     })
@@ -36,11 +38,13 @@ export class CustomMatPaginatorIntlService extends MatPaginatorIntl implements O
   public override getRangeLabel = (page: number, pageSize: number, totalItems: number): string => {
     const fromItem = page * pageSize
     const toItem = fromItem + pageSize > totalItems ? totalItems : fromItem + pageSize
-    return this.ts.translate('PAGINATOR.FROM_ITEM_TO_ITEM_OUT_OF_ITEMS', {
-      fromItem: fromItem,
-      toItem: toItem,
-      totalItems: totalItems
-    })
+    return this.translationsLoaded
+      ? this.ts.translate('PAGINATOR.FROM_ITEM_TO_ITEM_OUT_OF_ITEMS', {
+        fromItem: fromItem,
+        toItem: toItem,
+        totalItems: totalItems
+      })
+      : ''
   }
 
   public ngOnDestroy(): void {
