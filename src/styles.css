@@ -1,3 +1,5 @@
+@import url('./app/services/busy/busy.css');
+
 .clickable {
     cursor: pointer;
 }
