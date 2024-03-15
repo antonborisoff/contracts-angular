@@ -36,6 +36,12 @@ import {
 import {
   MatIconModule
 } from '@angular/material/icon'
+import {
+  BusyDirective
+} from './services/busy/busy.directive'
+import {
+  BusyStateService
+} from './services/busy/busy-state.service'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'app'
 @Component({
@@ -49,7 +55,8 @@ const COMPONENT_TRANSLOCO_SCOPE = 'app'
     AsyncPipe,
     MatToolbarModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    BusyDirective
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -69,13 +76,17 @@ export class AppComponent {
   public constructor(
     private auth$: AuthService,
     private backendErrorHandler: BackendErrorHandlerService,
+    private bs: BusyStateService,
     private router: Router
   ) {
     this.isAuth = this.auth$.isAuth()
   }
 
   public onLogout(): void {
-    this.auth$.logout().pipe(this.backendErrorHandler.processError()).subscribe(() => {
+    this.auth$.logout().pipe(
+      this.backendErrorHandler.processError(),
+      this.bs.processLoading('logoutButton')
+    ).subscribe(() => {
       this.router.navigate(['/login'])
     })
   }

@@ -45,6 +45,12 @@ import {
 import {
   MatIconModule
 } from '@angular/material/icon'
+import {
+  BusyStateService
+} from '../../services/busy/busy-state.service'
+import {
+  BusyDirective
+} from '../../services/busy/busy.directive'
 
 const COMPONENT_TRANSLOCO_SCOPE = 'login'
 @Component({
@@ -57,7 +63,8 @@ const COMPONENT_TRANSLOCO_SCOPE = 'login'
     MatToolbarModule,
     MatCardModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    BusyDirective
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
@@ -78,6 +85,7 @@ export class LoginComponent {
     private fb: FormBuilder,
     private auth$: AuthService,
     private backendErrorHandler: BackendErrorHandlerService,
+    private bs: BusyStateService,
     private router: Router
   ) {
     this.loginForm = this.fb.nonNullable.group({
@@ -108,7 +116,8 @@ export class LoginComponent {
       catchError(() => {
         this.incorrectLoginOrPassword = true
         return EMPTY
-      })
+      }),
+      this.bs.processLoading('login')
     ).subscribe(() => {
       this.router.navigate(['/home'])
     })
