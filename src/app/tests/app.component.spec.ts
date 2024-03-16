@@ -2,6 +2,7 @@ import {
   AppComponent
 } from '../app.component'
 import en from '../i18n/en.json'
+import ru from '../i18n/ru.json'
 import {
   AppHarness
 } from './app.component.harness'
@@ -30,7 +31,8 @@ describe('AppComponent', () => {
 
   async function initComponent(): ComponentHarnessAndUtils<AppHarness> {
     return initComponentBase(AppComponent, AppHarness, {
-      en: en
+      en: en,
+      ru: ru
     }, {
       routePaths: [
         'home',
@@ -53,14 +55,6 @@ describe('AppComponent', () => {
     ])
     authServiceMock.isAuth.and.returnValue(isAuthMock)
     authServiceMock.logout.and.returnValue(of(undefined))
-  })
-
-  it('display translated welcome message', async () => {
-    const {
-      harnesses
-    } = await initComponent()
-
-    expect(await harnesses.router.component.elementText('welcomeMessage')).toBe('Hello, contracts-angular component en')
   })
 
   it('navigate to login on successful logout', async () => {
@@ -118,5 +112,21 @@ describe('AppComponent', () => {
 
     await harnesses.router.component.clickLink('navToHomeLink')
     expect(Utilities.getLocationPath()).toBe('/home')
+  })
+
+  it('change app language', async () => {
+    const {
+      harnesses
+    } = await initComponent()
+
+    // initial language (see karma.conf.js)
+    await expectAsync(harnesses.router.component.elementText('activeLanguageText')).toBeResolvedTo('en')
+    await expectAsync(harnesses.router.component.matButtonText('logoutButton')).toBeResolvedTo('Logout')
+
+    await harnesses.router.component.clickElement('languageContainer')
+    await harnesses.router.component.selectMatMenuItem('ru')
+
+    await expectAsync(harnesses.router.component.elementText('activeLanguageText')).toBeResolvedTo('ru')
+    await expectAsync(harnesses.router.component.matButtonText('logoutButton')).toBeResolvedTo('Выйти')
   })
 })

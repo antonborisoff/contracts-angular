@@ -111,7 +111,9 @@ class RouterTestingHarnessWithNavigationDetection<K extends BaseHarness> {
   private async retrieveTargetHarness(): Promise<K> {
     const rootFixture = this.routerHarness.fixture
     const rootHarnessLoader = TestbedHarnessEnvironment.loader(rootFixture)
-    return await rootHarnessLoader.getHarness(this.componentHarnessContrusctor)
+    const harness = await rootHarnessLoader.getHarness(this.componentHarnessContrusctor)
+    harness.initRootLoader(TestbedHarnessEnvironment.documentRootLoader(rootFixture))
+    return harness
   }
 
   public get component(): K {

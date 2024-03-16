@@ -8,5 +8,5 @@
 }
 
 .goHomeLinkHidden {
-    visibility: hidden;
+    display: none;
 }

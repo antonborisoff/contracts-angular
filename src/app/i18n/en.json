@@ -1,5 +1,4 @@
 {
-    "HELLO": "Hello, {{value}} component en",
     "LOGOUT_BUTTON": "Logout",
     "GO_HOME": "Return to home page"
 }
