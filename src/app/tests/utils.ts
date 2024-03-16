@@ -25,6 +25,7 @@ import {
   TranslocoLocalScope
 } from '../../transloco/transloco-interfaces'
 import {
+  HashMap,
   Translation
 } from '@ngneat/transloco'
 import {
@@ -137,7 +138,7 @@ export type ComponentHarnessAndUtils<K extends BaseHarness> = Promise<{
 export async function initComponentBase<T extends Type<any>, K extends BaseHarness>(
   componentClass: T & TranslocoLocalScope,
   componentHarnessContrusctor: ComponentHarnessConstructor<K>,
-  enTranslation: Translation,
+  componentTranslations: HashMap<Translation>,
   options?: {
     /* Angular uses any[] */
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -167,7 +168,7 @@ export async function initComponentBase<T extends Type<any>, K extends BaseHarne
   await TestBed.configureTestingModule({
     imports: [
       componentClass,
-      getTranslocoTestingModule(componentClass, enTranslation),
+      getTranslocoTestingModule(componentClass, componentTranslations),
       RouterTestingModule.withRoutes(routes)
     ],
     providers: [provideNoopAnimations()].concat(options?.providers || [])

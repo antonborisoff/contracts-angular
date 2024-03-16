@@ -20,7 +20,9 @@ describe('HomeComponent', () => {
   let featureToggleServiceMock: jasmine.SpyObj<FeatureToggleService>
 
   async function initComponent(): ComponentHarnessAndUtils<HomeHarness> {
-    return initComponentBase(HomeComponent, HomeHarness, en, {
+    return initComponentBase(HomeComponent, HomeHarness, {
+      en: en
+    }, {
       routePaths: ['contracts'],
       providers: [{
         provide: FeatureToggleService,

@@ -29,7 +29,9 @@ describe('AppComponent', () => {
   let authServiceMock: jasmine.SpyObj<AuthService>
 
   async function initComponent(): ComponentHarnessAndUtils<AppHarness> {
-    return initComponentBase(AppComponent, AppHarness, en, {
+    return initComponentBase(AppComponent, AppHarness, {
+      en: en
+    }, {
       routePaths: [
         'home',
         'non-home',
