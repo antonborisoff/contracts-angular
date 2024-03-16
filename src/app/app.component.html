@@ -1,9 +1,24 @@
-<div class="app-height componentBorder">
+<div class="app-height componentBorder" >
   <mat-toolbar color="primary">
     <mat-icon>description</mat-icon>
     {{'APP_TITLE' | transloco}}
+    <span class="flex-item-spacer"></span>
+    <div
+      [matMenuTriggerFor]="languageMenu"
+      data-id="languageContainer"
+      class="margin-start margin-end flex-container-row flex-container-items-center">
+      <div data-id="activeLanguageText">{{activeLanguage | async}}</div>
+      <mat-icon
+        style="padding: 1rem 0 1rem 0;"
+        class="margin-start"
+      >language</mat-icon>
+      <mat-menu #languageMenu="matMenu">
+        @for(language of supportedLanguages; track language){
+          <button mat-menu-item (click)="languageSelected(language)">{{language}}</button>
+        }
+      </mat-menu>
+    </div>
     @if(isAuth | async) {
-      <span class="flex-item-spacer"></span>
       <div
         data-id="appHeader"
         class="flex-container-row"
@@ -18,9 +33,6 @@
         >
           {{'app.GO_HOME' | transloco}}
         </a>
-        <h1 data-id="welcomeMessage">
-          {{ 'app.HELLO' | transloco:{value: title} }}
-        </h1>
         <button
           mat-flat-button
           data-id="logoutButton"

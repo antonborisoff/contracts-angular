@@ -34,7 +34,13 @@ module.exports = function (config) {
       ]
     },
     reporters: ['progress', 'kjhtml'],
-    browsers: ['Chrome'],
+    browsers: ['chrome_with_locale'],
+    customLaunchers: {
+      chrome_with_locale: {
+        base: 'Chrome',
+        flags: ['--accept-lang=en-US']
+      }
+    },
     restartOnFileChange: true
   });
 };

@@ -51,7 +51,8 @@ export const appConfig: ApplicationConfig = {
       config: {
         availableLangs: SUPPORTED_LANGUAGES,
         defaultLang: DEFAULT_LANGUAGE,
-        reRenderOnLangChange: false,
+        fallbackLang: DEFAULT_LANGUAGE,
+        reRenderOnLangChange: true,
         prodMode: !isDevMode()
       },
       loader: TranslocoHttpLoader

@@ -1,7 +1,17 @@
 import {
   ComponentHarness,
+  HarnessLoader,
   HarnessPredicate
 } from '@angular/cdk/testing'
+import {
+  MatButtonHarness
+} from '@angular/material/button/testing'
+import {
+  MatIconHarness
+} from '@angular/material/icon/testing'
+import {
+  MatMenuItemHarness
+} from '@angular/material/menu/testing'
 import {
   MatTableHarness,
   MatRowHarness
@@ -14,9 +24,23 @@ interface ancestorHarnessConfig<T extends ComponentHarness> {
 
 export class BaseHarness extends ComponentHarness {
   private idAttribute = 'data-id'
+  private rootLoader?: HarnessLoader
+
+  public initRootLoader(loader: HarnessLoader): void {
+    if (!this.rootLoader) {
+      this.rootLoader = loader
+    }
+  }
+
+  protected getRootLoader(): HarnessLoader {
+    if (!this.rootLoader) {
+      throw new Error('root loader was not initialized')
+    }
+    return this.rootLoader
+  }
+
   // TODO: convert to private once ancestorSelector is managed centrally via getCssSelector (not passed to it)
   protected ancestorSelector: string = ''
-
   protected ancestorHarnessConfig?: ancestorHarnessConfig<MatRowHarness>
 
   protected getIdSelector(id: string): string {
@@ -89,9 +113,27 @@ export class BaseHarness extends ComponentHarness {
     await link.click()
   }
 
+  public async clickElement(id: string): Promise<void> {
+    await this.updateAncestorSelector()
+    const cssSelector = this.getCssSelector(id, [
+      'a',
+      'button',
+      'div'
+    ], this.ancestorSelector)
+    const element = await this.locatorFor(cssSelector)()
+    return await element.click()
+  }
+
   public async clickMatCard(id: string): Promise<void> {
     const matCard = await this.locatorFor(`mat-card${this.getIdSelector(id)}`)()
     await matCard.click()
+  }
+
+  public async selectMatMenuItem(text: string): Promise<void> {
+    const matMenuItem = await this.getRootLoader().getHarness(MatMenuItemHarness.with({
+      text: text
+    }))
+    await matMenuItem.click()
   }
 
   public async enterValue(id: string, value: string, blur: boolean = true): Promise<void> {
@@ -150,6 +192,16 @@ export class BaseHarness extends ComponentHarness {
     ], this.ancestorSelector)
     const element = await this.locatorFor(cssSelector)()
     return await element.text()
+  }
+
+  public async matButtonText(id: string): Promise<string> {
+    const matButton = await this.locatorFor(MatButtonHarness.with({
+      selector: `${this.getIdSelector(id)}`
+    }))()
+    const matButtonIcon = await matButton.getHarnessOrNull(MatIconHarness)
+    const matButtonText = await matButton.getText()
+    const matButtonIconText = await matButtonIcon?.getName() || ''
+    return matButtonText.replace(matButtonIconText, '').trim()
   }
 
   public async elementChildCount(id: string): Promise<number> {

@@ -41,7 +41,8 @@ function getForRootConfig(translations?: HashMap<Translation>): TranslocoTesting
     },
     translocoConfig: {
       defaultLang: 'en',
-      availableLangs: SUPPORTED_LANGUAGES
+      availableLangs: SUPPORTED_LANGUAGES,
+      reRenderOnLangChange: true
     },
     preloadLangs: true
   }
