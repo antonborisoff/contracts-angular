@@ -72,7 +72,9 @@ describe('ContractsComponent', () => {
     else {
       contractServiceMock.getContracts.and.returnValue(throwBackendError())
     }
-    return initComponentBase(ContractsComponent, ContractsHarness, en, {
+    return initComponentBase(ContractsComponent, ContractsHarness, {
+      en: en
+    }, {
       routePaths: ['contract'],
       providers: [{
         provide: ContractService,

@@ -40,7 +40,9 @@ describe('ContractComponent', () => {
   }
 
   async function initComponent(contractId: string | void): ComponentHarnessAndUtils<ContractHarness> {
-    return initComponentBase(ContractComponent, ContractHarness, en, {
+    return initComponentBase(ContractComponent, ContractHarness, {
+      en: en
+    }, {
       routePaths: ['contract'],
       navigateAfterInitializationTo: contractId ? `/contract?contractId=${contractId}` : '/contract',
       providers: [{

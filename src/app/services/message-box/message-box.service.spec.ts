@@ -42,7 +42,9 @@ describe('MessageBoxService', () => {
     TestBed.configureTestingModule({
       imports: [
         TestComponent,
-        getTranslocoTestingModule(MessageComponent, en)
+        getTranslocoTestingModule(MessageComponent, {
+          en: en
+        })
       ]
     })
     service = TestBed.inject(MessageBoxService)

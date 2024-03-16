@@ -12,7 +12,9 @@ import {
 
 describe('NotFoundComponent', () => {
   async function initComponent(): ComponentHarnessAndUtils<NotFoundHarness> {
-    return initComponentBase(NotFoundComponent, NotFoundHarness, en)
+    return initComponentBase(NotFoundComponent, NotFoundHarness, {
+      en: en
+    })
   }
 
   it('display "not found" message', async () => {

@@ -31,7 +31,9 @@ describe('LoginComponent', () => {
   }
 
   async function initComponent(): ComponentHarnessAndUtils<LoginHarness> {
-    return initComponentBase(LoginComponent, LoginHarness, en, {
+    return initComponentBase(LoginComponent, LoginHarness, {
+      en: en
+    }, {
       routePaths: ['home'],
       providers: [{
         provide: AuthService,

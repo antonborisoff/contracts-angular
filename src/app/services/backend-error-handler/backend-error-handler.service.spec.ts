@@ -11,7 +11,6 @@ import {
 import {
   getTranslocoTestingModuleForService
 } from '../../../transloco/transloco-testing'
-import en from '../../../assets/i18n/en.json'
 import {
   HttpErrorResponse
 } from '@angular/common/http'
@@ -28,7 +27,7 @@ describe('BackendErrorHandlerService', () => {
     messageBoxServiceMock = jasmine.createSpyObj('messageBox', ['error'])
 
     TestBed.configureTestingModule({
-      imports: [getTranslocoTestingModuleForService(en)],
+      imports: [getTranslocoTestingModuleForService()],
       providers: [{
         provide: MessageBoxService,
         useValue: messageBoxServiceMock
