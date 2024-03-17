@@ -137,7 +137,7 @@ describe('ContractsComponent', () => {
 
     await harnesses.router.component.inMatTableRow('contractList', {
       number: contractToDelete.number
-    }).clickButton('deleteContract')
+    }).clickElement('deleteContract')
     await harnesses.messageBox.act(MessageActions.CONFIRM)
     expect(await harnesses.router.component.matTableNRows('contractList')).toBe(expectedContracts.length)
     for (const expectedContract of expectedContracts) {
@@ -160,7 +160,7 @@ describe('ContractsComponent', () => {
 
     await harnesses.router.component.inMatTableRow('contractList', {
       number: contractToDelete.number
-    }).clickButton('deleteContract')
+    }).clickElement('deleteContract')
     await harnesses.messageBox.act(MessageActions.CANCEL)
     expect(await harnesses.router.component.matTableNRows('contractList')).toBe(expectedContracts.length)
     for (const expectedContract of expectedContracts) {
@@ -183,7 +183,7 @@ describe('ContractsComponent', () => {
 
     await harnesses.router.component.inMatTableRow('contractList', {
       number: contractToDelete.number
-    }).clickButton('deleteContract')
+    }).clickElement('deleteContract')
     await harnesses.messageBox.act(MessageActions.CONFIRM)
     await expectAsync(harnesses.messageBox.present(MessageType.ERROR)).toBeResolvedTo(true)
   })
@@ -193,7 +193,7 @@ describe('ContractsComponent', () => {
       harnesses
     } = await initComponent(CONTRACTS)
 
-    await harnesses.router.component.clickButton('addContractButton')
+    await harnesses.router.component.clickElement('addContractButton')
     expect(Utilities.getLocationPath()).toBe('/contract')
   })
 
@@ -205,7 +205,7 @@ describe('ContractsComponent', () => {
 
     await harnesses.router.component.inMatTableRow('contractList', {
       number: contractToEdit.number
-    }).clickButton('editContract')
+    }).clickElement('editContract')
     expect(Utilities.getLocationPath()).toBe(`/contract?contractId=${contractToEdit.id}`)
   })
 

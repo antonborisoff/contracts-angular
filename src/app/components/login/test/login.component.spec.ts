@@ -133,7 +133,7 @@ describe('LoginComponent', () => {
 
     await harnesses.router.component.enterValue('loginInput', `${VALID_CREDS.login}_invalid`)
     await harnesses.router.component.enterValue('passwordInput', VALID_CREDS.password)
-    await harnesses.router.component.clickButton('loginButton')
+    await harnesses.router.component.clickElement('loginButton')
     expect(await harnesses.router.component.elementVisible('incorrectCreds')).toBe(true)
   })
 
@@ -144,7 +144,7 @@ describe('LoginComponent', () => {
 
     await harnesses.router.component.enterValue('loginInput', VALID_CREDS.login)
     await harnesses.router.component.enterValue('passwordInput', VALID_CREDS.password)
-    await harnesses.router.component.clickButton('loginButton')
+    await harnesses.router.component.clickElement('loginButton')
     expect(Utilities.getLocationPath()).toBe('/home')
   })
 
@@ -156,7 +156,7 @@ describe('LoginComponent', () => {
 
     await harnesses.router.component.enterValue('loginInput', VALID_CREDS.login)
     await harnesses.router.component.enterValue('passwordInput', VALID_CREDS.password)
-    await harnesses.router.component.clickButton('loginButton')
+    await harnesses.router.component.clickElement('loginButton')
     await expectAsync(harnesses.messageBox.present(MessageType.ERROR)).toBeResolvedTo(true)
   })
 
@@ -169,11 +169,11 @@ describe('LoginComponent', () => {
     expect(await harnesses.router.component.inputType('passwordInput')).toBe('password')
     expect(await harnesses.router.component.elementText('togglePasswordButtonIcon')).toBe('visibility_off')
 
-    await harnesses.router.component.clickButton('togglePasswordButton')
+    await harnesses.router.component.clickElement('togglePasswordButton')
     expect(await harnesses.router.component.inputType('passwordInput')).toBe('text')
     expect(await harnesses.router.component.elementText('togglePasswordButtonIcon')).toBe('visibility')
 
-    await harnesses.router.component.clickButton('togglePasswordButton')
+    await harnesses.router.component.clickElement('togglePasswordButton')
     expect(await harnesses.router.component.inputType('passwordInput')).toBe('password')
     expect(await harnesses.router.component.elementText('togglePasswordButtonIcon')).toBe('visibility_off')
   })

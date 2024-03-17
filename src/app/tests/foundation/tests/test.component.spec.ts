@@ -40,29 +40,29 @@ describe('Base harness', () => {
     testComponent = fixture.componentInstance
   })
 
-  it('clickButton', async () => {
-    await baseHarness.clickButton('enabled-button')
-    expect(testComponent.getElementClicked('enabled-button')).toBe('Enabled Button')
+  it('clickElement', async () => {
+    const tags = [
+      'button',
+      'a',
+      'div'
+    ]
+    for (const tag of tags) {
+      await baseHarness.clickElement(`enabled-${tag}`)
+      expect(testComponent.getElementClicked(`enabled-${tag}`)).toBe(`Enabled ${tag}`)
 
-    await expectAsync(baseHarness.clickButton('disabled-button')).toBeRejected()
-    expect(testComponent.getElementClicked('disabled-button')).toBeUndefined()
+      await expectAsync(baseHarness.clickElement(`disabled-${tag}`)).toBeRejected()
+      expect(testComponent.getElementClicked(`disabled-${tag}`)).toBeUndefined()
 
-    await expectAsync(baseHarness.clickButton('non-existent-button')).toBeRejected()
-    expect(testComponent.getElementClicked('non-existent-button')).toBeUndefined()
+      await expectAsync(baseHarness.clickElement(`non-existent-${tag}`)).toBeRejected()
+      expect(testComponent.getElementClicked(`non-existent-${tag}`)).toBeUndefined()
 
-    // elements in wrapper found, not global ones
-    await baseHarness.inElement('button-element-wrapper').clickButton('enabled-button')
-    expect(testComponent.getElementClicked('enabled-button')).toBe('Enabled Button in Wrapper')
+      // elements in wrapper found, not global ones
+      await baseHarness.inElement('element-wrapper').clickElement(`enabled-${tag}`)
+      expect(testComponent.getElementClicked(`enabled-${tag}`)).toBe(`Enabled ${tag} in Wrapper`)
 
-    // elements in wrapper are looked up and not found, global elements are ignored
-    await expectAsync(baseHarness.inElement('button-element-wrapper-non-existent').clickButton('enabled-button')).toBeRejected()
-  })
-
-  it('clickLink', async () => {
-    await baseHarness.clickLink('link')
-    expect(testComponent.getElementClicked('link')).toBe('Link')
-
-    await expectAsync(baseHarness.clickLink('non-existent-link')).toBeRejected()
+      // elements in wrapper are looked up and not found, global elements are ignored
+      await expectAsync(baseHarness.inElement('element-wrapper-non-existent').clickElement(`enabled-${tag}`)).toBeRejected()
+    }
   })
 
   it('buttonEnabled', async () => {
@@ -234,7 +234,7 @@ describe('Base harness', () => {
     await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(false)
     await expectAsync(messageBoxHarness.present(MessageType.CONFIRM)).toBeResolvedTo(false)
 
-    await baseHarness.clickButton('button-triggers-message-box-error')
+    await baseHarness.clickElement('button-triggers-message-box-error')
     await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(true)
     await expectAsync(messageBoxHarness.present(MessageType.ERROR, 'message box error')).toBeResolvedTo(true)
     await expectAsync(messageBoxHarness.present(MessageType.ERROR, 'some random message')).toBeResolvedTo(false)
@@ -246,7 +246,7 @@ describe('Base harness', () => {
 
     await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(false)
 
-    await baseHarness.clickButton('button-triggers-message-box-error')
+    await baseHarness.clickElement('button-triggers-message-box-error')
     await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(true)
 
     await messageBoxHarness.act(MessageActions.CLOSE)
@@ -264,7 +264,7 @@ describe('Base harness', () => {
   it('MessageBoxUtils - act - no message action', async () => {
     const messageBoxHarness = new MessageBoxUtils(fixture)
 
-    await baseHarness.clickButton('button-triggers-message-box-error')
+    await baseHarness.clickElement('button-triggers-message-box-error')
 
     await expectAsync(messageBoxHarness.act(MessageActions.CONFIRM)).toBeRejectedWithError()
   })
