@@ -51,7 +51,13 @@ import {
   template: '<div></div>'
 })
 export class TestComponent {
+  public static getTranslocoScope(): string {
+    return ''
+  }
+}
 
+export class TestComponentHarness extends BaseHarness {
+  public static hostSelector = 'app-test'
 }
 
 export function stubRouteComponents(routes: Route[]): Route[] {

@@ -1,11 +1,15 @@
 import {
   ComponentHarness,
+  ComponentHarnessConstructor,
   HarnessLoader,
   HarnessPredicate
 } from '@angular/cdk/testing'
 import {
   MatButtonHarness
 } from '@angular/material/button/testing'
+import {
+  MatDialogHarness
+} from '@angular/material/dialog/testing'
 import {
   MatIconHarness
 } from '@angular/material/icon/testing'
@@ -47,16 +51,12 @@ export class BaseHarness extends ComponentHarness {
     return `[${this.idAttribute}="${id}"]`
   }
 
-  protected getCssSelector(id: string, tags: string[], ancestorSelector: string = '', notDisabled: boolean = false): string {
+  protected getCssSelector(id: string, tags: string[], ancestorSelector: string = '', postfix: string = ''): string {
     return tags.reduce((selector: string, tag: string) => {
       if (selector) {
         selector = `${selector},`
       }
-      let notDisabledPostfix = ''
-      if (notDisabled) {
-        notDisabledPostfix = ':not([disabled])'
-      }
-      return `${selector}${ancestorSelector}${tag}${this.getIdSelector(id)}${notDisabledPostfix}`
+      return `${selector}${ancestorSelector}${tag}${this.getIdSelector(id)}${postfix}`
     }, '')
   }
 
@@ -102,6 +102,14 @@ export class BaseHarness extends ComponentHarness {
     }
     return copy
   }
+
+  public async matDialogHarness<T extends BaseHarness>(dialogId: string, harness: ComponentHarnessConstructor<T>): Promise<T> {
+    const matDialog = await this.getRootLoader().getHarness(MatDialogHarness.with({
+      selector: `#${dialogId}`
+    }))
+    return await matDialog.getHarness(harness)
+  }
+
   /********************************
    * ACTIONS
    *******************************/
@@ -112,7 +120,7 @@ export class BaseHarness extends ComponentHarness {
       'a',
       'button',
       'div'
-    ], this.ancestorSelector, true)
+    ], this.ancestorSelector, ':not([disabled])')
     const element = await this.locatorFor(cssSelector)()
     return await element.click()
   }
@@ -180,11 +188,23 @@ export class BaseHarness extends ComponentHarness {
       'h4',
       'p',
       'div',
+      'span',
+      'button',
       'td',
       'mat-icon'
     ], this.ancestorSelector)
     const element = await this.locatorFor(cssSelector)()
     return await element.text()
+  }
+
+  public async elementHasClass(id: string, cssClass: string): Promise<boolean> {
+    await this.updateAncestorSelector()
+    const cssSelector = this.getCssSelector(id, [
+      'mat-toolbar',
+      'button'
+    ], this.ancestorSelector)
+    const element = await this.locatorFor(cssSelector)()
+    return await element.hasClass(cssClass)
   }
 
   public async matButtonText(id: string): Promise<string> {
@@ -198,9 +218,15 @@ export class BaseHarness extends ComponentHarness {
   }
 
   public async elementChildCount(id: string): Promise<number> {
+    const supportedTags = [
+      'div',
+      'mat-dialog-actions'
+    ]
     // we need to retrieve the parent first to make sure it exists
-    await this.locatorFor(`div${this.getIdSelector(id)}`)()
-    const children = await this.locatorForAll(`div${this.getIdSelector(id)} > *`)()
+    const cssSelectorParent = this.getCssSelector(id, supportedTags, this.ancestorSelector)
+    await this.locatorFor(cssSelectorParent)()
+    const cssSelectorChildren = this.getCssSelector(id, supportedTags, this.ancestorSelector, ' > *')
+    const children = await this.locatorForAll(cssSelectorChildren)()
     return children.length
   }
 
@@ -224,5 +250,12 @@ export class BaseHarness extends ComponentHarness {
     }))()
     const rows = await matTable.getRows()
     return rows.length
+  }
+
+  public async matDialogPresent(dialogId: string): Promise<boolean> {
+    const matDialog = await this.getRootLoader().getHarnessOrNull(MatDialogHarness.with({
+      selector: `#${dialogId}`
+    }))
+    return !!matDialog
   }
 }

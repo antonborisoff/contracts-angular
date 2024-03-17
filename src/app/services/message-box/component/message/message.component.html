@@ -7,14 +7,16 @@
         data-id="messageIcon"
         style="vertical-align: text-bottom;"
     >{{messages[data.type].icon}}</mat-icon>
-    {{'message.' + messages[data.type].titleKey | transloco}}
+    <span data-id="messageTitle">{{'message.' + messages[data.type].titleKey | transloco}}</span>
 </mat-toolbar>
 
 <mat-dialog-content>
     <p data-id="message">{{data.message}}</p>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
+<mat-dialog-actions
+    align="end"
+    data-id="messageActions">
     @for(button of data.buttons; track button.key) {
         @if(button.raised) {
             <button
