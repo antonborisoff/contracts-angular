@@ -1,21 +1,33 @@
 <!-- eslint-disable @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
 <ng-template #testTemplate>
     <div>
-        <button data-id="enabled-button" (click)="clickElement($event.target)">Enabled Button</button>
-        <button data-id="disabled-button" (click)="clickElement($event.target)" disabled>Disabled Button</button>
-        <!--1. It is important that we use the same ids for button elements in wrapper,
+        <button data-id="enabled-button" (click)="clickElement($event.target)">Enabled button</button>
+        <button data-id="disabled-button" (click)="clickElement($event.target)" disabled>Disabled button</button>
+
+        <a data-id="enabled-a" (click)="clickElement($event.target)">Enabled a</a>
+        <a data-id="disabled-a" (click)="clickElement($event.target)" disabled>Disabled a</a>
+
+        <div data-id="enabled-div" (click)="clickElement($event.target)">Enabled div</div>
+        <div data-id="disabled-div" (click)="clickElement($event.target)" disabled>Disabled div</div>
+        <!--1. It is important that we use the same ids for elements in wrapper,
         this way the tests will fail if wrapper does not limit element lookup and picks up global elements instead;-->
-        <!--2. It is important that button elements in wrapper are not direct children
+        <!--2. It is important that elements in wrapper are not direct children
         since we want wrappers to look up any descendants;-->
-        <!--3. It is important that button element texts are different for global elements and wrapper elements,
+        <!--3. It is important that element texts are different for global elements and wrapper elements,
         this is how we differentiate between them in tests;-->
-        <div data-id="button-element-wrapper">
+        <div data-id="element-wrapper">
             <div>
-                <button data-id="enabled-button" (click)="clickElement($event.target)">Enabled Button in Wrapper</button>
-                <button data-id="disabled-button" (click)="clickElement($event.target)" disabled>Disabled Button in Wrapper</button>
+                <button data-id="enabled-button" (click)="clickElement($event.target)">Enabled button in Wrapper</button>
+                <button data-id="disabled-button" (click)="clickElement($event.target)" disabled>disabled Button in Wrapper</button>
+
+                <a data-id="enabled-a" (click)="clickElement($event.target)">Enabled a in Wrapper</a>
+                <a data-id="disabled-a" (click)="clickElement($event.target)" disabled>Disabled a in Wrapper</a>
+
+                <div data-id="enabled-div" (click)="clickElement($event.target)">Enabled div in Wrapper</div>
+                 <div data-id="disabled-div" (click)="clickElement($event.target)" disabled>Disabled div in Wrapper</div>
             </div>
         </div>
-        <div data-id="button-element-wrapper-non-existent-elements">
+        <div data-id="element-wrapper-non-existent-elements">
         </div>
 
         <a data-id="link" (click)="clickElement($event.target)">Link</a>

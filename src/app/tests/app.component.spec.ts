@@ -62,7 +62,7 @@ describe('AppComponent', () => {
       harnesses
     } = await initComponent()
 
-    await harnesses.router.component.clickButton('logoutButton')
+    await harnesses.router.component.clickElement('logoutButton')
     expect(Utilities.getLocationPath()).toBe('/login')
   })
 
@@ -72,7 +72,7 @@ describe('AppComponent', () => {
       harnesses
     } = await initComponent()
 
-    await harnesses.router.component.clickButton('logoutButton')
+    await harnesses.router.component.clickElement('logoutButton')
     await expectAsync(harnesses.messageBox.present(MessageType.ERROR)).toBeResolvedTo(true)
   })
 
@@ -110,7 +110,7 @@ describe('AppComponent', () => {
       harnesses
     } = await initComponent()
 
-    await harnesses.router.component.clickLink('navToHomeLink')
+    await harnesses.router.component.clickElement('navToHomeLink')
     expect(Utilities.getLocationPath()).toBe('/home')
   })
 

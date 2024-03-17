@@ -47,12 +47,16 @@ export class BaseHarness extends ComponentHarness {
     return `[${this.idAttribute}="${id}"]`
   }
 
-  protected getCssSelector(id: string, tags: string[], ancestorSelector: string = ''): string {
+  protected getCssSelector(id: string, tags: string[], ancestorSelector: string = '', notDisabled: boolean = false): string {
     return tags.reduce((selector: string, tag: string) => {
       if (selector) {
         selector = `${selector},`
       }
-      return `${selector}${ancestorSelector}${tag}${this.getIdSelector(id)}`
+      let notDisabledPostfix = ''
+      if (notDisabled) {
+        notDisabledPostfix = ':not([disabled])'
+      }
+      return `${selector}${ancestorSelector}${tag}${this.getIdSelector(id)}${notDisabledPostfix}`
     }, '')
   }
 
@@ -102,24 +106,13 @@ export class BaseHarness extends ComponentHarness {
    * ACTIONS
    *******************************/
 
-  public async clickButton(id: string): Promise<void> {
-    await this.updateAncestorSelector()
-    const button = await this.locatorFor(`${this.ancestorSelector}button${this.getIdSelector(id)}:not([disabled])`)()
-    await button.click()
-  }
-
-  public async clickLink(id: string): Promise<void> {
-    const link = await this.locatorFor(`a${this.getIdSelector(id)}`)()
-    await link.click()
-  }
-
   public async clickElement(id: string): Promise<void> {
     await this.updateAncestorSelector()
     const cssSelector = this.getCssSelector(id, [
       'a',
       'button',
       'div'
-    ], this.ancestorSelector)
+    ], this.ancestorSelector, true)
     const element = await this.locatorFor(cssSelector)()
     return await element.click()
   }

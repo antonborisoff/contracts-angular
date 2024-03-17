@@ -160,7 +160,7 @@ describe('ContractComponent', () => {
 
     await harnesses.router.component.enterValue('numberInput', contractToCreate.number)
     await harnesses.router.component.enterValue('conditionsInput', contractToCreate.conditions)
-    await harnesses.router.component.clickButton('saveContractButton')
+    await harnesses.router.component.clickElement('saveContractButton')
     expect(contractServiceMock.createContract).toHaveBeenCalledWith(jasmine.objectContaining(contractToCreate))
     expect(Utilities.getLocationPath()).toBe('/initial')
   })
@@ -177,7 +177,7 @@ describe('ContractComponent', () => {
 
     await harnesses.router.component.enterValue('numberInput', contractToCreate.number)
     await harnesses.router.component.enterValue('conditionsInput', contractToCreate.conditions)
-    await harnesses.router.component.clickButton('saveContractButton')
+    await harnesses.router.component.clickElement('saveContractButton')
     await expectAsync(harnesses.messageBox.present(MessageType.ERROR)).toBeResolvedTo(true)
     expect(Utilities.getLocationPath()).toBe('/contract')
   })
@@ -194,7 +194,7 @@ describe('ContractComponent', () => {
 
     await harnesses.router.component.enterValue('numberInput', contractToUpdate.number)
     await harnesses.router.component.enterValue('conditionsInput', contractToUpdate.conditions)
-    await harnesses.router.component.clickButton('saveContractButton')
+    await harnesses.router.component.clickElement('saveContractButton')
     expect(contractServiceMock.updateContract).toHaveBeenCalledWith(existingContract.id, jasmine.objectContaining(contractToUpdate))
     expect(Utilities.getLocationPath()).toBe('/initial')
   })
@@ -211,7 +211,7 @@ describe('ContractComponent', () => {
 
     await harnesses.router.component.enterValue('numberInput', contractToUpdate.number)
     await harnesses.router.component.enterValue('conditionsInput', contractToUpdate.conditions)
-    await harnesses.router.component.clickButton('saveContractButton')
+    await harnesses.router.component.clickElement('saveContractButton')
     await expectAsync(harnesses.messageBox.present(MessageType.ERROR)).toBeResolvedTo(true)
     expect(Utilities.getLocationPath()).toBe(`/contract?contractId=${existingContract.id}`)
   })
@@ -227,7 +227,7 @@ describe('ContractComponent', () => {
 
     await harnesses.router.component.enterValue('numberInput', contractToCreate.number)
     await harnesses.router.component.enterValue('conditionsInput', contractToCreate.conditions)
-    await harnesses.router.component.clickButton('cancelSaveContractButton')
+    await harnesses.router.component.clickElement('cancelSaveContractButton')
     expect(Utilities.getLocationPath()).toBe('/initial')
   })
 
