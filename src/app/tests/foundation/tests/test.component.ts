@@ -23,6 +23,9 @@ import {
 import {
   MatToolbarModule
 } from '@angular/material/toolbar'
+import {
+  BusyDirective
+} from '../../../services/busy/busy.directive'
 
 @Component({
   selector: 'app-test-component',
@@ -33,7 +36,8 @@ import {
     MatCardModule,
     MatFormFieldModule,
     MatIconModule,
-    MatToolbarModule
+    MatToolbarModule,
+    BusyDirective
   ],
   templateUrl: './test.component.html',
   styleUrl: './test.component.css'

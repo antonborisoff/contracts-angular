@@ -17,6 +17,14 @@ import {
 import {
   getTranslocoTestingModule
 } from '../../../../transloco/transloco-testing'
+import {
+  BusyStateService
+} from '../../../services/busy/busy-state.service'
+import {
+  defer,
+  delay,
+  of
+} from 'rxjs'
 
 describe('Base harness', () => {
   let baseHarness: TestComponentHarness
@@ -309,5 +317,37 @@ describe('Base harness', () => {
     await baseHarness.clickElement('button-triggers-message-box-error')
 
     await expectAsync(baseHarness.messageBoxClick(MessageActions.CONFIRM)).toBeRejectedWithError()
+  })
+
+  it('waitForElementNotBusy', async () => {
+    const busyStateService = TestBed.inject(BusyStateService)
+    const stream = defer(() => {
+      return of(1).pipe(delay(1000))
+    })
+    const elementId = 'div-busy-element'
+
+    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(true)
+
+    stream.pipe(busyStateService.processLoading('div-busy')).subscribe()
+    await expectAsync(baseHarness.elementBusy(elementId)).toBeResolvedTo(true)
+
+    await baseHarness.waitForElementNotBusy(elementId)
+    await expectAsync(baseHarness.elementBusy(elementId)).toBeResolvedTo(false)
+  })
+
+  it('waitForElementNotBusy - failed to wait until not busy', async () => {
+    const busyStateService = TestBed.inject(BusyStateService)
+    const stream = defer(() => {
+      return of(1).pipe(delay(2000))
+    })
+    const elementId = 'div-busy-element'
+
+    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(true)
+
+    stream.pipe(busyStateService.processLoading('div-busy')).subscribe()
+    await expectAsync(baseHarness.elementBusy(elementId)).toBeResolvedTo(true)
+
+    // wait less than the delay in the stream
+    await expectAsync(baseHarness.waitForElementNotBusy(elementId, 1000)).toBeRejectedWithError(`Waiting for element ${elementId} becoming not busy failed: timeout exceeded.`)
   })
 })
