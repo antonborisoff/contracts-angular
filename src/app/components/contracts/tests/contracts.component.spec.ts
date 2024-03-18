@@ -120,7 +120,7 @@ describe('ContractsComponent', () => {
     const {
       harnesses
     } = await initComponent()
-    await expectAsync(harnesses.messageBox.present(MessageType.ERROR)).toBeResolvedTo(true)
+    await expectAsync(harnesses.router.component.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(true)
   })
 
   it('contract delete - success', async () => {
@@ -138,7 +138,7 @@ describe('ContractsComponent', () => {
     await harnesses.router.component.inMatTableRow('contractList', {
       number: contractToDelete.number
     }).clickElement('deleteContract')
-    await harnesses.messageBox.act(MessageActions.CONFIRM)
+    await harnesses.router.component.messageBoxClick(MessageActions.CONFIRM)
     expect(await harnesses.router.component.matTableNRows('contractList')).toBe(expectedContracts.length)
     for (const expectedContract of expectedContracts) {
       expect(await harnesses.router.component.inMatTableRow('contractList', {
@@ -161,7 +161,7 @@ describe('ContractsComponent', () => {
     await harnesses.router.component.inMatTableRow('contractList', {
       number: contractToDelete.number
     }).clickElement('deleteContract')
-    await harnesses.messageBox.act(MessageActions.CANCEL)
+    await harnesses.router.component.messageBoxClick(MessageActions.CANCEL)
     expect(await harnesses.router.component.matTableNRows('contractList')).toBe(expectedContracts.length)
     for (const expectedContract of expectedContracts) {
       expect(await harnesses.router.component.inMatTableRow('contractList', {
@@ -184,8 +184,8 @@ describe('ContractsComponent', () => {
     await harnesses.router.component.inMatTableRow('contractList', {
       number: contractToDelete.number
     }).clickElement('deleteContract')
-    await harnesses.messageBox.act(MessageActions.CONFIRM)
-    await expectAsync(harnesses.messageBox.present(MessageType.ERROR)).toBeResolvedTo(true)
+    await harnesses.router.component.messageBoxClick(MessageActions.CONFIRM)
+    await expectAsync(harnesses.router.component.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(true)
   })
 
   it('contract add', async () => {

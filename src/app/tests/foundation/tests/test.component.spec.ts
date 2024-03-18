@@ -1,5 +1,4 @@
 import {
-  ComponentFixture,
   TestBed
 } from '@angular/core/testing'
 import {
@@ -12,9 +11,6 @@ import {
   TestComponentHarness
 } from './test.component.harness'
 import {
-  MessageBoxUtils
-} from '../utilities'
-import {
   MessageActions,
   MessageType
 } from '../../../services/message-box/interfaces'
@@ -24,7 +20,6 @@ import {
 
 describe('Base harness', () => {
   let baseHarness: TestComponentHarness
-  let fixture: ComponentFixture<TestComponent>
   let testComponent: TestComponent
 
   beforeEach(async () => {
@@ -35,8 +30,10 @@ describe('Base harness', () => {
       ]
     }).compileComponents()
 
-    fixture = TestBed.createComponent(TestComponent)
+    const fixture = TestBed.createComponent(TestComponent)
     baseHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TestComponentHarness)
+    const rootLoader = TestbedHarnessEnvironment.documentRootLoader(fixture)
+    baseHarness.initRootLoader(rootLoader)
     testComponent = fixture.componentInstance
   })
 
@@ -281,44 +278,36 @@ describe('Base harness', () => {
     }
   })
 
-  it('MessageBoxUtils - present', async () => {
-    const messageBoxHarness = new MessageBoxUtils(fixture)
-
-    await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(false)
-    await expectAsync(messageBoxHarness.present(MessageType.CONFIRM)).toBeResolvedTo(false)
+  it('messageBoxPresent', async () => {
+    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(false)
+    await expectAsync(baseHarness.messageBoxPresent(MessageType.CONFIRM)).toBeResolvedTo(false)
 
     await baseHarness.clickElement('button-triggers-message-box-error')
-    await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(true)
-    await expectAsync(messageBoxHarness.present(MessageType.ERROR, 'message box error')).toBeResolvedTo(true)
-    await expectAsync(messageBoxHarness.present(MessageType.ERROR, 'some random message')).toBeResolvedTo(false)
-    await expectAsync(messageBoxHarness.present(MessageType.CONFIRM)).toBeResolvedTo(false)
+    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(true)
+    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR, 'message box error')).toBeResolvedTo(true)
+    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR, 'some random message')).toBeResolvedTo(false)
+    await expectAsync(baseHarness.messageBoxPresent(MessageType.CONFIRM)).toBeResolvedTo(false)
   })
 
-  it('MessageBoxUtils - act', async () => {
-    const messageBoxHarness = new MessageBoxUtils(fixture)
-
-    await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(false)
+  it('messageBoxClick', async () => {
+    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(false)
 
     await baseHarness.clickElement('button-triggers-message-box-error')
-    await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(true)
+    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(true)
 
-    await messageBoxHarness.act(MessageActions.CLOSE)
-    await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(false)
+    await baseHarness.messageBoxClick(MessageActions.CLOSE)
+    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(false)
   })
 
-  it('MessageBoxUtils - act - no message box', async () => {
-    const messageBoxHarness = new MessageBoxUtils(fixture)
+  it('messageBoxClick - no message box', async () => {
+    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(false)
 
-    await expectAsync(messageBoxHarness.present(MessageType.ERROR)).toBeResolvedTo(false)
-
-    await expectAsync(messageBoxHarness.act(MessageActions.CLOSE)).toBeRejectedWithError()
+    await expectAsync(baseHarness.messageBoxClick(MessageActions.CLOSE)).toBeRejectedWithError()
   })
 
-  it('MessageBoxUtils - act - no message action', async () => {
-    const messageBoxHarness = new MessageBoxUtils(fixture)
-
+  it('messageBoxClick - no message action', async () => {
     await baseHarness.clickElement('button-triggers-message-box-error')
 
-    await expectAsync(messageBoxHarness.act(MessageActions.CONFIRM)).toBeRejectedWithError()
+    await expectAsync(baseHarness.messageBoxClick(MessageActions.CONFIRM)).toBeRejectedWithError()
   })
 })
