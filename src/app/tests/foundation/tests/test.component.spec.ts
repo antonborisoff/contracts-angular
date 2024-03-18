@@ -41,27 +41,49 @@ describe('Base harness', () => {
   })
 
   it('clickElement', async () => {
-    const tags = [
-      'button',
-      'a',
-      'div'
+    const tags: {
+      name: string
+      disabable: boolean
+    }[] = [
+      {
+        name: 'button',
+        disabable: true
+      },
+      {
+        name: 'a',
+        disabable: false
+      },
+      {
+        name: 'div',
+        disabable: false
+      },
+      {
+        name: 'mat-card',
+        disabable: false
+      }
     ]
     for (const tag of tags) {
-      await baseHarness.clickElement(`enabled-${tag}`)
-      expect(testComponent.getElementClicked(`enabled-${tag}`)).toBe(`Enabled ${tag}`)
+      await baseHarness.clickElement(`enabled-${tag.name}`)
+      expect(testComponent.getElementClicked(`enabled-${tag.name}`)).toBe(`Enabled ${tag.name}`)
 
-      await expectAsync(baseHarness.clickElement(`disabled-${tag}`)).toBeRejected()
-      expect(testComponent.getElementClicked(`disabled-${tag}`)).toBeUndefined()
+      if (tag.disabable) {
+        await expectAsync(baseHarness.clickElement(`disabled-${tag.name}`)).toBeRejected()
+        expect(testComponent.getElementClicked(`disabled-${tag.name}`)).toBeUndefined()
+      }
+      else {
+        await baseHarness.clickElement(`disabled-${tag.name}`)
+        expect(testComponent.getElementClicked(`disabled-${tag.name}`)).toBe(`Disabled ${tag.name}`)
+      }
 
       await expectAsync(baseHarness.clickElement(`non-existent-${tag}`)).toBeRejected()
       expect(testComponent.getElementClicked(`non-existent-${tag}`)).toBeUndefined()
 
       // elements in wrapper found, not global ones
-      await baseHarness.inElement('element-wrapper').clickElement(`enabled-${tag}`)
-      expect(testComponent.getElementClicked(`enabled-${tag}`)).toBe(`Enabled ${tag} in Wrapper`)
+      await baseHarness.inElement('element-wrapper').clickElement(`enabled-${tag.name}`)
+      expect(testComponent.getElementClicked(`enabled-${tag.name}`)).toBe(`Enabled ${tag.name} in Wrapper`)
 
       // elements in wrapper are looked up and not found, global elements are ignored
-      await expectAsync(baseHarness.inElement('element-wrapper-non-existent').clickElement(`enabled-${tag}`)).toBeRejected()
+      await expectAsync(baseHarness.inElement('element-wrapper-non-existent').clickElement(`enabled-${tag.name}`)).toBeRejected()
     }
   })
 

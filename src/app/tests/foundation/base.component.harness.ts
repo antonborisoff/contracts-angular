@@ -116,18 +116,16 @@ export class BaseHarness extends ComponentHarness {
 
   public async clickElement(id: string): Promise<void> {
     await this.updateAncestorSelector()
-    const cssSelector = this.getCssSelector(id, [
+    const disabableTags = ['button']
+    const regularTags = [
       'a',
-      'button',
-      'div'
-    ], this.ancestorSelector, ':not([disabled])')
-    const element = await this.locatorFor(cssSelector)()
+      'div',
+      'mat-card'
+    ]
+    const cssSelectorDisabable = this.getCssSelector(id, disabableTags, this.ancestorSelector, ':not([disabled])')
+    const cssSelectorRegular = this.getCssSelector(id, regularTags, this.ancestorSelector)
+    const element = await this.locatorFor(`${cssSelectorDisabable},${cssSelectorRegular}`)()
     return await element.click()
-  }
-
-  public async clickMatCard(id: string): Promise<void> {
-    const matCard = await this.locatorFor(`mat-card${this.getIdSelector(id)}`)()
-    await matCard.click()
   }
 
   public async selectMatMenuItem(text: string): Promise<void> {
