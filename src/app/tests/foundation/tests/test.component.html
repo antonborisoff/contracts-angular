@@ -86,10 +86,52 @@
         <a data-id="a-element-class-display-none" class="displayNone">a hidden via class display: none</a>
         <a data-id="a-element-class-visibility-hidden" class="visibilityHidden">a hidden via class visibility: hidden</a>
 
+        <mat-card data-id="mat-card-element-visible">mat-card visible</mat-card>
+        @if(false){
+            <mat-card data-id="mat-card-element-invisible-if">mat-card hidden via ngIf</mat-card>
+        }
+        <mat-card data-id="mat-card-element-hidden" hidden>mat-card hidden via 'hidden' attribute</mat-card>
+        <mat-card data-id="mat-card-element-style-display-none" style="display: none;">mat-card hidden via inline display: none</mat-card>
+        <mat-card data-id="mat-card-element-style-visibility-hidden" style="visibility: hidden;">mat-card hidden via inline visibility: hidden</mat-card>
+        <mat-card data-id="mat-card-element-class-display-none" class="displayNone">mat-card hidden via class display: none</mat-card>
+        <mat-card data-id="mat-card-element-class-visibility-hidden" class="visibilityHidden">mat-card hidden via class visibility: hidden</mat-card>
+
+        <mat-error data-id="mat-error-element-visible">mat-error visible</mat-error>
+        @if(false){
+            <mat-error data-id="mat-error-element-invisible-if">mat-error hidden via ngIf</mat-error>
+        }
+        <mat-error data-id="mat-error-element-hidden" hidden>mat-error hidden via 'hidden' attribute</mat-error>
+        <mat-error data-id="mat-error-element-style-display-none" style="display: none;">mat-error hidden via inline display: none</mat-error>
+        <mat-error data-id="mat-error-element-style-visibility-hidden" style="visibility: hidden;">mat-error hidden via inline visibility: hidden</mat-error>
+        <mat-error data-id="mat-error-element-class-display-none" class="displayNone">mat-error hidden via class display: none</mat-error>
+        <mat-error data-id="mat-error-element-class-visibility-hidden" class="visibilityHidden">mat-error hidden via class visibility: hidden</mat-error>
+
+        <table>
+            <tr>
+                <td data-id="td-element-visible">td visible</td>
+                @if(false){
+                    <td data-id="td-element-invisible-if">td hidden via ngIf</td>
+                }
+                <td data-id="td-element-hidden" hidden>td hidden via 'hidden' attribute</td>
+                <td data-id="td-element-style-display-none" style="display: none;">td hidden via inline display: none</td>
+                <td data-id="td-element-style-visibility-hidden" style="visibility: hidden;">td hidden via inline visibility: hidden</td>
+                <td data-id="td-element-class-display-none" class="displayNone">td hidden via class display: none</td>
+                <td data-id="td-element-class-visibility-hidden" class="visibilityHidden">td hidden via class visibility: hidden</td>
+            </tr>
+        </table>
+
         <h1 data-id="h1-element-text">h1 text</h1>
         <h4 data-id="h4-element-text">h4 text</h4>
         <p data-id="p-element-text">p text</p>
         <div data-id="div-element-text">div text</div>
+        <span data-id="span-element-text">span text</span>
+        <button data-id="button-element-text">button text</button>
+        <mat-icon data-id="mat-icon-element-text">mat-icon text</mat-icon>\
+        <table>
+            <tr>
+                <td data-id="td-element-text">td text</td>
+            </tr>
+        </table>
         <!--1. It is important that we use the same ids for text elements in wrapper,
         this way the tests will fail if wrapper does not limit element lookup and picks up global elements instead;-->
         <!--2. It is important that text elements in wrapper are not direct children
@@ -102,6 +144,14 @@
                 <h4 data-id="h4-element-text">h4 text in wrapper</h4>
                 <p data-id="p-element-text">p text in wrapper</p>
                 <div data-id="div-element-text">div text in wrapper</div>
+                <span data-id="span-element-text">span text in wrapper</span>
+                <button data-id="button-element-text">button text in wrapper</button>
+                <mat-icon data-id="mat-icon-element-text">mat-icon text in wrapper</mat-icon>\
+                <table>
+                    <tr>
+                        <td data-id="td-element-text">td text in wrapper</td>
+                    </tr>
+                </table>
             </div>
         </div>
         <div data-id="text-element-wrapper-non-existent-elements">
