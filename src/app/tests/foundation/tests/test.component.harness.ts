@@ -12,4 +12,13 @@ export class TestComponentHarness extends BaseHarness {
     const element = await this.locatorForOptional(`${this.ancestorSelector}${tag}${this.getIdSelector(id)}`)()
     return !!element
   }
+
+  // only required for testing waitForElementNotBusy to check that it indeed waits for element becoming not busy;
+  // not needed in base harness itself;
+  // should not be moved to base harness;
+  public async elementBusy(id: string): Promise<boolean> {
+    const element = await this.locatorFor(`div${this.getIdSelector(id)}`)()
+    const busyState = await element.getAttribute('data-busy')
+    return busyState === 'true' || busyState === null
+  }
 }

@@ -50,6 +50,7 @@ export class OverlayRenderer {
       this.hostRenderer.appendChild(this.hostElement, this.overlayElement)
     }
     this.overlayPresent = true
+    this.hostRenderer.setAttribute(this.hostElement, 'data-busy', 'true')
   }
 
   public removeOverlay(): void {
@@ -57,5 +58,6 @@ export class OverlayRenderer {
       this.hostRenderer.removeChild(this.hostElement, this.overlayElement)
     }
     this.overlayPresent = false
+    this.hostRenderer.setAttribute(this.hostElement, 'data-busy', 'false')
   }
 }
