@@ -20,6 +20,10 @@ import {
   MatTableHarness,
   MatRowHarness
 } from '@angular/material/table/testing'
+import {
+  MessageActions,
+  MessageType
+} from '../../services/message-box/interfaces'
 
 interface ancestorHarnessConfig<T extends ComponentHarness> {
   itemTag: string
@@ -75,6 +79,7 @@ export class BaseHarness extends ComponentHarness {
   /********************************
    * WRAPPERS
    *******************************/
+  // +
   public inElement(id: string): this {
     const copy = Object.create(
       Object.getPrototypeOf(this),
@@ -113,7 +118,7 @@ export class BaseHarness extends ComponentHarness {
   /********************************
    * ACTIONS
    *******************************/
-
+  // +
   public async clickElement(id: string): Promise<void> {
     await this.updateAncestorSelector()
     const disabableTags = ['button']
@@ -135,6 +140,15 @@ export class BaseHarness extends ComponentHarness {
     await matMenuItem.click()
   }
 
+  public async messageBoxClick(action: MessageActions): Promise<void> {
+    const messageBox = await this.getRootLoader().getHarness(MatDialogHarness)
+    const button = await messageBox.getHarness(MatButtonHarness.with({
+      selector: `${this.getIdSelector(`${action}Button`)}`
+    }))
+    await button.click()
+  }
+
+  // +
   public async enterValue(id: string, value: string, blur: boolean = true): Promise<void> {
     const cssSelector = this.getCssSelector(id, [
       'input',
@@ -156,7 +170,7 @@ export class BaseHarness extends ComponentHarness {
   /********************************
    * ASSERTIONS
    *******************************/
-
+  // +
   public async elementVisible(id: string): Promise<boolean> {
     const cssSelector = this.getCssSelector(id, [
       'h1',
@@ -179,6 +193,7 @@ export class BaseHarness extends ComponentHarness {
     }
   }
 
+  // +
   public async elementText(id: string): Promise<string> {
     await this.updateAncestorSelector()
     const cssSelector = this.getCssSelector(id, [
@@ -195,6 +210,7 @@ export class BaseHarness extends ComponentHarness {
     return await element.text()
   }
 
+  // +
   public async elementHasClass(id: string, cssClass: string): Promise<boolean> {
     await this.updateAncestorSelector()
     const cssSelector = this.getCssSelector(id, [
@@ -228,11 +244,13 @@ export class BaseHarness extends ComponentHarness {
     return children.length
   }
 
+  // +
   public async buttonEnabled(id: string): Promise<boolean> {
     const button = await this.locatorFor(`button${this.getIdSelector(id)}`)()
     return !(await button.getProperty('disabled'))
   }
 
+  // +
   public async inputValue(id: string): Promise<string> {
     const cssSelector = this.getCssSelector(id, [
       'input',
@@ -255,5 +273,15 @@ export class BaseHarness extends ComponentHarness {
       selector: `#${dialogId}`
     }))
     return !!matDialog
+  }
+
+  public async messageBoxPresent(type: MessageType, message?: string): Promise<boolean> {
+    const messageBox = await this.getRootLoader().getHarnessOrNull(MatDialogHarness.with({
+      selector: `#${type}MessageBox`
+    }).addOption('message', message, async (harness, message): Promise<boolean> => {
+      const actualMessage = await harness.getContentText()
+      return actualMessage === message
+    }))
+    return !!messageBox
   }
 }

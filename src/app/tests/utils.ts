@@ -41,9 +41,6 @@ import {
 import {
   provideNoopAnimations
 } from '@angular/platform-browser/animations'
-import {
-  MessageBoxUtils
-} from './foundation/utilities'
 
 @Component({
   standalone: true,
@@ -86,12 +83,10 @@ class RouterTestingHarnessWithNavigationDetection<K extends BaseHarness> {
   private routerHarness: RouterTestingHarness
   private componentHarnessContrusctor: ComponentHarnessConstructor<K>
   private targetHarness: K | undefined
-  private messageBoxUtils: MessageBoxUtils
 
   public constructor(routerHarness: RouterTestingHarness, componentHarnessContrusctor: ComponentHarnessConstructor<K>) {
     this.routerHarness = routerHarness
     this.componentHarnessContrusctor = componentHarnessContrusctor
-    this.messageBoxUtils = new MessageBoxUtils(this.routerHarness.fixture)
   }
 
   public async init(): Promise<void> {
@@ -128,16 +123,11 @@ class RouterTestingHarnessWithNavigationDetection<K extends BaseHarness> {
     }
     return this.targetHarness
   }
-
-  public get messagebox(): MessageBoxUtils {
-    return this.messageBoxUtils
-  }
 }
 
 export type ComponentHarnessAndUtils<K extends BaseHarness> = Promise<{
   harnesses: {
     router: RouterTestingHarnessWithNavigationDetection<K>
-    messageBox: MessageBoxUtils
   }
 }>
 
@@ -190,8 +180,7 @@ export async function initComponentBase<T extends Type<any>, K extends BaseHarne
   await routerHarnessWithNavDetect.init()
   return {
     harnesses: {
-      router: routerHarnessWithNavDetect,
-      messageBox: routerHarnessWithNavDetect.messagebox
+      router: routerHarnessWithNavDetect
     }
   }
 }

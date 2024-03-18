@@ -157,7 +157,7 @@ describe('LoginComponent', () => {
     await harnesses.router.component.enterValue('loginInput', VALID_CREDS.login)
     await harnesses.router.component.enterValue('passwordInput', VALID_CREDS.password)
     await harnesses.router.component.clickElement('loginButton')
-    await expectAsync(harnesses.messageBox.present(MessageType.ERROR)).toBeResolvedTo(true)
+    await expectAsync(harnesses.router.component.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(true)
   })
 
   it('show/hide password', async () => {
