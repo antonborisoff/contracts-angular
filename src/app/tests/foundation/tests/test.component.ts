@@ -14,6 +14,12 @@ import {
 import {
   MatCardModule
 } from '@angular/material/card'
+import {
+  MatFormFieldModule
+} from '@angular/material/form-field'
+import {
+  MatIconModule
+} from '@angular/material/icon'
 
 @Component({
   selector: 'app-test-component',
@@ -21,7 +27,9 @@ import {
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    MatCardModule
+    MatCardModule,
+    MatFormFieldModule,
+    MatIconModule
   ],
   templateUrl: './test.component.html',
   styleUrl: './test.component.css'

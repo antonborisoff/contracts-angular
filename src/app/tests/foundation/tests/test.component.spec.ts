@@ -118,8 +118,12 @@ describe('Base harness', () => {
       'p',
       'div',
       'button',
-      'a'
+      'a',
+      'td',
+      'mat-error',
+      'mat-card'
     ]
+    const tagsNotSupportingHidden = ['mat-card']
     for (const tag of tags) {
       await expectAsync(baseHarness.elementPresent(`${tag}-element-visible`, tag)).toBeResolvedTo(true)
       await expectAsync(baseHarness.elementVisible(`${tag}-element-visible`)).toBeResolvedTo(true)
@@ -127,8 +131,14 @@ describe('Base harness', () => {
       await expectAsync(baseHarness.elementPresent(`${tag}-element-invisible-if`, tag)).toBeResolvedTo(false)
       await expectAsync(baseHarness.elementVisible(`${tag}-element-invisible-if`)).toBeResolvedTo(false)
 
-      await expectAsync(baseHarness.elementPresent(`${tag}-element-hidden`, tag)).toBeResolvedTo(true)
-      await expectAsync(baseHarness.elementVisible(`${tag}-element-hidden`)).toBeResolvedTo(false)
+      if (!tagsNotSupportingHidden.includes(tag)) {
+        await expectAsync(baseHarness.elementPresent(`${tag}-element-hidden`, tag)).toBeResolvedTo(true)
+        await expectAsync(baseHarness.elementVisible(`${tag}-element-hidden`)).toBeResolvedTo(false)
+      }
+      else {
+        await expectAsync(baseHarness.elementPresent(`${tag}-element-hidden`, tag)).toBeResolvedTo(true)
+        await expectAsync(baseHarness.elementVisible(`${tag}-element-hidden`)).toBeResolvedTo(true)
+      }
 
       await expectAsync(baseHarness.elementPresent(`${tag}-element-style-display-none`, tag)).toBeResolvedTo(true)
       await expectAsync(baseHarness.elementVisible(`${tag}-element-style-display-none`)).toBeResolvedTo(false)
@@ -152,7 +162,11 @@ describe('Base harness', () => {
       'h1',
       'h4',
       'p',
-      'div'
+      'div',
+      'span',
+      'button',
+      'td',
+      'mat-icon'
     ]
     for (const tag of tags) {
       const elementId = `${tag}-element-text`
