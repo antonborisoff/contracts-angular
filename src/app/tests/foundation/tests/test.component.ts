@@ -20,6 +20,9 @@ import {
 import {
   MatIconModule
 } from '@angular/material/icon'
+import {
+  MatToolbarModule
+} from '@angular/material/toolbar'
 
 @Component({
   selector: 'app-test-component',
@@ -29,7 +32,8 @@ import {
     CommonModule,
     MatCardModule,
     MatFormFieldModule,
-    MatIconModule
+    MatIconModule,
+    MatToolbarModule
   ],
   templateUrl: './test.component.html',
   styleUrl: './test.component.css'

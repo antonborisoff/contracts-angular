@@ -186,6 +186,23 @@ describe('Base harness', () => {
     }
   })
 
+  it('elementHasClass', async () => {
+    const tags = [
+      'button',
+      'mat-toolbar'
+    ]
+    for (const tag of tags) {
+      await expectAsync(baseHarness.elementPresent(`${tag}-element-class`, tag)).toBeResolvedTo(true)
+      await expectAsync(baseHarness.elementHasClass(`${tag}-element-class`, `testClass-${tag}`)).toBeResolvedTo(true)
+
+      await expectAsync(baseHarness.elementPresent(`${tag}-element-class`, tag)).toBeResolvedTo(true)
+      await expectAsync(baseHarness.elementHasClass(`${tag}-element-class`, `testClass-${tag}-other`)).toBeResolvedTo(false)
+
+      await expectAsync(baseHarness.elementPresent(`${tag}-element-class-non-existent`, tag)).toBeResolvedTo(false)
+      await expectAsync(baseHarness.elementHasClass(`${tag}-element-class-non-existent`, `testClass-${tag}`)).toBeRejected()
+    }
+  })
+
   it('elementChildCount', async () => {
     await expectAsync(baseHarness.elementChildCount('div-child-count-no-grandchild-present')).toBeResolvedTo(2)
     await expectAsync(baseHarness.elementChildCount('div-child-count-grandchild-present')).toBeResolvedTo(2)
