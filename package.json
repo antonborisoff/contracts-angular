@@ -11,6 +11,7 @@
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
     "server": "ts-node -P ./localServer/server.tsconfig.json ./localServer/server.ts",
+    "lint-server": "eslint localServer/",
     "lint-server:fix": "eslint localServer/ --fix"
   },
   "private": true,
