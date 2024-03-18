@@ -50,7 +50,7 @@ describe('HomeComponent', () => {
       harnesses
     } = await initComponent()
 
-    await harnesses.router.component.clickMatCard('navToContractsLink')
+    await harnesses.router.component.clickElement('navToContractsLink')
     expect(Utilities.getLocationPath()).toBe('/contracts')
   })
 

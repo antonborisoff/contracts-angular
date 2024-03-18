@@ -9,6 +9,9 @@
 
         <div data-id="enabled-div" (click)="clickElement($event.target)">Enabled div</div>
         <div data-id="disabled-div" (click)="clickElement($event.target)" disabled>Disabled div</div>
+
+        <mat-card data-id="enabled-mat-card" (click)="clickElement($event.target)">Enabled mat-card</mat-card>
+        <mat-card data-id="disabled-mat-card" (click)="clickElement($event.target)" disabled>Disabled mat-card</mat-card>
         <!--1. It is important that we use the same ids for elements in wrapper,
         this way the tests will fail if wrapper does not limit element lookup and picks up global elements instead;-->
         <!--2. It is important that elements in wrapper are not direct children
@@ -24,14 +27,15 @@
                 <a data-id="disabled-a" (click)="clickElement($event.target)" disabled>Disabled a in Wrapper</a>
 
                 <div data-id="enabled-div" (click)="clickElement($event.target)">Enabled div in Wrapper</div>
-                 <div data-id="disabled-div" (click)="clickElement($event.target)" disabled>Disabled div in Wrapper</div>
+                <div data-id="disabled-div" (click)="clickElement($event.target)" disabled>Disabled div in Wrapper</div>
+
+                <mat-card data-id="enabled-mat-card" (click)="clickElement($event.target)">Enabled mat-card in Wrapper</mat-card>
+                <mat-card data-id="disabled-mat-card" (click)="clickElement($event.target)" disabled>Disabled mat-card in Wrapper</mat-card>
             </div>
         </div>
         <div data-id="element-wrapper-non-existent-elements">
         </div>
 
-        <a data-id="link" (click)="clickElement($event.target)">Link</a>
-    
         <h1 data-id="h1-element-visible">h1 visible</h1>
         @if(false){
             <h1 data-id="h1-element-invisible-if">h1 hidden via ngIf</h1>

@@ -11,13 +11,17 @@ import {
 import {
   MessageBoxService
 } from '../../../services/message-box/message-box.service'
+import {
+  MatCardModule
+} from '@angular/material/card'
 
 @Component({
   selector: 'app-test-component',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    MatCardModule
   ],
   templateUrl: './test.component.html',
   styleUrl: './test.component.css'
