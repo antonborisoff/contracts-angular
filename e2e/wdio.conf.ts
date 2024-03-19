@@ -10,7 +10,7 @@ import type {
 const busyWaitForTimeout = 15 * 1000
 // subject to change: allow up to 20 long waiting operations
 const jasmineDefaultTimeoutInterval = 20 * busyWaitForTimeout
-const defaultSpecs = ['./specs/**/*.spec.js']
+const defaultSpecs = ['./specs/**/*.spec.ts']
 
 export const config: Options.Testrunner = {
   //
@@ -71,7 +71,7 @@ export const config: Options.Testrunner = {
     'browserName': 'chrome',
     'browserVersion': 'stable',
     // platform name must be lowercase according to https://www.w3.org/TR/webdriver1/#dfn-matching-capabilities
-    'platformName': process.env.PLATFORM_NAME?.toLowerCase() || 'windows 10',
+    'platformName': process.env['PLATFORM_NAME']?.toLowerCase() || 'windows 10',
     // NOTE: might not work in headless mode
     'goog:chromeOptions': {
       prefs: {
@@ -114,7 +114,7 @@ export const config: Options.Testrunner = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  baseUrl: process.env.BASE_URL || 'http://localhost:4200/',
+  baseUrl: process.env['BASE_URL'] || 'http://localhost:4200/',
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: busyWaitForTimeout,
