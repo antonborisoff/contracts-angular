@@ -27,6 +27,9 @@ jobs:
             - name: run linting for local server source
               run: npm run lint-server
 
+            - name: run linting for e2e source
+              run: npm run lint-e2e
+
             - name: run linting for project source
               run: npm run lint
 
