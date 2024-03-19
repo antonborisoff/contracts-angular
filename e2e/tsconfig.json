@@ -24,7 +24,10 @@
         "noFallthroughCasesInSwitch": true
     },
     "include": [
-        "e2e",
-        "wdio.conf.ts"
+        "pages",
+        "specs",
+        "wdio.conf.ts",
+        // for wdio extensions: commands added via addCommand, etc.
+        "types"
     ]
 }
