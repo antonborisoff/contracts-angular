@@ -10,7 +10,6 @@
         "types": [
             "node",
             "@wdio/globals/types",
-            "expect-webdriverio",
             "@wdio/jasmine-framework"
         ],
         "skipLibCheck": true,
@@ -28,6 +27,6 @@
         "specs",
         "wdio.conf.ts",
         // for wdio extensions: commands added via addCommand, etc.
-        "types"
+        "types/*.d.ts"
     ]
 }

@@ -9,12 +9,13 @@
     "test": "ng test",
     "test:coverage": "ng test --code-coverage",
     "lint": "ng lint",
-    "lint:fix": "ng lint --fix",
+    "lint:fix": "npm run lint -- --fix",
     "server": "ts-node -P ./localServer/server.tsconfig.json ./localServer/server.ts",
     "lint-server": "eslint localServer/",
-    "lint-server:fix": "eslint localServer/ --fix",
+    "lint-server:fix": "npm run lint-server -- --fix",
     "lint-e2e": "eslint e2e/",
-    "lint-e2e:fix": "eslint e2e/ --fix"
+    "lint-e2e:fix": "npm run lint-e2e -- --fix",
+    "lint-all:fix": "npm run lint:fix && npm run lint-server:fix && npm run lint-e2e:fix"
   },
   "private": true,
   "dependencies": {
