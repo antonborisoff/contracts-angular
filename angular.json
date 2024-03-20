@@ -89,7 +89,7 @@
               "src/styles.css"
             ],
             "scripts": [],
-            "karmaConfig": "karma.conf.cjs",
+            "karmaConfig": "karma.conf.js",
             "codeCoverageExclude": [
               "src/**/*.spec.ts",
               "src/**/*.harness.ts"
