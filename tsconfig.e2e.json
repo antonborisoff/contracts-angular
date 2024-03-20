@@ -1,0 +1,24 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+/* 
+This configuration is used to prepare dependencies (harnesses, Angular CDK + Material, etc.) for reuse in WDIO specs;
+This is why we exclude unit test specs;
+This is why we emitDeclarationsOnly;
+See e2e-tests/tsconfig for the usage of the results;
+*/
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // important for providing dependencies to e2e tests, see e2e-tests/tsconfig
+    "outDir": "./dist/out-tsc/e2e",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "types": []
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts"
+  ]
+}

@@ -9,7 +9,7 @@ export enum MessageType {
   CONFIRM = 'confirm'
 }
 
-interface MessageDisplayAttributes {
+export interface MessageDisplayAttributes {
   icon: string
   titleKey: string
 }
