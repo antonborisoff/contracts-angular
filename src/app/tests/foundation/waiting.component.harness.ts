@@ -55,11 +55,18 @@ export class WaitingHarness extends BaseHarness {
   }
 
   // for elements hidden via @if + async
-  public async waitForElementPresent(id: string): Promise<void> {
+  public async waitForElementPresent(id: string, present: boolean = true): Promise<void> {
     const condition = async (): Promise<boolean> => {
       const cssSelector = this.getCssSelector(id, ['div'], this.ancestorSelector)
-      return !!(await this.locatorForOptional(cssSelector)())
+      return !!(await this.locatorForOptional(cssSelector)()) === present
     }
-    await this.waitFor(condition, `Waiting for element ${id} failed: timeout exceeded, but element is still not present.`)
+    let errorMessage: string
+    if (present) {
+      errorMessage = `Waiting for element ${id} being present failed: timeout exceeded, but element is still not present.`
+    }
+    else {
+      errorMessage = `Waiting for element ${id} not being present failed: timeout exceeded, but element is still present.`
+    }
+    await this.waitFor(condition, errorMessage)
   }
 }
