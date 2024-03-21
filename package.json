@@ -13,9 +13,7 @@
     "server": "ts-node -P ./localServer/server.tsconfig.json ./localServer/server.ts",
     "lint-server": "eslint localServer/",
     "lint-server:fix": "npm run lint-server -- --fix",
-    "lint-e2e": "eslint e2e/",
-    "lint-e2e:fix": "npm run lint-e2e -- --fix",
-    "lint-all:fix": "npm run lint:fix && npm run lint-server:fix && npm run lint-e2e:fix"
+    "lint-all:fix": "npm run lint:fix && npm run lint-server:fix"
   },
   "private": true,
   "dependencies": {

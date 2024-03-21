@@ -40,9 +40,3 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-
-#wdio
-/e2e/node_modules
-/e2e/npm-debug.log
-/e2e/yarn-error.log
-/e2e/wdio-logs
