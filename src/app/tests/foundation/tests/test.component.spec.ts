@@ -386,6 +386,40 @@ describe('Base harness', () => {
     await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(false)
 
     // wait less than the delay in the stream
-    await expectAsync(waitingBaseHarness.withTimeout(EMITTER_DELAY).waitForElementPresent(elementId)).toBeRejectedWithError(`Waiting for element ${elementId} failed: timeout exceeded, but element is still not present.`)
+    await expectAsync(waitingBaseHarness.withTimeout(EMITTER_DELAY).waitForElementPresent(elementId)).toBeRejectedWithError(`Waiting for element ${elementId} being present failed: timeout exceeded, but element is still not present.`)
+  })
+
+  it('waiting harness - element not present', async () => {
+    const stream = defer(() => {
+      return of(true).pipe(delay(EMITTER_DELAY))
+    })
+    const elementId = 'div-not-present-element'
+
+    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(true)
+
+    stream.subscribe(() => {
+      testComponent.isPresent.next(true)
+    })
+    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(true)
+
+    await waitingBaseHarness.waitForElementPresent(elementId, false)
+    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(false)
+  })
+
+  it('waiting harness - element not present - waiting timed out', async () => {
+    const stream = defer(() => {
+      return of(true).pipe(delay(EMITTER_DELAY * 2))
+    })
+    const elementId = 'div-not-present-element'
+
+    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(true)
+
+    stream.subscribe(() => {
+      testComponent.isPresent.next(true)
+    })
+    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(true)
+
+    // wait less than the delay in the stream
+    await expectAsync(waitingBaseHarness.withTimeout(EMITTER_DELAY).waitForElementPresent(elementId, false)).toBeRejectedWithError(`Waiting for element ${elementId} not being present failed: timeout exceeded, but element is still present.`)
   })
 })
