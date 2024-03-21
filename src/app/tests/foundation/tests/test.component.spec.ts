@@ -8,7 +8,8 @@ import {
   TestbedHarnessEnvironment
 } from '@angular/cdk/testing/testbed'
 import {
-  TestComponentHarness
+  TestComponentHarness,
+  WaitingTestComponentHarness
 } from './test.component.harness'
 import {
   MessageActions,
@@ -28,6 +29,7 @@ import {
 
 describe('Base harness', () => {
   let baseHarness: TestComponentHarness
+  let waitingBaseHarness: WaitingTestComponentHarness
   let testComponent: TestComponent
 
   beforeEach(async () => {
@@ -40,6 +42,7 @@ describe('Base harness', () => {
 
     const fixture = TestBed.createComponent(TestComponent)
     baseHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, TestComponentHarness)
+    waitingBaseHarness = await TestbedHarnessEnvironment.harnessForFixture(fixture, WaitingTestComponentHarness)
     const rootLoader = TestbedHarnessEnvironment.documentRootLoader(fixture)
     baseHarness.initRootLoader(rootLoader)
     testComponent = fixture.componentInstance
@@ -319,10 +322,11 @@ describe('Base harness', () => {
     await expectAsync(baseHarness.messageBoxClick(MessageActions.CONFIRM)).toBeRejectedWithError()
   })
 
-  it('waitForElementNotBusy', async () => {
+  const EMITTER_DELAY = 1000
+  it('waiting harness - element free', async () => {
     const busyStateService = TestBed.inject(BusyStateService)
     const stream = defer(() => {
-      return of(1).pipe(delay(1000))
+      return of(1).pipe(delay(EMITTER_DELAY))
     })
     const elementId = 'div-busy-element'
 
@@ -331,14 +335,14 @@ describe('Base harness', () => {
     stream.pipe(busyStateService.processLoading('div-busy')).subscribe()
     await expectAsync(baseHarness.elementBusy(elementId)).toBeResolvedTo(true)
 
-    await baseHarness.waitForElementNotBusy(elementId)
+    await waitingBaseHarness.waitForElementFree(elementId)
     await expectAsync(baseHarness.elementBusy(elementId)).toBeResolvedTo(false)
   })
 
-  it('waitForElementNotBusy - failed to wait until not busy', async () => {
+  it('waiting harness - element free - waiting timed out', async () => {
     const busyStateService = TestBed.inject(BusyStateService)
     const stream = defer(() => {
-      return of(1).pipe(delay(2000))
+      return of(1).pipe(delay(EMITTER_DELAY * 2))
     })
     const elementId = 'div-busy-element'
 
@@ -348,6 +352,40 @@ describe('Base harness', () => {
     await expectAsync(baseHarness.elementBusy(elementId)).toBeResolvedTo(true)
 
     // wait less than the delay in the stream
-    await expectAsync(baseHarness.waitForElementNotBusy(elementId, 1000)).toBeRejectedWithError(`Waiting for element ${elementId} becoming not busy failed: timeout exceeded.`)
+    await expectAsync(waitingBaseHarness.withTimeout(EMITTER_DELAY).waitForElementFree(elementId)).toBeRejectedWithError(`Waiting for element ${elementId} becoming free failed: timeout exceeded, but element is still busy.`)
+  })
+
+  it('waiting harness - element present', async () => {
+    const stream = defer(() => {
+      return of(true).pipe(delay(EMITTER_DELAY))
+    })
+    const elementId = 'div-present-element'
+
+    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(false)
+
+    stream.subscribe(() => {
+      testComponent.isPresent.next(true)
+    })
+    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(false)
+
+    await waitingBaseHarness.waitForElementPresent(elementId)
+    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(true)
+  })
+
+  it('waiting harness - element present - waiting timed out', async () => {
+    const stream = defer(() => {
+      return of(true).pipe(delay(EMITTER_DELAY * 2))
+    })
+    const elementId = 'div-present-element'
+
+    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(false)
+
+    stream.subscribe(() => {
+      testComponent.isPresent.next(true)
+    })
+    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(false)
+
+    // wait less than the delay in the stream
+    await expectAsync(waitingBaseHarness.withTimeout(EMITTER_DELAY).waitForElementPresent(elementId)).toBeRejectedWithError(`Waiting for element ${elementId} failed: timeout exceeded, but element is still not present.`)
   })
 })

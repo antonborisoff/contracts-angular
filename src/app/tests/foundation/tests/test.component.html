@@ -209,6 +209,9 @@
         </div>
 
         <div data-id="div-busy-element" appBusy="div-busy"></div>
+        @if (isPresent | async) {
+            <div data-id="div-present-element"></div>
+        }
     </div>
 </ng-template>
 

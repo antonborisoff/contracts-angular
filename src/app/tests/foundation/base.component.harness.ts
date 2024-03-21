@@ -2,8 +2,7 @@ import {
   ComponentHarness,
   ComponentHarnessConstructor,
   HarnessLoader,
-  HarnessPredicate,
-  TestElement
+  HarnessPredicate
 } from '@angular/cdk/testing'
 import {
   MatButtonHarness
@@ -287,44 +286,5 @@ export class BaseHarness extends ComponentHarness {
       return actualMessage === message
     }))
     return !!messageBox
-  }
-
-  /********************************
-   * UTILITIES
-   *******************************/
-
-  /**
-   * - This method allows us to wait until the element using appBusy directive becomes not busy;
-   * - The method is not required in unit tests where backend calls are mocked and thus return synchronously
-   * and Angular component harness internals stabilize the app;
-   * - E2E tests, however, use real backend that introduces network latency and thus operation (e.g. CRUD) completion waiting
-   * is essential;
-   * - Since we use appBusy directive for blocking UI during network calls, we could check for its state to figure out
-   * if the operation was completed or not;
-   * - If other mechanisms are used, additional waiting functions have to be implemented;
-   */
-  public async waitForElementNotBusy(id: string, timeoutInterval: number = 15000): Promise<void> {
-    const getElement = async (): Promise<TestElement | null> => {
-      await this.updateAncestorSelector()
-      const cssSelector = this.getCssSelector(id, ['div'], this.ancestorSelector, ':not([data-busy="true"])')
-      return await this.locatorForOptional(cssSelector)()
-    }
-
-    const pollingInterval = 400
-    const wait = function (ms: number): Promise<void> {
-      return new Promise((resolve) => {
-        setTimeout(resolve, ms)
-      })
-    }
-
-    let element = await getElement()
-    const endTime = Date.now() + timeoutInterval
-    while (!element && Date.now() < endTime) {
-      await wait(pollingInterval)
-      element = await getElement()
-    }
-    if (!element) {
-      throw new Error(`Waiting for element ${id} becoming not busy failed: timeout exceeded.`)
-    }
   }
 }

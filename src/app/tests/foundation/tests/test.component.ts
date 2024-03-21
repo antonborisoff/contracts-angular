@@ -26,6 +26,9 @@ import {
 import {
   BusyDirective
 } from '../../../services/busy/busy.directive'
+import {
+  BehaviorSubject
+} from 'rxjs'
 
 @Component({
   selector: 'app-test-component',
@@ -59,6 +62,8 @@ export class TestComponent {
   })
 
   public messageBoxConfirmed = false
+
+  public isPresent = new BehaviorSubject(false)
 
   public constructor(
     private fb: FormBuilder,
