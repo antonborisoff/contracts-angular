@@ -166,15 +166,15 @@ describe('LoginComponent', () => {
     } = await initComponent()
 
     // initial state
-    expect(await harnesses.router.component.inputType('passwordInput')).toBe('password')
+    await harnesses.router.component.expectInputType('passwordInput', 'password')
     await harnesses.router.component.expectElementText('togglePasswordButtonIcon', 'visibility_off')
 
     await harnesses.router.component.clickElement('togglePasswordButton')
-    expect(await harnesses.router.component.inputType('passwordInput')).toBe('text')
+    await harnesses.router.component.expectInputType('passwordInput', 'text')
     await harnesses.router.component.expectElementText('togglePasswordButtonIcon', 'visibility')
 
     await harnesses.router.component.clickElement('togglePasswordButton')
-    expect(await harnesses.router.component.inputType('passwordInput')).toBe('password')
+    await harnesses.router.component.expectInputType('passwordInput', 'password')
     await harnesses.router.component.expectElementText('togglePasswordButtonIcon', 'visibility_off')
   })
 })

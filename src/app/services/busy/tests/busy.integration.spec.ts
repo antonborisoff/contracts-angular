@@ -35,16 +35,16 @@ describe('BusyDirective + processLoading', () => {
       busyStateService.processLoading('busy-element')
     )
 
-    expect(await harness.elementBusy('test-element-a')).toBe(false)
-    expect(await harness.elementBusy('test-element-b')).toBe(false)
+    await harness.expectElementBusy('test-element-a', false)
+    await harness.expectElementBusy('test-element-b', false)
 
     stream.subscribe()
-    expect(await harness.elementBusy('test-element-a')).toBe(true)
-    expect(await harness.elementBusy('test-element-b')).toBe(false)
+    await harness.expectElementBusy('test-element-a', true)
+    await harness.expectElementBusy('test-element-b', false)
 
     subject.complete()
-    expect(await harness.elementBusy('test-element-a')).toBe(false)
-    expect(await harness.elementBusy('test-element-b')).toBe(false)
+    await harness.expectElementBusy('test-element-a', false)
+    await harness.expectElementBusy('test-element-b', false)
   })
 
   it('appBusy + processLoading - stream terminates with error', async () => {
@@ -53,18 +53,18 @@ describe('BusyDirective + processLoading', () => {
       busyStateService.processLoading('busy-element')
     )
 
-    expect(await harness.elementBusy('test-element-a')).toBe(false)
-    expect(await harness.elementBusy('test-element-b')).toBe(false)
+    await harness.expectElementBusy('test-element-a', false)
+    await harness.expectElementBusy('test-element-b', false)
 
     stream.subscribe({
       // needed to prevent error from being thrown out to Jasmine
       error: () => {}
     })
-    expect(await harness.elementBusy('test-element-a')).toBe(true)
-    expect(await harness.elementBusy('test-element-b')).toBe(false)
+    await harness.expectElementBusy('test-element-a', true)
+    await harness.expectElementBusy('test-element-b', false)
 
     subject.error(new Error('something went wrong'))
-    expect(await harness.elementBusy('test-element-a')).toBe(false)
-    expect(await harness.elementBusy('test-element-b')).toBe(false)
+    await harness.expectElementBusy('test-element-a', false)
+    await harness.expectElementBusy('test-element-b', false)
   })
 })
