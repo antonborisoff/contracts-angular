@@ -208,12 +208,9 @@
             <button data-id="button-element-class" class="testClass-button">Mat toolbar with class</button>
         </div>
 
-        <div data-id="div-busy-element" appBusy="div-busy"></div>
+        <div data-id="div-busy-unless-waiting-element" appBusy="div-busy"></div>
         @if (isPresent | async) {
-            <div data-id="div-present-element"></div>
-        }
-        @else {
-            <div data-id="div-not-present-element"></div>
+            <div data-id="div-not-visible-unless-waiting-element"></div>
         }
     </div>
 </ng-template>

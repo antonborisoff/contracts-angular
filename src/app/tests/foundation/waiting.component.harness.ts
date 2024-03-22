@@ -14,10 +14,9 @@ function wait(ms: number): Promise<void> {
 
 /**
  *
- * This base harness is designed for testing environments with async operations beyond Angular framework e.g. e2e tests against real apps;
- * It provides common waiters that might indicate such operations completion and general framework to implement custom waiters;
- * The methods are based on visual indications of such operations completion;
- * UX requires such indicators to be present to notify users about ongoing operations;
+ * This base harness is designed for testing environments with async operations beyond Angular framework
+ * e.g. e2e tests against real apps;
+ * It overrides waitFor method to introduce polling for actions and assertions from the base class;
  */
 export class WaitingHarness extends BaseHarness {
   protected waitForTimeoutInterval = 15000
@@ -28,11 +27,11 @@ export class WaitingHarness extends BaseHarness {
     action?: (result: T) => Promise<void>
     errorMessage: string
   }): Promise<void> {
-    let result = await options.lookup()
+    let result = await this.getLookupResult(options.lookup)
     const endTime = Date.now() + this.waitForTimeoutInterval
     while (!result && Date.now() < endTime) {
       await wait(this.waitForPollingInterval)
-      result = await options.lookup()
+      result = await this.getLookupResult(options.lookup)
     }
     if (!result) {
       throw new Error(options.errorMessage)
@@ -66,24 +65,6 @@ export class WaitingHarness extends BaseHarness {
         return !!(await this.locatorForOptional(cssSelector)())
       },
       errorMessage: `Waiting for element ${id} becoming free failed: timeout exceeded, but element is still busy.`
-    })
-  }
-
-  // for elements hidden via @if + async
-  public async expectElementPresent(id: string, present: boolean = true): Promise<void> {
-    let errorMessage: string
-    if (present) {
-      errorMessage = `Waiting for element ${id} being present failed: timeout exceeded, but element is still not present.`
-    }
-    else {
-      errorMessage = `Waiting for element ${id} not being present failed: timeout exceeded, but element is still present.`
-    }
-    await this.waitFor({
-      lookup: async () => {
-        const cssSelector = this.getCssSelector(id, ['div'], this.ancestorSelector)
-        return !!(await this.locatorForOptional(cssSelector)()) === present
-      },
-      errorMessage: errorMessage
     })
   }
 }
