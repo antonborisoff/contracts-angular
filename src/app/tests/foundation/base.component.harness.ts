@@ -2,7 +2,8 @@ import {
   ComponentHarness,
   ComponentHarnessConstructor,
   HarnessLoader,
-  HarnessPredicate
+  HarnessPredicate,
+  TestElement
 } from '@angular/cdk/testing'
 import {
   MatButtonHarness
@@ -76,6 +77,30 @@ export class BaseHarness extends ComponentHarness {
     }
   }
 
+  protected async waitFor<T extends TestElement | ComponentHarness | boolean>(options: {
+    lookup: () => Promise<T | null>
+    action?: (result: T) => Promise<void>
+    errorMessage: string
+  }): Promise<void> {
+    // no need to do polling in unit tests
+    // since component harnesses stabilize them internally
+    let result: T | null
+    try {
+      result = await options.lookup()
+    }
+    catch (err) {
+      result = null
+    }
+    if (!result) {
+      throw new Error(options.errorMessage)
+    }
+    else {
+      if (options.action) {
+        await options.action(result)
+      }
+    }
+  }
+
   /********************************
    * WRAPPERS
    *******************************/
@@ -130,8 +155,16 @@ export class BaseHarness extends ComponentHarness {
     ]
     const cssSelectorDisabable = this.getCssSelector(id, disabableTags, this.ancestorSelector, ':not([disabled])')
     const cssSelectorRegular = this.getCssSelector(id, regularTags, this.ancestorSelector)
-    const element = await this.locatorFor(`${cssSelectorDisabable},${cssSelectorRegular}`)()
-    return await element.click()
+
+    await this.waitFor({
+      lookup: async () => {
+        return await this.locatorFor(`${cssSelectorDisabable},${cssSelectorRegular}`)()
+      },
+      errorMessage: `No element for selector ${cssSelectorDisabable},${cssSelectorRegular} found.`,
+      action: async (element: TestElement) => {
+        await element.click()
+      }
+    })
   }
 
   public async selectMatMenuItem(text: string): Promise<void> {
@@ -156,17 +189,24 @@ export class BaseHarness extends ComponentHarness {
       'input',
       'textarea'
     ])
-    const input = await this.locatorFor(cssSelector)()
-    if (value.length) {
-      await input.setInputValue(value)
-    }
-    else {
-      await input.clear()
-    }
-    await input.dispatchEvent('input')
-    if (blur) {
-      await input.blur()
-    }
+    await this.waitFor({
+      lookup: async () => {
+        return await this.locatorFor(cssSelector)()
+      },
+      errorMessage: `No element for selector ${cssSelector} found.`,
+      action: async (input) => {
+        if (value.length) {
+          await input.setInputValue(value)
+        }
+        else {
+          await input.clear()
+        }
+        await input.dispatchEvent('input')
+        if (blur) {
+          await input.blur()
+        }
+      }
+    })
   }
 
   /********************************
