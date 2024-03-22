@@ -12,9 +12,6 @@ import {
   MatDialogHarness
 } from '@angular/material/dialog/testing'
 import {
-  MatIconHarness
-} from '@angular/material/icon/testing'
-import {
   MatMenuItemHarness
 } from '@angular/material/menu/testing'
 import {
@@ -223,10 +220,17 @@ export class BaseHarness extends ComponentHarness {
   }
 
   public async selectMatMenuItem(text: string): Promise<void> {
-    const matMenuItem = await this.getRootLoader().getHarness(MatMenuItemHarness.with({
-      text: text
-    }))
-    await matMenuItem.click()
+    await this.waitFor({
+      lookup: async () => {
+        return await this.getRootLoader().getHarness(MatMenuItemHarness.with({
+          text: text
+        }))
+      },
+      errorMessage: `No mat menu item with text '${text}' found`,
+      action: async (matMenuItem: MatMenuItemHarness) => {
+        await matMenuItem.click()
+      }
+    })
   }
 
   /********************************
@@ -351,16 +355,6 @@ export class BaseHarness extends ComponentHarness {
     this.markAssertionAsValidExpectation()
   }
 
-  public async matButtonText(id: string): Promise<string> {
-    const matButton = await this.locatorFor(MatButtonHarness.with({
-      selector: `${this.getIdSelector(id)}`
-    }))()
-    const matButtonIcon = await matButton.getHarnessOrNull(MatIconHarness)
-    const matButtonText = await matButton.getText()
-    const matButtonIconText = await matButtonIcon?.getName() || ''
-    return matButtonText.replace(matButtonIconText, '').trim()
-  }
-
   public async elementChildCount(id: string): Promise<number> {
     const supportedTags = [
       'div',
@@ -382,10 +376,16 @@ export class BaseHarness extends ComponentHarness {
     return rows.length
   }
 
-  public async matDialogPresent(dialogId: string): Promise<boolean> {
-    const matDialog = await this.getRootLoader().getHarnessOrNull(MatDialogHarness.with({
-      selector: `#${dialogId}`
-    }))
-    return !!matDialog
+  public async expectMatDialogPresent(dialogId: string, present: boolean): Promise<void> {
+    await this.waitFor({
+      lookup: async () => {
+        const matDialog = await this.getRootLoader().getHarnessOrNull(MatDialogHarness.with({
+          selector: `#${dialogId}`
+        }))
+        return !!matDialog === present
+      },
+      errorMessage: present ? `No mat dialog ${dialogId} found` : `Mat dialog ${dialogId} found`
+    })
+    this.markAssertionAsValidExpectation()
   }
 }

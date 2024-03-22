@@ -55,7 +55,7 @@ describe('MessageBoxService', () => {
     const messageBoxHarness = await harnesses.router.component.matDialogHarness('errorMessageBox', MessageHarness)
 
     await messageBoxHarness.clickElement('closeButton')
-    await expectAsync(harnesses.router.component.matDialogPresent('errorMessageBox')).toBeResolvedTo(false)
+    await harnesses.router.component.expectMatDialogPresent('errorMessageBox', false)
   })
 
   it('confirm display test', async () => {
@@ -96,7 +96,7 @@ describe('MessageBoxService', () => {
     confirmResult = true
 
     await confirmMessageHarness.clickElement('cancelButton')
-    await expectAsync(harnesses.router.component.matDialogPresent('confirmMessageBox')).toBeResolvedTo(false)
+    await harnesses.router.component.expectMatDialogPresent('confirmMessageBox', false)
     expect(confirmResult).toBe(false)
 
     service.confirm(confirmMessage, confirmed => confirmResult = confirmed)
@@ -104,7 +104,7 @@ describe('MessageBoxService', () => {
     confirmResult = false
 
     await confirmMessageHarness.clickElement('confirmButton')
-    await expectAsync(harnesses.router.component.matDialogPresent('confirmMessageBox')).toBeResolvedTo(false)
+    await harnesses.router.component.expectMatDialogPresent('confirmMessageBox', false)
     expect(confirmResult).toBe(true)
   })
 })
