@@ -121,12 +121,12 @@ describe('AppComponent', () => {
 
     // initial language (see karma.conf.js)
     await harnesses.router.component.expectElementText('activeLanguageText', 'en')
-    await expectAsync(harnesses.router.component.matButtonText('logoutButton')).toBeResolvedTo('Logout')
+    await harnesses.router.component.expectMatButtonText('logoutButton', 'Logout')
 
     await harnesses.router.component.clickElement('languageContainer')
     await harnesses.router.component.selectMatMenuItem('ru')
 
     await harnesses.router.component.expectElementText('activeLanguageText', 'ru')
-    await expectAsync(harnesses.router.component.matButtonText('logoutButton')).toBeResolvedTo('Выйти')
+    await harnesses.router.component.expectMatButtonText('logoutButton', 'Выйти')
   })
 })
