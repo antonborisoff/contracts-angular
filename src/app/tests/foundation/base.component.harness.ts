@@ -184,11 +184,18 @@ export class BaseHarness extends ComponentHarness {
 
   // +
   public async messageBoxClick(action: MessageActions): Promise<void> {
-    const messageBox = await this.getRootLoader().getHarness(MatDialogHarness)
-    const button = await messageBox.getHarness(MatButtonHarness.with({
-      selector: `${this.getIdSelector(`${action}Button`)}`
-    }))
-    await button.click()
+    await this.waitFor({
+      lookup: async () => {
+        const messageBox = await this.getRootLoader().getHarness(MatDialogHarness)
+        return await messageBox.getHarness(MatButtonHarness.with({
+          selector: `${this.getIdSelector(`${action}Button`)}`
+        }))
+      },
+      errorMessage: `No message box button for action ${action} found.`,
+      action: async (button: MatButtonHarness) => {
+        await button.click()
+      }
+    })
   }
 
   // +
@@ -361,13 +368,19 @@ export class BaseHarness extends ComponentHarness {
   }
 
   // +
-  public async messageBoxPresent(type: MessageType, message?: string): Promise<boolean> {
-    const messageBox = await this.getRootLoader().getHarnessOrNull(MatDialogHarness.with({
-      selector: `#${type}MessageBox`
-    }).addOption('message', message, async (harness, message): Promise<boolean> => {
-      const actualMessage = await harness.getContentText()
-      return actualMessage === message
-    }))
-    return !!messageBox
+  public async expectMessageBoxPresent(type: MessageType, message?: string): Promise<void> {
+    await this.waitFor({
+      lookup: async () => {
+        const messageBox = await this.getRootLoader().getHarnessOrNull(MatDialogHarness.with({
+          selector: `#${type}MessageBox`
+        }).addOption('message', message, async (harness, message): Promise<boolean> => {
+          const actualMessage = await harness.getContentText()
+          return actualMessage === message
+        }))
+        return !!messageBox
+      },
+      errorMessage: `No message box of type ${type} with message '${message}' found`
+    })
+    this.markAssertionAsValidExpectation()
   }
 }

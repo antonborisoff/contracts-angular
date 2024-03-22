@@ -120,7 +120,7 @@ describe('ContractsComponent', () => {
     const {
       harnesses
     } = await initComponent()
-    await expectAsync(harnesses.router.component.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(true)
+    await harnesses.router.component.expectMessageBoxPresent(MessageType.ERROR)
   })
 
   it('contract delete - success', async () => {
@@ -185,7 +185,7 @@ describe('ContractsComponent', () => {
       number: contractToDelete.number
     }).clickElement('deleteContract')
     await harnesses.router.component.messageBoxClick(MessageActions.CONFIRM)
-    await expectAsync(harnesses.router.component.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(true)
+    await harnesses.router.component.expectMessageBoxPresent(MessageType.ERROR)
   })
 
   it('contract add', async () => {

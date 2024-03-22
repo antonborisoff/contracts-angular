@@ -291,31 +291,31 @@ describe('Base harnesses', () => {
     }
   })
 
-  it('messageBoxPresent', async () => {
-    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(false)
-    await expectAsync(baseHarness.messageBoxPresent(MessageType.CONFIRM)).toBeResolvedTo(false)
+  it('expectMessageBoxPresent', async () => {
+    await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.ERROR)).toBeRejected()
+    await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.CONFIRM)).toBeRejected()
 
     await baseHarness.clickElement('button-triggers-message-box-error')
-    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(true)
-    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR, 'message box error')).toBeResolvedTo(true)
-    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR, 'some random message')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.messageBoxPresent(MessageType.CONFIRM)).toBeResolvedTo(false)
+    await baseHarness.expectMessageBoxPresent(MessageType.ERROR)
+    await baseHarness.expectMessageBoxPresent(MessageType.ERROR, 'message box error')
+    await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.ERROR, 'some random message')).toBeRejected()
+    await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.CONFIRM)).toBeRejected()
   })
 
   it('messageBoxClick', async () => {
-    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(false)
+    await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.ERROR)).toBeRejected()
 
     await baseHarness.clickElement('button-triggers-message-box-error')
-    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(true)
+    await baseHarness.expectMessageBoxPresent(MessageType.ERROR)
 
     await baseHarness.messageBoxClick(MessageActions.CLOSE)
-    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(false)
+    await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.ERROR)).toBeRejected()
   })
 
   it('messageBoxClick - no message box', async () => {
-    await expectAsync(baseHarness.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(false)
+    await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.ERROR)).toBeRejected()
 
-    await expectAsync(baseHarness.messageBoxClick(MessageActions.CLOSE)).toBeRejectedWithError()
+    await expectAsync(baseHarness.messageBoxClick(MessageActions.CLOSE)).toBeRejected()
   })
 
   it('messageBoxClick - no message action', async () => {
