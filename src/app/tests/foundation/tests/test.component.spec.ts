@@ -95,32 +95,32 @@ describe('Base harnesses', () => {
     }
   })
 
-  it('buttonEnabled', async () => {
+  it('expectButtonEnabled', async () => {
     await expectAsync(baseHarness.elementPresent('enabled-button', 'button')).toBeResolvedTo(true)
-    await expectAsync(baseHarness.buttonEnabled('enabled-button')).toBeResolvedTo(true)
+    await baseHarness.expectButtonEnabled('enabled-button', true)
 
     await expectAsync(baseHarness.elementPresent('disabled-button', 'button')).toBeResolvedTo(true)
-    await expectAsync(baseHarness.buttonEnabled('disabled-button')).toBeResolvedTo(false)
+    await baseHarness.expectButtonEnabled('disabled-button', false)
 
     await expectAsync(baseHarness.elementPresent('non-existent-button', 'button')).toBeResolvedTo(false)
-    await expectAsync(baseHarness.buttonEnabled('non-existent-button')).toBeRejected()
+    await expectAsync(baseHarness.expectButtonEnabled('non-existent-button', true)).toBeRejected()
   })
 
-  it('inputValue', async () => {
+  it('expctInputValue', async () => {
     const tags = [
       'input',
       'textarea'
     ]
     for (const tag of tags) {
       await expectAsync(baseHarness.elementPresent(`${tag}-value`, tag)).toBeResolvedTo(true)
-      await expectAsync(baseHarness.inputValue(`${tag}-value`)).toBeResolvedTo(`some ${tag} value`)
+      await baseHarness.expectInputValue(`${tag}-value`, `some ${tag} value`)
 
       await expectAsync(baseHarness.elementPresent(`non-existent-${tag}-value`, tag)).toBeResolvedTo(false)
-      await expectAsync(baseHarness.buttonEnabled(`non-existent-${tag}-value`)).toBeRejected()
+      await expectAsync(baseHarness.expectInputValue(`non-existent-${tag}-value`, `some ${tag} value`)).toBeRejected()
     }
   })
 
-  it('elementVisible', async () => {
+  it('expectElementVisible', async () => {
     const tags = [
       'h1',
       'p',
@@ -134,38 +134,38 @@ describe('Base harnesses', () => {
     const tagsNotSupportingHidden = ['mat-card']
     for (const tag of tags) {
       await expectAsync(baseHarness.elementPresent(`${tag}-element-visible`, tag)).toBeResolvedTo(true)
-      await expectAsync(baseHarness.elementVisible(`${tag}-element-visible`)).toBeResolvedTo(true)
+      await baseHarness.expectElementVisible(`${tag}-element-visible`, true)
 
       await expectAsync(baseHarness.elementPresent(`${tag}-element-invisible-if`, tag)).toBeResolvedTo(false)
-      await expectAsync(baseHarness.elementVisible(`${tag}-element-invisible-if`)).toBeResolvedTo(false)
+      await baseHarness.expectElementVisible(`${tag}-element-invisible-if`, false)
 
       if (!tagsNotSupportingHidden.includes(tag)) {
         await expectAsync(baseHarness.elementPresent(`${tag}-element-hidden`, tag)).toBeResolvedTo(true)
-        await expectAsync(baseHarness.elementVisible(`${tag}-element-hidden`)).toBeResolvedTo(false)
+        await baseHarness.expectElementVisible(`${tag}-element-hidden`, false)
       }
       else {
         await expectAsync(baseHarness.elementPresent(`${tag}-element-hidden`, tag)).toBeResolvedTo(true)
-        await expectAsync(baseHarness.elementVisible(`${tag}-element-hidden`)).toBeResolvedTo(true)
+        await baseHarness.expectElementVisible(`${tag}-element-hidden`, true)
       }
 
       await expectAsync(baseHarness.elementPresent(`${tag}-element-style-display-none`, tag)).toBeResolvedTo(true)
-      await expectAsync(baseHarness.elementVisible(`${tag}-element-style-display-none`)).toBeResolvedTo(false)
+      await baseHarness.expectElementVisible(`${tag}-element-style-display-none`, false)
 
       await expectAsync(baseHarness.elementPresent(`${tag}-element-style-visibility-hidden`, tag)).toBeResolvedTo(true)
-      await expectAsync(baseHarness.elementVisible(`${tag}-element-style-visibility-hidden`)).toBeResolvedTo(false)
+      await baseHarness.expectElementVisible(`${tag}-element-style-visibility-hidden`, false)
 
       await expectAsync(baseHarness.elementPresent(`${tag}-element-class-display-none`, tag)).toBeResolvedTo(true)
-      await expectAsync(baseHarness.elementVisible(`${tag}-element-class-display-none`)).toBeResolvedTo(false)
+      await baseHarness.expectElementVisible(`${tag}-element-class-display-none`, false)
 
       await expectAsync(baseHarness.elementPresent(`${tag}-element-class-visibility-hidden`, tag)).toBeResolvedTo(true)
-      await expectAsync(baseHarness.elementVisible(`${tag}-element-class-visibility-hidden`)).toBeResolvedTo(false)
+      await baseHarness.expectElementVisible(`${tag}-element-class-visibility-hidden`, false)
 
       await expectAsync(baseHarness.elementPresent(`${tag}-element-non-existent`, tag)).toBeResolvedTo(false)
-      await expectAsync(baseHarness.elementVisible(`${tag}-element-non-existent`)).toBeResolvedTo(false)
+      await baseHarness.expectElementVisible(`${tag}-element-non-existent`, false)
     }
   })
 
-  it('elementText', async () => {
+  it('expectElementText', async () => {
     const tags = [
       'h1',
       'h4',
@@ -179,35 +179,37 @@ describe('Base harnesses', () => {
     for (const tag of tags) {
       const elementId = `${tag}-element-text`
       await expectAsync(baseHarness.elementPresent(elementId, tag)).toBeResolvedTo(true)
-      await expectAsync(baseHarness.elementText(elementId)).toBeResolvedTo(`${tag} text`)
+      await baseHarness.expectElementText(elementId, `${tag} text`)
+
+      await expectAsync(baseHarness.expectElementText(elementId, `${tag} text other`)).toBeRejected()
 
       await expectAsync(baseHarness.elementPresent(`${elementId}-non-existent`, tag)).toBeResolvedTo(false)
-      await expectAsync(baseHarness.elementText(`${elementId}-non-existent`)).toBeRejected()
+      await expectAsync(baseHarness.expectElementText(`${elementId}-non-existent`, `${tag} text`)).toBeRejected()
 
       // elements in wrapper found, not global ones
       await expectAsync(baseHarness.inElement('text-element-wrapper').elementPresent(elementId, tag)).toBeResolvedTo(true)
-      await expectAsync(baseHarness.inElement('text-element-wrapper').elementText(elementId)).toBeResolvedTo(`${tag} text in wrapper`)
+      await baseHarness.inElement('text-element-wrapper').expectElementText(elementId, `${tag} text in wrapper`)
 
       // elements in wrapper are looked up and not found, global elements are ignored
       await expectAsync(baseHarness.inElement('text-element-wrapper-non-existent-elements').elementPresent(elementId, tag)).toBeResolvedTo(false)
-      await expectAsync(baseHarness.inElement('text-element-wrapper-non-existent-elements').elementText(elementId)).toBeRejected()
+      await expectAsync(baseHarness.inElement('text-element-wrapper-non-existent-elements').expectElementText(elementId, `${tag} text in wrapper`)).toBeRejected()
     }
   })
 
-  it('elementHasClass', async () => {
+  it('expectElementClass', async () => {
     const tags = [
       'button',
       'mat-toolbar'
     ]
     for (const tag of tags) {
       await expectAsync(baseHarness.elementPresent(`${tag}-element-class`, tag)).toBeResolvedTo(true)
-      await expectAsync(baseHarness.elementHasClass(`${tag}-element-class`, `testClass-${tag}`)).toBeResolvedTo(true)
+      await baseHarness.expectElementClass(`${tag}-element-class`, `testClass-${tag}`, true)
 
       await expectAsync(baseHarness.elementPresent(`${tag}-element-class`, tag)).toBeResolvedTo(true)
-      await expectAsync(baseHarness.elementHasClass(`${tag}-element-class`, `testClass-${tag}-other`)).toBeResolvedTo(false)
+      await baseHarness.expectElementClass(`${tag}-element-class`, `testClass-${tag}-other`, false)
 
       await expectAsync(baseHarness.elementPresent(`${tag}-element-class-non-existent`, tag)).toBeResolvedTo(false)
-      await expectAsync(baseHarness.elementHasClass(`${tag}-element-class-non-existent`, `testClass-${tag}`)).toBeRejected()
+      await expectAsync(baseHarness.expectElementClass(`${tag}-element-class-non-existent`, `testClass-${tag}`, true)).toBeRejected()
     }
   })
 

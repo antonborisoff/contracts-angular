@@ -74,32 +74,32 @@ describe('ContractComponent', () => {
 
     // initial state
     // invalid form: number missing, conditions missing
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(false)
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', false)
 
     // invalid form: number present, conditions missing
     await harnesses.router.component.enterValue('numberInput', 'APX3000')
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(false)
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', false)
 
     // valid form: number present, conditions present
     await harnesses.router.component.enterValue('conditionsInput', '3 year labour contract')
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(true)
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', true)
 
     // valid form: number present, conditions missing
     await harnesses.router.component.enterValue('conditionsInput', '')
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(false)
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', false)
 
     // valid form: number present, conditions missing (whitespaces are ignored for conditions)
     await harnesses.router.component.enterValue('conditionsInput', ' ')
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(false)
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', false)
 
     // invalid form: number missing, conditions present
     await harnesses.router.component.enterValue('conditionsInput', '3 year labour contract')
     await harnesses.router.component.enterValue('numberInput', '')
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(false)
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', false)
 
     // invalid form: number missing, conditions present (whitespaces are ignored for number)
     await harnesses.router.component.enterValue('numberInput', ' ')
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(false)
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', false)
   })
 
   it('common - display/hide error message based on number validity', async () => {
@@ -108,21 +108,21 @@ describe('ContractComponent', () => {
     } = await initComponent()
 
     // initial state: no validation done
-    expect(await harnesses.router.component.elementVisible('numberErrorEmpty')).toBe(false)
+    await harnesses.router.component.expectElementVisible('numberErrorEmpty', false)
 
     // validation is not triggered until blur
     await harnesses.router.component.enterValue('numberInput', '', false)
-    expect(await harnesses.router.component.elementVisible('numberErrorEmpty')).toBe(false)
+    await harnesses.router.component.expectElementVisible('numberErrorEmpty', false)
 
     await harnesses.router.component.enterValue('numberInput', '')
-    expect(await harnesses.router.component.elementVisible('numberErrorEmpty')).toBe(true)
+    await harnesses.router.component.expectElementVisible('numberErrorEmpty', true)
 
     await harnesses.router.component.enterValue('numberInput', 'APX3000')
-    expect(await harnesses.router.component.elementVisible('numberErrorEmpty')).toBe(false)
+    await harnesses.router.component.expectElementVisible('numberErrorEmpty', false)
 
     // whitespaces are ignored
     await harnesses.router.component.enterValue('numberInput', ' ')
-    expect(await harnesses.router.component.elementVisible('numberErrorEmpty')).toBe(true)
+    await harnesses.router.component.expectElementVisible('numberErrorEmpty', true)
   })
 
   it('common - display/hide error message based on conditions validity', async () => {
@@ -131,21 +131,21 @@ describe('ContractComponent', () => {
     } = await initComponent()
 
     // initial state: no validation done
-    expect(await harnesses.router.component.elementVisible('conditionsErrorEmpty')).toBe(false)
+    await harnesses.router.component.expectElementVisible('conditionsErrorEmpty', false)
 
     // validation is not triggered until blur
     await harnesses.router.component.enterValue('conditionsInput', '', false)
-    expect(await harnesses.router.component.elementVisible('conditionsErrorEmpty')).toBe(false)
+    await harnesses.router.component.expectElementVisible('conditionsErrorEmpty', false)
 
     await harnesses.router.component.enterValue('conditionsInput', '')
-    expect(await harnesses.router.component.elementVisible('conditionsErrorEmpty')).toBe(true)
+    await harnesses.router.component.expectElementVisible('conditionsErrorEmpty', true)
 
     await harnesses.router.component.enterValue('conditionsInput', '3 year labour contract')
-    expect(await harnesses.router.component.elementVisible('conditionsErrorEmpty')).toBe(false)
+    await harnesses.router.component.expectElementVisible('conditionsErrorEmpty', false)
 
     // whitespaces are ignored
     await harnesses.router.component.enterValue('conditionsInput', ' ')
-    expect(await harnesses.router.component.elementVisible('conditionsErrorEmpty')).toBe(true)
+    await harnesses.router.component.expectElementVisible('conditionsErrorEmpty', true)
   })
 
   it('add - navigate back on success', async () => {
@@ -237,9 +237,9 @@ describe('ContractComponent', () => {
     } = await initComponent()
     await harnesses.router.navigateByUrl(`/contract?contractId=${existingContract.id}`)
 
-    expect(await harnesses.router.component.inputValue('numberInput')).toBe(existingContract.number)
-    expect(await harnesses.router.component.inputValue('conditionsInput')).toBe(existingContract.conditions)
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(true)
+    await harnesses.router.component.expectInputValue('numberInput', existingContract.number)
+    await harnesses.router.component.expectInputValue('conditionsInput', existingContract.conditions)
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', true)
   })
 
   it('edit - form reacts to query param change', async () => {
@@ -248,15 +248,15 @@ describe('ContractComponent', () => {
     } = await initComponent()
     await harnesses.router.navigateByUrl(`/contract?contractId=${existingContract.id}`)
 
-    expect(await harnesses.router.component.inputValue('numberInput')).toBe(existingContract.number)
-    expect(await harnesses.router.component.inputValue('conditionsInput')).toBe(existingContract.conditions)
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(true)
+    await harnesses.router.component.expectInputValue('numberInput', existingContract.number)
+    await harnesses.router.component.expectInputValue('conditionsInput', existingContract.conditions)
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', true)
 
     await harnesses.router.navigateByUrl(`/contract?contractId=${anotherExistingContract.id}`)
 
-    expect(await harnesses.router.component.inputValue('numberInput')).toBe(anotherExistingContract.number)
-    expect(await harnesses.router.component.inputValue('conditionsInput')).toBe(anotherExistingContract.conditions)
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(true)
+    await harnesses.router.component.expectInputValue('numberInput', anotherExistingContract.number)
+    await harnesses.router.component.expectInputValue('conditionsInput', anotherExistingContract.conditions)
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', true)
   })
 
   it('edit - form is cleared when switching to add mode', async () => {
@@ -265,15 +265,15 @@ describe('ContractComponent', () => {
     } = await initComponent()
     await harnesses.router.navigateByUrl(`/contract?contractId=${existingContract.id}`)
 
-    expect(await harnesses.router.component.inputValue('numberInput')).toBe(existingContract.number)
-    expect(await harnesses.router.component.inputValue('conditionsInput')).toBe(existingContract.conditions)
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(true)
+    await harnesses.router.component.expectInputValue('numberInput', existingContract.number)
+    await harnesses.router.component.expectInputValue('conditionsInput', existingContract.conditions)
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', true)
 
     await harnesses.router.navigateByUrl(`/contract`)
 
-    expect(await harnesses.router.component.inputValue('numberInput')).toBe('')
-    expect(await harnesses.router.component.inputValue('conditionsInput')).toBe('')
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(false)
+    await harnesses.router.component.expectInputValue('numberInput', '')
+    await harnesses.router.component.expectInputValue('conditionsInput', '')
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', false)
   })
 
   it('edit - form is populated when switching from add mode', async () => {
@@ -283,15 +283,15 @@ describe('ContractComponent', () => {
 
     await harnesses.router.navigateByUrl(`/contract`)
 
-    expect(await harnesses.router.component.inputValue('numberInput')).toBe('')
-    expect(await harnesses.router.component.inputValue('conditionsInput')).toBe('')
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(false)
+    await harnesses.router.component.expectInputValue('numberInput', '')
+    await harnesses.router.component.expectInputValue('conditionsInput', '')
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', false)
 
     await harnesses.router.navigateByUrl(`/contract?contractId=${existingContract.id}`)
 
-    expect(await harnesses.router.component.inputValue('numberInput')).toBe(existingContract.number)
-    expect(await harnesses.router.component.inputValue('conditionsInput')).toBe(existingContract.conditions)
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(true)
+    await harnesses.router.component.expectInputValue('numberInput', existingContract.number)
+    await harnesses.router.component.expectInputValue('conditionsInput', existingContract.conditions)
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', true)
   })
 
   it('edit - form remains empty in case of data fetch error', async () => {
@@ -302,9 +302,9 @@ describe('ContractComponent', () => {
 
     await harnesses.router.navigateByUrl(`/contract?contractId=${existingContract.id}`)
     await expectAsync(harnesses.router.component.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(true)
-    expect(await harnesses.router.component.inputValue('numberInput')).toBe('')
-    expect(await harnesses.router.component.inputValue('conditionsInput')).toBe('')
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(false)
+    await harnesses.router.component.expectInputValue('numberInput', '')
+    await harnesses.router.component.expectInputValue('conditionsInput', '')
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', false)
   })
 
   it('edit - form populated after data fetch error on param change', async () => {
@@ -316,9 +316,9 @@ describe('ContractComponent', () => {
     await harnesses.router.navigateByUrl(`/contract?contractId=${existingContract.id}`)
     await harnesses.router.navigateByUrl(`/contract?contractId=${anotherExistingContract.id}`)
 
-    expect(await harnesses.router.component.inputValue('numberInput')).toBe(anotherExistingContract.number)
-    expect(await harnesses.router.component.inputValue('conditionsInput')).toBe(anotherExistingContract.conditions)
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(true)
+    await harnesses.router.component.expectInputValue('numberInput', anotherExistingContract.number)
+    await harnesses.router.component.expectInputValue('conditionsInput', anotherExistingContract.conditions)
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', true)
   })
 
   it('edit - form data is not changed on data fetch error after param change', async () => {
@@ -330,8 +330,8 @@ describe('ContractComponent', () => {
     await harnesses.router.navigateByUrl(`/contract?contractId=${existingContract.id}`)
     await harnesses.router.navigateByUrl(`/contract?contractId=${anotherExistingContract.id}`)
 
-    expect(await harnesses.router.component.inputValue('numberInput')).toBe(existingContract.number)
-    expect(await harnesses.router.component.inputValue('conditionsInput')).toBe(existingContract.conditions)
-    expect(await harnesses.router.component.buttonEnabled('saveContractButton')).toBe(true)
+    await harnesses.router.component.expectInputValue('numberInput', existingContract.number)
+    await harnesses.router.component.expectInputValue('conditionsInput', existingContract.conditions)
+    await harnesses.router.component.expectButtonEnabled('saveContractButton', true)
   })
 })

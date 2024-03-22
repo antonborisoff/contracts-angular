@@ -41,7 +41,7 @@ describe('HomeComponent', () => {
       harnesses
     } = await initComponent()
 
-    expect(await harnesses.router.component.elementVisible('navToContractsLink')).toBe(true)
+    await harnesses.router.component.expectElementVisible('navToContractsLink', true)
   })
 
   it('FT_Contracts ON - navigate to home page on link click', async () => {
@@ -60,6 +60,6 @@ describe('HomeComponent', () => {
       harnesses
     } = await initComponent()
 
-    expect(await harnesses.router.component.elementVisible('navToContractsLink')).toBe(false)
+    await harnesses.router.component.expectElementVisible('navToContractsLink', false)
   })
 })
