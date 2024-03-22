@@ -26,7 +26,7 @@ import {
   MessageType
 } from '../../services/message-box/interfaces'
 
-interface ancestorHarnessConfig<T extends ComponentHarness> {
+interface AncestorHarnessConfig<T extends ComponentHarness> {
   itemTag: string
   itemHarnessPredicate: HarnessPredicate<T>
 }
@@ -50,7 +50,7 @@ export class BaseHarness extends ComponentHarness {
 
   // TODO: convert to private once ancestorSelector is managed centrally via getCssSelector (not passed to it)
   protected ancestorSelector: string = ''
-  protected ancestorHarnessConfig?: ancestorHarnessConfig<MatRowHarness>
+  protected ancestorHarnessConfig?: AncestorHarnessConfig<MatRowHarness>
 
   protected getIdSelector(id: string): string {
     return `[${this.idAttribute}="${id}"]`
@@ -180,13 +180,6 @@ export class BaseHarness extends ComponentHarness {
     })
   }
 
-  public async selectMatMenuItem(text: string): Promise<void> {
-    const matMenuItem = await this.getRootLoader().getHarness(MatMenuItemHarness.with({
-      text: text
-    }))
-    await matMenuItem.click()
-  }
-
   // +
   public async messageBoxClick(action: MessageActions): Promise<void> {
     await this.waitFor({
@@ -227,6 +220,13 @@ export class BaseHarness extends ComponentHarness {
         }
       }
     })
+  }
+
+  public async selectMatMenuItem(text: string): Promise<void> {
+    const matMenuItem = await this.getRootLoader().getHarness(MatMenuItemHarness.with({
+      text: text
+    }))
+    await matMenuItem.click()
   }
 
   /********************************
@@ -304,29 +304,6 @@ export class BaseHarness extends ComponentHarness {
     this.markAssertionAsValidExpectation()
   }
 
-  public async matButtonText(id: string): Promise<string> {
-    const matButton = await this.locatorFor(MatButtonHarness.with({
-      selector: `${this.getIdSelector(id)}`
-    }))()
-    const matButtonIcon = await matButton.getHarnessOrNull(MatIconHarness)
-    const matButtonText = await matButton.getText()
-    const matButtonIconText = await matButtonIcon?.getName() || ''
-    return matButtonText.replace(matButtonIconText, '').trim()
-  }
-
-  public async elementChildCount(id: string): Promise<number> {
-    const supportedTags = [
-      'div',
-      'mat-dialog-actions'
-    ]
-    // we need to retrieve the parent first to make sure it exists
-    const cssSelectorParent = this.getCssSelector(id, supportedTags, this.ancestorSelector)
-    await this.locatorFor(cssSelectorParent)()
-    const cssSelectorChildren = this.getCssSelector(id, supportedTags, this.ancestorSelector, ' > *')
-    const children = await this.locatorForAll(cssSelectorChildren)()
-    return children.length
-  }
-
   // +
   public async expectButtonEnabled(id: string, enabled: boolean): Promise<void> {
     const cssSelector = `button${this.getIdSelector(id)}`
@@ -357,21 +334,6 @@ export class BaseHarness extends ComponentHarness {
     this.markAssertionAsValidExpectation()
   }
 
-  public async matTableNRows(id: string): Promise<number> {
-    const matTable = await this.locatorFor(MatTableHarness.with({
-      selector: this.getIdSelector(id)
-    }))()
-    const rows = await matTable.getRows()
-    return rows.length
-  }
-
-  public async matDialogPresent(dialogId: string): Promise<boolean> {
-    const matDialog = await this.getRootLoader().getHarnessOrNull(MatDialogHarness.with({
-      selector: `#${dialogId}`
-    }))
-    return !!matDialog
-  }
-
   // +
   public async expectMessageBoxPresent(type: MessageType, message?: string): Promise<void> {
     await this.waitFor({
@@ -387,5 +349,43 @@ export class BaseHarness extends ComponentHarness {
       errorMessage: `No message box of type ${type} with message '${message}' found`
     })
     this.markAssertionAsValidExpectation()
+  }
+
+  public async matButtonText(id: string): Promise<string> {
+    const matButton = await this.locatorFor(MatButtonHarness.with({
+      selector: `${this.getIdSelector(id)}`
+    }))()
+    const matButtonIcon = await matButton.getHarnessOrNull(MatIconHarness)
+    const matButtonText = await matButton.getText()
+    const matButtonIconText = await matButtonIcon?.getName() || ''
+    return matButtonText.replace(matButtonIconText, '').trim()
+  }
+
+  public async elementChildCount(id: string): Promise<number> {
+    const supportedTags = [
+      'div',
+      'mat-dialog-actions'
+    ]
+    // we need to retrieve the parent first to make sure it exists
+    const cssSelectorParent = this.getCssSelector(id, supportedTags, this.ancestorSelector)
+    await this.locatorFor(cssSelectorParent)()
+    const cssSelectorChildren = this.getCssSelector(id, supportedTags, this.ancestorSelector, ' > *')
+    const children = await this.locatorForAll(cssSelectorChildren)()
+    return children.length
+  }
+
+  public async matTableNRows(id: string): Promise<number> {
+    const matTable = await this.locatorFor(MatTableHarness.with({
+      selector: this.getIdSelector(id)
+    }))()
+    const rows = await matTable.getRows()
+    return rows.length
+  }
+
+  public async matDialogPresent(dialogId: string): Promise<boolean> {
+    const matDialog = await this.getRootLoader().getHarnessOrNull(MatDialogHarness.with({
+      selector: `#${dialogId}`
+    }))
+    return !!matDialog
   }
 }
