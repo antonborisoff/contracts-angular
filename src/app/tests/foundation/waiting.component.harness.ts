@@ -66,5 +66,6 @@ export class WaitingHarness extends BaseHarness {
       },
       errorMessage: `Waiting for element ${id} becoming free failed: timeout exceeded, but element is still busy.`
     })
+    this.markAssertionAsValidExpectation()
   }
 }
