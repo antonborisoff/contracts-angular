@@ -73,7 +73,7 @@ describe('AppComponent', () => {
     } = await initComponent()
 
     await harnesses.router.component.clickElement('logoutButton')
-    await expectAsync(harnesses.router.component.messageBoxPresent(MessageType.ERROR)).toBeResolvedTo(true)
+    await harnesses.router.component.expectMessageBoxPresent(MessageType.ERROR)
   })
 
   it('display header only to authenticated user', async () => {
