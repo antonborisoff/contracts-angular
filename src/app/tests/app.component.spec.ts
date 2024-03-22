@@ -81,13 +81,13 @@ describe('AppComponent', () => {
       harnesses
     } = await initComponent()
 
-    expect(await harnesses.router.component.elementVisible('appHeader')).toBe(true)
+    await harnesses.router.component.expectElementVisible('appHeader', true)
 
     isAuthMock.next(false)
-    expect(await harnesses.router.component.elementVisible('appHeader')).toBe(false)
+    await harnesses.router.component.expectElementVisible('appHeader', false)
 
     isAuthMock.next(true)
-    expect(await harnesses.router.component.elementVisible('appHeader')).toBe(true)
+    await harnesses.router.component.expectElementVisible('appHeader', true)
   })
 
   it('display go home link on non-home page only', async () => {
@@ -96,13 +96,13 @@ describe('AppComponent', () => {
     } = await initComponent()
 
     await harnesses.router.navigateByUrl('/non-home')
-    expect(await harnesses.router.component.elementVisible('navToHomeLink')).toBe(true)
+    await harnesses.router.component.expectElementVisible('navToHomeLink', true)
 
     await harnesses.router.navigateByUrl('/home')
-    expect(await harnesses.router.component.elementVisible('navToHomeLink')).toBe(false)
+    await harnesses.router.component.expectElementVisible('navToHomeLink', false)
 
     await harnesses.router.navigateByUrl('/home/subhome')
-    expect(await harnesses.router.component.elementVisible('navToHomeLink')).toBe(true)
+    await harnesses.router.component.expectElementVisible('navToHomeLink', true)
   })
 
   it('navigate to home page on link click', async () => {
@@ -120,13 +120,13 @@ describe('AppComponent', () => {
     } = await initComponent()
 
     // initial language (see karma.conf.js)
-    await expectAsync(harnesses.router.component.elementText('activeLanguageText')).toBeResolvedTo('en')
+    await harnesses.router.component.expectElementText('activeLanguageText', 'en')
     await expectAsync(harnesses.router.component.matButtonText('logoutButton')).toBeResolvedTo('Logout')
 
     await harnesses.router.component.clickElement('languageContainer')
     await harnesses.router.component.selectMatMenuItem('ru')
 
-    await expectAsync(harnesses.router.component.elementText('activeLanguageText')).toBeResolvedTo('ru')
+    await harnesses.router.component.expectElementText('activeLanguageText', 'ru')
     await expectAsync(harnesses.router.component.matButtonText('logoutButton')).toBeResolvedTo('Выйти')
   })
 })

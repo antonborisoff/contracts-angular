@@ -22,6 +22,6 @@ describe('NotFoundComponent', () => {
       harnesses
     } = await initComponent()
 
-    expect(await harnesses.router.component.elementVisible('notFoundMessage')).toBe(true)
+    await harnesses.router.component.expectElementVisible('notFoundMessage', true)
   })
 })

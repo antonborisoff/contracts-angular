@@ -101,6 +101,14 @@ export class BaseHarness extends ComponentHarness {
     }
   }
 
+  protected markAssertionAsValidExpectation(): void {
+    // this is needed to make Jasmine and its reporter
+    // treat our custom assertions as valid expectations;
+    // otherwise they will mark specs with only custom assertions
+    // as ones without expectations;
+    expect(1).toBe(1)
+  }
+
   /********************************
    * WRAPPERS
    *******************************/
@@ -213,7 +221,7 @@ export class BaseHarness extends ComponentHarness {
    * ASSERTIONS
    *******************************/
   // +
-  public async elementVisible(id: string): Promise<boolean> {
+  public async expectElementVisible(id: string, visible: boolean): Promise<void> {
     const cssSelector = this.getCssSelector(id, [
       'h1',
       'p',
@@ -224,19 +232,27 @@ export class BaseHarness extends ComponentHarness {
       'mat-error',
       'mat-card'
     ])
-    const element = await this.locatorForOptional(cssSelector)()
-    if (element) {
-      const display = await element.getCssValue('display')
-      const visibility = await element.getCssValue('visibility')
-      return display !== 'none' && visibility !== 'hidden'
-    }
-    else {
-      return false
-    }
+    await this.waitFor({
+      lookup: async () => {
+        let elementVisible: boolean
+        const element = await this.locatorForOptional(cssSelector)()
+        if (element) {
+          const display = await element.getCssValue('display')
+          const visibility = await element.getCssValue('visibility')
+          elementVisible = (display !== 'none' && visibility !== 'hidden')
+        }
+        else {
+          elementVisible = false
+        }
+        return elementVisible === visible
+      },
+      errorMessage: `No ${visible ? 'visible' : 'invisible'} element for selector ${cssSelector} found`
+    })
+    this.markAssertionAsValidExpectation()
   }
 
   // +
-  public async elementText(id: string): Promise<string> {
+  public async expectElementText(id: string, text: string): Promise<void> {
     await this.updateAncestorSelector()
     const cssSelector = this.getCssSelector(id, [
       'h1',
@@ -248,19 +264,32 @@ export class BaseHarness extends ComponentHarness {
       'td',
       'mat-icon'
     ], this.ancestorSelector)
-    const element = await this.locatorFor(cssSelector)()
-    return await element.text()
+    await this.waitFor({
+      lookup: async () => {
+        const element = await this.locatorFor(cssSelector)()
+        return await element.text() === text
+      },
+      errorMessage: `No element for selector ${cssSelector} with text '${text}' found`
+    })
+    this.markAssertionAsValidExpectation()
   }
 
   // +
-  public async elementHasClass(id: string, cssClass: string): Promise<boolean> {
+  public async expectElementClass(id: string, cssClass: string, present: boolean): Promise<void> {
     await this.updateAncestorSelector()
     const cssSelector = this.getCssSelector(id, [
       'mat-toolbar',
       'button'
     ], this.ancestorSelector)
-    const element = await this.locatorFor(cssSelector)()
-    return await element.hasClass(cssClass)
+
+    await this.waitFor({
+      lookup: async () => {
+        const element = await this.locatorFor(cssSelector)()
+        return await element.hasClass(cssClass) === present
+      },
+      errorMessage: `No element for selector ${cssSelector} with css class '${cssClass}' found`
+    })
+    this.markAssertionAsValidExpectation()
   }
 
   public async matButtonText(id: string): Promise<string> {
@@ -287,19 +316,33 @@ export class BaseHarness extends ComponentHarness {
   }
 
   // +
-  public async buttonEnabled(id: string): Promise<boolean> {
-    const button = await this.locatorFor(`button${this.getIdSelector(id)}`)()
-    return !(await button.getProperty('disabled'))
+  public async expectButtonEnabled(id: string, enabled: boolean): Promise<void> {
+    const cssSelector = `button${this.getIdSelector(id)}`
+    await this.waitFor({
+      lookup: async () => {
+        const button = await this.locatorFor(cssSelector)()
+        return await button.getProperty('disabled') === !enabled
+      },
+      errorMessage: `No ${enabled ? 'enabled' : 'disabled'} element for selector ${cssSelector} found`
+    })
+    this.markAssertionAsValidExpectation()
   }
 
   // +
-  public async inputValue(id: string): Promise<string> {
+  public async expectInputValue(id: string, value: string): Promise<void> {
     const cssSelector = this.getCssSelector(id, [
       'input',
       'textarea'
     ])
-    const input = await this.locatorFor(cssSelector)()
-    return await input.getProperty('value')
+
+    await this.waitFor({
+      lookup: async () => {
+        const input = await this.locatorFor(cssSelector)()
+        return await input.getProperty('value') === value
+      },
+      errorMessage: `No element for selector ${cssSelector} with value '${value}' found`
+    })
+    this.markAssertionAsValidExpectation()
   }
 
   public async matTableNRows(id: string): Promise<number> {

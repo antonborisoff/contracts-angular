@@ -33,16 +33,16 @@ describe('MessageBoxService', () => {
     service.error(errorMessage)
     const errorMessageHarness = await harnesses.router.component.matDialogHarness('errorMessageBox', MessageHarness)
 
-    await expectAsync(errorMessageHarness.elementHasClass('messageToolbar', 'error')).toBeResolvedTo(true)
-    await expectAsync(errorMessageHarness.elementText('messageIcon')).toBeResolvedTo('report_problem')
-    await expectAsync(errorMessageHarness.elementText('messageTitle')).toBeResolvedTo('Error')
-    await expectAsync(errorMessageHarness.elementText('message')).toBeResolvedTo(errorMessage)
+    await errorMessageHarness.expectElementClass('messageToolbar', 'error', true)
+    await errorMessageHarness.expectElementText('messageIcon', 'report_problem')
+    await errorMessageHarness.expectElementText('messageTitle', 'Error')
+    await errorMessageHarness.expectElementText('message', errorMessage)
 
     await expectAsync(errorMessageHarness.elementChildCount('messageActions')).toBeResolvedTo(1)
 
-    await expectAsync(errorMessageHarness.elementText('closeButton')).toBeResolvedTo('Close')
-    await expectAsync(errorMessageHarness.elementHasClass('closeButton', 'error')).toBeResolvedTo(true)
-    await expectAsync(errorMessageHarness.elementHasClass('closeButton', 'mat-mdc-raised-button')).toBeResolvedTo(true)
+    await errorMessageHarness.expectElementText('closeButton', 'Close')
+    await errorMessageHarness.expectElementClass('closeButton', 'error', true)
+    await errorMessageHarness.expectElementClass('closeButton', 'mat-mdc-raised-button', true)
   })
 
   it('error close test', async () => {
@@ -67,20 +67,20 @@ describe('MessageBoxService', () => {
     service.confirm(confirmMessage)
     const confirmMessageHarness = await harnesses.router.component.matDialogHarness('confirmMessageBox', MessageHarness)
 
-    await expectAsync(confirmMessageHarness.elementHasClass('messageToolbar', 'confirm')).toBeResolvedTo(true)
-    await expectAsync(confirmMessageHarness.elementText('messageIcon')).toBeResolvedTo('help_outline')
-    await expectAsync(confirmMessageHarness.elementText('messageTitle')).toBeResolvedTo('Please, confirm')
-    await expectAsync(confirmMessageHarness.elementText('message')).toBeResolvedTo(confirmMessage)
+    await confirmMessageHarness.expectElementClass('messageToolbar', 'confirm', true)
+    await confirmMessageHarness.expectElementText('messageIcon', 'help_outline')
+    await confirmMessageHarness.expectElementText('messageTitle', 'Please, confirm')
+    await confirmMessageHarness.expectElementText('message', confirmMessage)
 
     await expectAsync(confirmMessageHarness.elementChildCount('messageActions')).toBeResolvedTo(2)
 
-    await expectAsync(confirmMessageHarness.elementText('cancelButton')).toBeResolvedTo('Cancel')
-    await expectAsync(confirmMessageHarness.elementHasClass('cancelButton', 'confirm')).toBeResolvedTo(false)
-    await expectAsync(confirmMessageHarness.elementHasClass('cancelButton', 'mat-mdc-button')).toBeResolvedTo(true)
+    await confirmMessageHarness.expectElementText('cancelButton', 'Cancel')
+    await confirmMessageHarness.expectElementClass('cancelButton', 'confirm', false)
+    await confirmMessageHarness.expectElementClass('cancelButton', 'mat-mdc-button', true)
 
-    await expectAsync(confirmMessageHarness.elementText('confirmButton')).toBeResolvedTo('Confirm')
-    await expectAsync(confirmMessageHarness.elementHasClass('confirmButton', 'confirm')).toBeResolvedTo(true)
-    await expectAsync(confirmMessageHarness.elementHasClass('confirmButton', 'mat-mdc-raised-button')).toBeResolvedTo(true)
+    await confirmMessageHarness.expectElementText('confirmButton', 'Confirm')
+    await confirmMessageHarness.expectElementClass('confirmButton', 'confirm', true)
+    await confirmMessageHarness.expectElementClass('confirmButton', 'mat-mdc-raised-button', true)
   })
 
   it('confirm confirm/cancel test', async () => {
