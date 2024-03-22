@@ -77,6 +77,17 @@ export class BaseHarness extends ComponentHarness {
     }
   }
 
+  protected async getLookupResult<T>(lookup: () => Promise<T | null>): Promise<T | null> {
+    let result: T | null
+    try {
+      result = await lookup()
+    }
+    catch (err) {
+      result = null
+    }
+    return result
+  }
+
   protected async waitFor<T extends TestElement | ComponentHarness | boolean>(options: {
     lookup: () => Promise<T | null>
     action?: (result: T) => Promise<void>
@@ -84,13 +95,7 @@ export class BaseHarness extends ComponentHarness {
   }): Promise<void> {
     // no need to do polling in unit tests
     // since component harnesses stabilize them internally
-    let result: T | null
-    try {
-      result = await options.lookup()
-    }
-    catch (err) {
-      result = null
-    }
+    const result = await this.getLookupResult(options.lookup)
     if (!result) {
       throw new Error(options.errorMessage)
     }

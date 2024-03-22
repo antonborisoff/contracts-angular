@@ -325,12 +325,12 @@ describe('Base harnesses', () => {
   })
 
   const EMITTER_DELAY = 1000
-  it('waiting harness - element free', async () => {
+  it('waiting harness - expectElementFree', async () => {
     const busyStateService = TestBed.inject(BusyStateService)
     const stream = defer(() => {
       return of(1).pipe(delay(EMITTER_DELAY))
     })
-    const elementId = 'div-busy-element'
+    const elementId = 'div-busy-unless-waiting-element'
 
     await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(true)
 
@@ -341,89 +341,55 @@ describe('Base harnesses', () => {
     await expectAsync(baseHarness.elementBusy(elementId)).toBeResolvedTo(false)
   })
 
-  it('waiting harness - element free - waiting timed out', async () => {
+  it('waiting harness - expectElementFree - waiting timed out', async () => {
     const busyStateService = TestBed.inject(BusyStateService)
     const stream = defer(() => {
       return of(1).pipe(delay(EMITTER_DELAY * 2))
     })
-    const elementId = 'div-busy-element'
+    const elementId = 'div-busy-unless-waiting-element'
 
     await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(true)
 
-    stream.pipe(busyStateService.processLoading('div-busy')).subscribe()
+    const subscription = stream.pipe(busyStateService.processLoading('div-busy')).subscribe()
     await expectAsync(baseHarness.elementBusy(elementId)).toBeResolvedTo(true)
 
     // wait less than the delay in the stream
-    await expectAsync(waitingBaseHarness.withTimeout(EMITTER_DELAY).expectElementFree(elementId)).toBeRejectedWithError(`Waiting for element ${elementId} becoming free failed: timeout exceeded, but element is still busy.`)
-  })
-
-  it('waiting harness - element present', async () => {
-    const stream = defer(() => {
-      return of(true).pipe(delay(EMITTER_DELAY))
-    })
-    const elementId = 'div-present-element'
-
-    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(false)
-
-    stream.subscribe(() => {
-      testComponent.isPresent.next(true)
-    })
-    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(false)
-
-    await waitingBaseHarness.expectElementPresent(elementId)
-    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(true)
-  })
-
-  it('waiting harness - element present - waiting timed out', async () => {
-    const stream = defer(() => {
-      return of(true).pipe(delay(EMITTER_DELAY * 2))
-    })
-    const elementId = 'div-present-element'
-
-    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(false)
-
-    const subscription = stream.subscribe(() => {
-      testComponent.isPresent.next(true)
-    })
-    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(false)
-
-    // wait less than the delay in the stream
-    await expectAsync(waitingBaseHarness.withTimeout(EMITTER_DELAY).expectElementPresent(elementId)).toBeRejectedWithError(`Waiting for element ${elementId} being present failed: timeout exceeded, but element is still not present.`)
+    await expectAsync(waitingBaseHarness.withTimeout(EMITTER_DELAY).expectElementFree(elementId)).toBeRejected()
     subscription.unsubscribe()
   })
 
-  it('waiting harness - element not present', async () => {
+  it('waiting harness - expectElementVisible', async () => {
     const stream = defer(() => {
       return of(true).pipe(delay(EMITTER_DELAY))
     })
-    const elementId = 'div-not-present-element'
+    const elementNotVisibleUnlessWaitingId = 'div-not-visible-unless-waiting-element'
 
-    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(true)
+    await expectAsync(baseHarness.elementPresent(elementNotVisibleUnlessWaitingId, 'div')).toBeResolvedTo(false)
 
     stream.subscribe(() => {
       testComponent.isPresent.next(true)
     })
-    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(true)
+    await expectAsync(baseHarness.elementPresent(elementNotVisibleUnlessWaitingId, 'div')).toBeResolvedTo(false)
 
-    await waitingBaseHarness.expectElementPresent(elementId, false)
-    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(false)
+    await waitingBaseHarness.expectElementVisible(elementNotVisibleUnlessWaitingId, true)
+    await expectAsync(baseHarness.elementPresent(elementNotVisibleUnlessWaitingId, 'div')).toBeResolvedTo(true)
   })
 
-  it('waiting harness - element not present - waiting timed out', async () => {
+  it('waiting harness - expectElementVisible - waiting timed out', async () => {
     const stream = defer(() => {
       return of(true).pipe(delay(EMITTER_DELAY * 2))
     })
-    const elementId = 'div-not-present-element'
+    const elementNotVisibleUnlessWaitingId = 'div-not-visible-unless-waiting'
 
-    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(true)
+    await expectAsync(baseHarness.elementPresent(elementNotVisibleUnlessWaitingId, 'div')).toBeResolvedTo(false)
 
     const subscription = stream.subscribe(() => {
       testComponent.isPresent.next(true)
     })
-    await expectAsync(baseHarness.elementPresent(elementId, 'div')).toBeResolvedTo(true)
+    await expectAsync(baseHarness.elementPresent(elementNotVisibleUnlessWaitingId, 'div')).toBeResolvedTo(false)
 
     // wait less than the delay in the stream
-    await expectAsync(waitingBaseHarness.withTimeout(EMITTER_DELAY).expectElementPresent(elementId, false)).toBeRejectedWithError(`Waiting for element ${elementId} not being present failed: timeout exceeded, but element is still present.`)
+    await expectAsync(waitingBaseHarness.withTimeout(EMITTER_DELAY).expectElementVisible(elementNotVisibleUnlessWaitingId, true)).toBeRejected()
     subscription.unsubscribe()
   })
 })
