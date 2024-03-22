@@ -95,6 +95,98 @@ describe('Base harnesses', () => {
     }
   })
 
+  it('enterValue - updateOn: change', async () => {
+    const tags = [
+      {
+        tag: 'input',
+        formControl: testComponent.formControlInputUpdateOnChange
+      },
+      {
+        tag: 'textarea',
+        formControl: testComponent.formControlTextareaUpdateOnChange
+      }
+    ]
+    for (const tag of tags) {
+      let formValuesOnChange: string[] = []
+      tag.formControl.valueChanges.subscribe((value: string) => {
+        formValuesOnChange.push(value)
+      })
+
+      formValuesOnChange = []
+      await baseHarness.enterValue(`${tag.tag}-element-update-on-change`, `some ${tag.tag} value`)
+      expect(formValuesOnChange.pop()).toBe(`some ${tag.tag} value`)
+
+      formValuesOnChange = []
+      await baseHarness.enterValue(`${tag.tag}-element-update-on-change`, '')
+      expect(formValuesOnChange.pop()).toBe('')
+
+      formValuesOnChange = []
+      await expectAsync(baseHarness.enterValue(`${tag.tag}-element-update-on-change-non-existent`, '')).toBeRejected()
+      expect(formValuesOnChange.pop()).toBeUndefined()
+    }
+  })
+
+  it('enterValue - updateOn: blur', async () => {
+    const tags = [
+      {
+        tag: 'input',
+        formControl: testComponent.formControlInputUpdateOnBlur
+      },
+      {
+        tag: 'textarea',
+        formControl: testComponent.formControlTextareaUpdateOnBlur
+      }
+    ]
+    for (const tag of tags) {
+      let formValuesOnBlur: string[] = []
+      tag.formControl.valueChanges.subscribe((value: string) => {
+        formValuesOnBlur.push(value)
+      })
+
+      formValuesOnBlur = []
+      await baseHarness.enterValue(`${tag.tag}-element-update-on-blur`, `some ${tag.tag} value`, false)
+      expect(formValuesOnBlur.pop()).toBeUndefined()
+
+      formValuesOnBlur = []
+      await baseHarness.enterValue(`${tag.tag}-element-update-on-blur`, `some ${tag.tag} value`)
+      expect(formValuesOnBlur.pop()).toBe(`some ${tag.tag} value`)
+
+      formValuesOnBlur = []
+      await baseHarness.enterValue(`${tag.tag}-element-update-on-blur`, '', false)
+      expect(formValuesOnBlur.pop()).toBeUndefined()
+
+      formValuesOnBlur = []
+      await baseHarness.enterValue(`${tag.tag}-element-update-on-blur`, '')
+      expect(formValuesOnBlur.pop()).toBe('')
+
+      formValuesOnBlur = []
+      await expectAsync(baseHarness.enterValue(`${tag.tag}-element-update-on-blur-non-existent`, '')).toBeRejected()
+      expect(formValuesOnBlur.pop()).toBeUndefined()
+    }
+  })
+
+  it('messageBoxClick', async () => {
+    await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.ERROR)).toBeRejected()
+
+    await baseHarness.clickElement('button-triggers-message-box-error')
+    await baseHarness.expectMessageBoxPresent(MessageType.ERROR)
+
+    await baseHarness.messageBoxClick(MessageActions.CLOSE)
+    await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.ERROR)).toBeRejected()
+  })
+
+  it('messageBoxClick - no message box', async () => {
+    await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.ERROR)).toBeRejected()
+
+    await expectAsync(baseHarness.messageBoxClick(MessageActions.CLOSE)).toBeRejected()
+  })
+
+  it('messageBoxClick - no message action', async () => {
+    await baseHarness.clickElement('button-triggers-message-box-error')
+
+    await expectAsync(baseHarness.messageBoxClick(MessageActions.CONFIRM)).toBeRejectedWithError()
+  })
+
   it('expectButtonEnabled', async () => {
     await expectAsync(baseHarness.elementPresent('enabled-button', 'button')).toBeResolvedTo(true)
     await baseHarness.expectButtonEnabled('enabled-button', true)
@@ -221,76 +313,6 @@ describe('Base harnesses', () => {
     await expectAsync(baseHarness.elementChildCount('div-child-count-grandchild-present-non-existent')).toBeRejected()
   })
 
-  it('enterValue - updateOn: change', async () => {
-    const tags = [
-      {
-        tag: 'input',
-        formControl: testComponent.formControlInputUpdateOnChange
-      },
-      {
-        tag: 'textarea',
-        formControl: testComponent.formControlTextareaUpdateOnChange
-      }
-    ]
-    for (const tag of tags) {
-      let formValuesOnChange: string[] = []
-      tag.formControl.valueChanges.subscribe((value: string) => {
-        formValuesOnChange.push(value)
-      })
-
-      formValuesOnChange = []
-      await baseHarness.enterValue(`${tag.tag}-element-update-on-change`, `some ${tag.tag} value`)
-      expect(formValuesOnChange.pop()).toBe(`some ${tag.tag} value`)
-
-      formValuesOnChange = []
-      await baseHarness.enterValue(`${tag.tag}-element-update-on-change`, '')
-      expect(formValuesOnChange.pop()).toBe('')
-
-      formValuesOnChange = []
-      await expectAsync(baseHarness.enterValue(`${tag.tag}-element-update-on-change-non-existent`, '')).toBeRejected()
-      expect(formValuesOnChange.pop()).toBeUndefined()
-    }
-  })
-
-  it('enterValue - updateOn: blur', async () => {
-    const tags = [
-      {
-        tag: 'input',
-        formControl: testComponent.formControlInputUpdateOnBlur
-      },
-      {
-        tag: 'textarea',
-        formControl: testComponent.formControlTextareaUpdateOnBlur
-      }
-    ]
-    for (const tag of tags) {
-      let formValuesOnBlur: string[] = []
-      tag.formControl.valueChanges.subscribe((value: string) => {
-        formValuesOnBlur.push(value)
-      })
-
-      formValuesOnBlur = []
-      await baseHarness.enterValue(`${tag.tag}-element-update-on-blur`, `some ${tag.tag} value`, false)
-      expect(formValuesOnBlur.pop()).toBeUndefined()
-
-      formValuesOnBlur = []
-      await baseHarness.enterValue(`${tag.tag}-element-update-on-blur`, `some ${tag.tag} value`)
-      expect(formValuesOnBlur.pop()).toBe(`some ${tag.tag} value`)
-
-      formValuesOnBlur = []
-      await baseHarness.enterValue(`${tag.tag}-element-update-on-blur`, '', false)
-      expect(formValuesOnBlur.pop()).toBeUndefined()
-
-      formValuesOnBlur = []
-      await baseHarness.enterValue(`${tag.tag}-element-update-on-blur`, '')
-      expect(formValuesOnBlur.pop()).toBe('')
-
-      formValuesOnBlur = []
-      await expectAsync(baseHarness.enterValue(`${tag.tag}-element-update-on-blur-non-existent`, '')).toBeRejected()
-      expect(formValuesOnBlur.pop()).toBeUndefined()
-    }
-  })
-
   it('expectMessageBoxPresent', async () => {
     await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.ERROR)).toBeRejected()
     await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.CONFIRM)).toBeRejected()
@@ -300,28 +322,6 @@ describe('Base harnesses', () => {
     await baseHarness.expectMessageBoxPresent(MessageType.ERROR, 'message box error')
     await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.ERROR, 'some random message')).toBeRejected()
     await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.CONFIRM)).toBeRejected()
-  })
-
-  it('messageBoxClick', async () => {
-    await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.ERROR)).toBeRejected()
-
-    await baseHarness.clickElement('button-triggers-message-box-error')
-    await baseHarness.expectMessageBoxPresent(MessageType.ERROR)
-
-    await baseHarness.messageBoxClick(MessageActions.CLOSE)
-    await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.ERROR)).toBeRejected()
-  })
-
-  it('messageBoxClick - no message box', async () => {
-    await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.ERROR)).toBeRejected()
-
-    await expectAsync(baseHarness.messageBoxClick(MessageActions.CLOSE)).toBeRejected()
-  })
-
-  it('messageBoxClick - no message action', async () => {
-    await baseHarness.clickElement('button-triggers-message-box-error')
-
-    await expectAsync(baseHarness.messageBoxClick(MessageActions.CONFIRM)).toBeRejectedWithError()
   })
 
   const EMITTER_DELAY = 1000
