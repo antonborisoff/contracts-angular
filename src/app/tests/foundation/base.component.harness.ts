@@ -219,6 +219,7 @@ export class BaseHarness extends ComponentHarness {
     })
   }
 
+  // +
   public async selectMatMenuItem(text: string): Promise<void> {
     await this.waitFor({
       lookup: async () => {
@@ -376,6 +377,7 @@ export class BaseHarness extends ComponentHarness {
     return rows.length
   }
 
+  // +
   public async expectMatDialogPresent(dialogId: string, present: boolean): Promise<void> {
     await this.waitFor({
       lookup: async () => {

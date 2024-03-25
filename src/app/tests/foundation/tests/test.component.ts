@@ -29,6 +29,13 @@ import {
 import {
   BehaviorSubject
 } from 'rxjs'
+import {
+  MatDialog,
+  MatDialogModule
+} from '@angular/material/dialog'
+import {
+  MatMenuModule
+} from '@angular/material/menu'
 
 @Component({
   selector: 'app-test-component',
@@ -40,6 +47,8 @@ import {
     MatFormFieldModule,
     MatIconModule,
     MatToolbarModule,
+    MatDialogModule,
+    MatMenuModule,
     BusyDirective
   ],
   templateUrl: './test.component.html',
@@ -65,9 +74,23 @@ export class TestComponent {
 
   public isPresent = new BehaviorSubject(false)
 
+  public matMenuOptions = [
+    {
+      key: 'option_A',
+      text: 'Option A'
+    },
+    {
+      key: 'option_B',
+      text: 'Option B'
+    }
+  ]
+
+  public selectedMatMenuOption: string = ''
+
   public constructor(
     private fb: FormBuilder,
-    private mb: MessageBoxService
+    private mb: MessageBoxService,
+    private matDialog: MatDialog
   ) {}
 
   public clickElement(target: EventTarget | null): void {
@@ -82,5 +105,15 @@ export class TestComponent {
 
   public onError(): void {
     this.mb.error('message box error')
+  }
+
+  public onMatDialog(): void {
+    this.matDialog.open(TestComponent, {
+      id: 'testMatDialog'
+    })
+  }
+
+  public matMenuItemSelected(matMenuItemKey: string): void {
+    this.selectedMatMenuOption = matMenuItemKey
   }
 }

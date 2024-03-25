@@ -26,6 +26,9 @@ import {
   delay,
   of
 } from 'rxjs'
+import {
+  NoopAnimationsModule
+} from '@angular/platform-browser/animations'
 
 describe('Base harnesses', () => {
   let baseHarness: TestComponentHarness
@@ -36,7 +39,8 @@ describe('Base harnesses', () => {
     await TestBed.configureTestingModule({
       imports: [
         TestComponent,
-        getTranslocoTestingModule(TestComponent, {})
+        getTranslocoTestingModule(TestComponent, {}),
+        NoopAnimationsModule
       ]
     }).compileComponents()
 
@@ -163,6 +167,24 @@ describe('Base harnesses', () => {
       await expectAsync(baseHarness.enterValue(`${tag.tag}-element-update-on-blur-non-existent`, '')).toBeRejected()
       expect(formValuesOnBlur.pop()).toBeUndefined()
     }
+  })
+
+  it('selectMatMenuItem', async () => {
+    await baseHarness.expectElementText('selectedMatMenuOption', '')
+
+    await expectAsync(baseHarness.selectMatMenuItem('Non-existent Option')).toBeRejected()
+    await baseHarness.expectElementText('selectedMatMenuOption', '')
+
+    await expectAsync(baseHarness.selectMatMenuItem('Option A')).toBeRejected()
+    await baseHarness.expectElementText('selectedMatMenuOption', '')
+
+    await baseHarness.clickElement('matMenuTrigger')
+
+    await expectAsync(baseHarness.selectMatMenuItem('Non-existent Option')).toBeRejected()
+    await baseHarness.expectElementText('selectedMatMenuOption', '')
+
+    await baseHarness.selectMatMenuItem('Option A')
+    await baseHarness.expectElementText('selectedMatMenuOption', 'option_A')
   })
 
   it('messageBoxClick', async () => {
@@ -322,6 +344,20 @@ describe('Base harnesses', () => {
     await baseHarness.expectMessageBoxPresent(MessageType.ERROR, 'message box error')
     await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.ERROR, 'some random message')).toBeRejected()
     await expectAsync(baseHarness.expectMessageBoxPresent(MessageType.CONFIRM)).toBeRejected()
+  })
+
+  it('expectMatDialogPresent', async () => {
+    await expectAsync(baseHarness.expectMatDialogPresent('testMatDialog', true)).toBeRejected()
+    await expectAsync(baseHarness.expectMatDialogPresent('testMatDialogNonExistent', true)).toBeRejected()
+    await baseHarness.expectMatDialogPresent('testMatDialog', false)
+    await baseHarness.expectMatDialogPresent('testMatDialogNonExistent', false)
+
+    await baseHarness.clickElement('button-triggers-mat-dialog')
+
+    await baseHarness.expectMatDialogPresent('testMatDialog', true)
+    await expectAsync(baseHarness.expectMatDialogPresent('testMatDialogNonExistent', true)).toBeRejected()
+    await expectAsync(baseHarness.expectMatDialogPresent('testMatDialog', false)).toBeRejected()
+    await baseHarness.expectMatDialogPresent('testMatDialogNonExistent', false)
   })
 
   const EMITTER_DELAY = 1000
