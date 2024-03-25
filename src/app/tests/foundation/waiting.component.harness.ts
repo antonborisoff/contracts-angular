@@ -26,7 +26,7 @@ export class WaitingHarness extends BaseHarness {
     lookup: () => Promise<T | null>
     action?: (result: T) => Promise<void>
     errorMessage: string
-  }): Promise<void> {
+  }): Promise<T> {
     let result = await this.getLookupResult(options.lookup)
     const endTime = Date.now() + this.waitForTimeoutInterval
     while (!result && Date.now() < endTime) {
@@ -41,6 +41,7 @@ export class WaitingHarness extends BaseHarness {
         await options.action(result)
       }
     }
+    return result
   }
 
   public withTimeout(timeoutInterval?: number): this {

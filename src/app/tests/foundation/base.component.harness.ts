@@ -62,10 +62,34 @@ export class BaseHarness extends ComponentHarness {
     }, '')
   }
 
+  protected getThisHarnessCopy(): this {
+    return Object.create(
+      Object.getPrototypeOf(this),
+      Object.getOwnPropertyDescriptors(this)
+    )
+  }
+
+  /**
+   *  we need to call this method at the beginning of target methods
+   *  if we want to make them work with harness based wrappers;
+   *
+   *  All wrappers are based on data-id attribute;
+   *  However, in some cases we don't want to expose data-id values in tests and rely on something else;
+   *  e.g. we don't want to work with entity ids in e2e tests since we generally don't know them;
+   *  Entity ids could be use to provide unique data-ids, but we use either attributes to figure them out on the fly;
+   *  During the process we have to look up for harnesses with these specific attributes;
+   *  The process should use polling to be useful in e2e environment;
+   */
   protected async updateAncestorSelector(): Promise<void> {
     if (this.ancestorHarnessConfig) {
-      const harness = await this.locatorFor(this.ancestorHarnessConfig.itemHarnessPredicate)()
-      const host = await harness.host()
+      const lookupConfig = this.ancestorHarnessConfig
+      const ancestor = await this.waitFor({
+        lookup: async () => {
+          return await this.locatorFor(lookupConfig.itemHarnessPredicate)()
+        },
+        errorMessage: `No ancestor with given predicate found`
+      })
+      const host = await ancestor.host()
       const hostId = await host.getAttribute(this.idAttribute)
       if (!hostId) {
         throw new Error(`Cannot execute the method: the host element of the harness returned by the wrapper does not have ${this.idAttribute} property`)
@@ -89,7 +113,7 @@ export class BaseHarness extends ComponentHarness {
     lookup: () => Promise<T | null>
     action?: (result: T) => Promise<void>
     errorMessage: string
-  }): Promise<void> {
+  }): Promise<T> {
     // no need to do polling in unit tests
     // since component harnesses stabilize them internally
     const result = await this.getLookupResult(options.lookup)
@@ -101,6 +125,7 @@ export class BaseHarness extends ComponentHarness {
         await options.action(result)
       }
     }
+    return result
   }
 
   protected markAssertionAsValidExpectation(): void {
@@ -116,19 +141,13 @@ export class BaseHarness extends ComponentHarness {
    *******************************/
   // +
   public inElement(id: string): this {
-    const copy = Object.create(
-      Object.getPrototypeOf(this),
-      Object.getOwnPropertyDescriptors(this)
-    ) as this
+    const copy = this.getThisHarnessCopy()
     copy.ancestorSelector = `div${this.getIdSelector(id)} `
     return copy
   }
 
   public inMatTableRow(tableId: string, rowFilter: Record<string, string>): this {
-    const copy = Object.create(
-      Object.getPrototypeOf(this),
-      Object.getOwnPropertyDescriptors(this)
-    ) as this
+    const copy = this.getThisHarnessCopy()
     copy.ancestorHarnessConfig = {
       itemHarnessPredicate: MatRowHarness.with({
         ancestor: this.getIdSelector(tableId)
