@@ -208,6 +208,21 @@
             <button data-id="button-element-class" class="testClass-button">Mat toolbar with class</button>
         </div>
 
+        <div>
+            <button data-id="button-triggers-mat-dialog" (click)="onMatDialog()">Mat Dialog button</button>
+        </div>
+
+        <div
+            [matMenuTriggerFor]="testMenu"
+            data-id="matMenuTrigger">
+            <mat-menu #testMenu="matMenu">
+                @for(matMenuOption of matMenuOptions; track matMenuOption.key){
+                <button mat-menu-item (click)="matMenuItemSelected(matMenuOption.key)">{{matMenuOption.text}}</button>
+                }
+            </mat-menu>
+            <div data-id="selectedMatMenuOption">{{selectedMatMenuOption}}</div>
+        </div>
+
         <div data-id="div-busy-unless-waiting-element" appBusy="div-busy"></div>
         @if (isPresent | async) {
             <div data-id="div-not-visible-unless-waiting-element"></div>
