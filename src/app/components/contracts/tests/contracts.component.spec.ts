@@ -95,7 +95,7 @@ describe('ContractsComponent', () => {
       harnesses
     } = await initComponent(CONTRACTS)
 
-    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(getVisibleContracts(CONTRACTS).length)
+    await harnesses.router.component.expectMatTableNRows('contractList', getVisibleContracts(CONTRACTS).length)
     for (const contract of getVisibleContracts(CONTRACTS)) {
       await harnesses.router.component.inMatTableRow('contractList', {
         number: contract.number
@@ -112,7 +112,7 @@ describe('ContractsComponent', () => {
       harnesses
     } = await initComponent([])
 
-    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(0)
+    await harnesses.router.component.expectMatTableNRows('contractList', 0)
     await harnesses.router.component.expectElementVisible('noContractsMessage', true)
   })
 
@@ -139,7 +139,7 @@ describe('ContractsComponent', () => {
       number: contractToDelete.number
     }).clickElement('deleteContract')
     await harnesses.router.component.messageBoxClick(MessageActions.CONFIRM)
-    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(expectedContracts.length)
+    await harnesses.router.component.expectMatTableNRows('contractList', expectedContracts.length)
     for (const expectedContract of expectedContracts) {
       await harnesses.router.component.inMatTableRow('contractList', {
         number: expectedContract.number
@@ -162,7 +162,7 @@ describe('ContractsComponent', () => {
       number: contractToDelete.number
     }).clickElement('deleteContract')
     await harnesses.router.component.messageBoxClick(MessageActions.CANCEL)
-    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(expectedContracts.length)
+    await harnesses.router.component.expectMatTableNRows('contractList', expectedContracts.length)
     for (const expectedContract of expectedContracts) {
       await harnesses.router.component.inMatTableRow('contractList', {
         number: expectedContract.number
@@ -216,7 +216,7 @@ describe('ContractsComponent', () => {
     const contractToFind = CONTRACTS[5]
 
     await harnesses.router.component.enterValue('contractSearchInput', contractToFind.number)
-    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(1)
+    await harnesses.router.component.expectMatTableNRows('contractList', 1)
     await harnesses.router.component.inMatTableRow('contractList', {
       number: contractToFind.number
     }).expectElementText('contractNumber', contractToFind.number)
@@ -225,12 +225,12 @@ describe('ContractsComponent', () => {
     }).expectElementText('contractConditions', contractToFind.conditions)
 
     await harnesses.router.component.enterValue('contractSearchInput', '')
-    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(getVisibleContracts(CONTRACTS).length)
+    await harnesses.router.component.expectMatTableNRows('contractList', getVisibleContracts(CONTRACTS).length)
 
     await harnesses.router.component.enterValue('contractSearchInput', 'some nono-existent contract number')
-    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(0)
+    await harnesses.router.component.expectMatTableNRows('contractList', 0)
 
     await harnesses.router.component.enterValue('contractSearchInput', '')
-    expect(await harnesses.router.component.matTableNRows('contractList')).toBe(getVisibleContracts(CONTRACTS).length)
+    await harnesses.router.component.expectMatTableNRows('contractList', getVisibleContracts(CONTRACTS).length)
   })
 })
