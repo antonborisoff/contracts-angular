@@ -40,6 +40,7 @@ export class BaseHarness extends ComponentHarness {
 
   protected getRootLoader(): HarnessLoader {
     if (!this.rootLoader) {
+      console.error('root loader was not initialized')
       throw new Error('root loader was not initialized')
     }
     return this.rootLoader
@@ -388,12 +389,16 @@ export class BaseHarness extends ComponentHarness {
     return children.length
   }
 
-  public async matTableNRows(id: string): Promise<number> {
-    const matTable = await this.locatorFor(MatTableHarness.with({
-      selector: this.getIdSelector(id)
-    }))()
-    const rows = await matTable.getRows()
-    return rows.length
+  public async expectMatTableNRows(id: string, nRows: number): Promise<void> {
+    await this.waitFor({
+      lookup: async () => {
+        const matTable = await this.locatorFor(MatTableHarness.with({
+          selector: this.getIdSelector(id)
+        }))()
+        return (await matTable.getRows()).length === nRows
+      },
+      errorMessage: `No mat table ${id} with ${nRows} rows found`
+    })
   }
 
   // +
