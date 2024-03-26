@@ -1,4 +1,5 @@
 import {
+  APP_INITIALIZER,
   ApplicationConfig,
   isDevMode
 } from '@angular/core'
@@ -42,6 +43,9 @@ import {
 import {
   CustomMatPaginatorIntlService
 } from '../transloco/custom-mat-paginator-intl.service'
+import {
+  NavigationBackService
+} from './services/navigation-back/navigation-back.service'
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -71,6 +75,14 @@ export const appConfig: ApplicationConfig = {
     {
       provide: MatPaginatorIntl,
       useClass: CustomMatPaginatorIntlService
+    },
+    {
+      provide: APP_INITIALIZER,
+      // we need to initialize it during app loading to make sure all navigation history is tracked;
+      // we do it via APP_INITIALIZER that initializes the service as a dependency for dummy function;
+      useFactory: () => () => {},
+      multi: true,
+      deps: [NavigationBackService]
     }
   ]
 }
