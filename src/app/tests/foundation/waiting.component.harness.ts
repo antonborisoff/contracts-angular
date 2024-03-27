@@ -62,7 +62,10 @@ export class WaitingHarness extends BaseHarness {
   public async expectElementFree(id: string): Promise<void> {
     await this.waitFor({
       lookup: async () => {
-        const cssSelector = this.getCssSelector(id, ['div'], this.ancestorSelector, ':not([data-busy="true"])')
+        const cssSelector = this.getCssSelector(id, [
+          'div',
+          'mat-card'
+        ], this.ancestorSelector, ':not([data-busy="true"])')
         return !!(await this.locatorForOptional(cssSelector)())
       },
       errorMessage: `Waiting for element ${id} becoming free failed: timeout exceeded, but element is still busy.`
