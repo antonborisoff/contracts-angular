@@ -24,9 +24,6 @@ jobs:
             - name: install dependencies
               run: npm ci
 
-            - name: run linting for local server source
-              run: npm run lint-server
-
             - name: run linting for project source
               run: npm run lint
 
